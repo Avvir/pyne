@@ -1,4 +1,4 @@
-from .matchers import expect
+from .expectations import expect
 import re
 
 def test__to_be__can_pass():
