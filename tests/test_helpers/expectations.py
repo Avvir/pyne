@@ -55,7 +55,7 @@ class InverseExpectation:
             message_format = self.default_message() if self.message_format is None else self.message_format()
             message = message_format.format(subject=subject, *params)
             cprint("\n" + message + "\n", 'yellow')
-            raise Exception(message)
+            raise AssertionError(message)
 
     def default_message(self):
         return "Expected ({subject}) not " + " ".join(self.name.split("_")) + " ({0})"
@@ -72,7 +72,7 @@ class Expectation:
             message_format = self.default_message() if self.message_format is None else self.message_format()
             message = message_format.format(subject=subject, *params)
             cprint("\n" + message + "\n", 'yellow')
-            raise Exception(message)
+            raise AssertionError(message)
 
     def default_message(self):
         return "Expected ({subject}) " + " ".join(self.name.split("_")) + " ({0})"
