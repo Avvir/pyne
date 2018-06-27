@@ -18,8 +18,8 @@ def test__to_be__fails_with_message():
 
 
 def test__to_be__with_a_matcher_can_pass():
-    expect(anything).to_be(1234)
-    expect(1234).to_be(anything)
+    expect(anything()).to_be(1234)
+    expect(1234).to_be(anything())
 
 def test__to_have_length__can_pass():
     expect([123, 123, 123]).to_have_length(3)
@@ -71,7 +71,7 @@ def test__to_raise_error_message__can_pass_with_matcher():
     def error_method():
         raise Exception("some message")
 
-    expect(error_method).to_raise_error_message(anything)
+    expect(error_method).to_raise_error_message(anything())
 
 
 def test__to_be_a__can_pass():
@@ -88,4 +88,4 @@ def test__to_be_a__when_the_type_is_different__fails_with_message():
         pass
 
     # message = "Expected (hello) to be a (SomeClass)"
-    expect(lambda :expect('hello').to_be_a(SomeClass)).to_raise_error_message(anything)
+    expect(lambda :expect('hello').to_be_a(SomeClass)).to_raise_error_message(anything())

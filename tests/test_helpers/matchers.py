@@ -1,9 +1,10 @@
 class Matcher:
-    def __init__(self, comparator):
+    def __init__(self, comparator, *params):
         self.comparator = comparator
+        self.params = params
 
-    def matches(self, subject, *params):
-        return self.comparator(subject, *params)
+    def matches(self, subject):
+        return self.comparator(subject, *self.params)
 
 
 def is_matcher(possible_matcher):
@@ -19,5 +20,9 @@ def equal_to_comparator(subject, *params):
         return subject == params[0]
 
 
-equal_to = Matcher(equal_to_comparator)
-anything = Matcher(lambda subject, *params: True)
+def equal_to(value):
+    return Matcher(equal_to_comparator, value)
+
+
+def anything():
+    return Matcher(lambda subject, *params: True)
