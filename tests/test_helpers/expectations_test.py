@@ -21,6 +21,16 @@ def test__to_be__with_a_matcher_can_pass():
     expect(anything()).to_be(1234)
     expect(1234).to_be(anything())
 
+
+def test__not_to_be__can_pass():
+    expect(3).not_to_be(4)
+    expect(None).not_to_be("hello")
+
+
+def test__not_to_be__when_equal__fails_with_message():
+    expect(lambda : expect(1).not_to_be(1)).to_raise_error_message("Expected (1) not to be (1)")
+
+
 def test__to_have_length__can_pass():
     expect([123, 123, 123]).to_have_length(3)
 

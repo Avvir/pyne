@@ -50,8 +50,9 @@ class RaiseExpectation:
 
 
 class InverseExpectation:
-    def __init__(self, matcher, message_format=None):
-        self.matcher = matcher
+    def __init__(self, expectation, message_format=None):
+        self.name = expectation.name
+        self.matcher = expectation.matcher
         self.message_format = message_format
 
     def assert_expected(self, subject, *params):
