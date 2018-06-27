@@ -1,28 +1,28 @@
 from termcolor import cprint
-
+from .matchers import Matcher, equal_to
 
 class Expectations:
     def __init__(self, subject):
         self.subject = subject
-        self._to_be_matcher = Expectation("to_be", lambda actual, expected: (actual == expected))
+        self._to_be_expectation = Expectation("to_be", equal_to)
 
     def to_be(self, expected):
-        self._to_be_matcher.assert_expected(self.subject, expected)
+        self._to_be_expectation.assert_expected(self.subject, expected)
 
     def not_to_be(self, expected):
-        InverseExpectation(self._to_be_matcher).assert_expected(self.subject, expected)
+        InverseExpectation(self._to_be_expectation).assert_expected(self.subject, expected)
 
     def to_have_length(self, length):
-        self._to_have_length_matcher = Expectation("to_have_length", lambda subject, length: (len(subject) == length))
-        self._to_have_length_matcher.assert_expected(self.subject, length)
+        length_matcher = Matcher(lambda subject, length: (len(subject) == length))
+        to_have_length_expectation = Expectation("to_have_length", length_matcher)
+        to_have_length_expectation.assert_expected(self.subject, length)
 
     def to_raise_error_message(self, message):
         RaiseExpectation().assert_expected(self.subject, message)
 
     def to_be_a(self, clazz):
-        Expectation("to_be_a", lambda subject, clazz: isinstance(subject, clazz))\
-            .assert_expected(self.subject, clazz)
-
+        instance_matcher = Matcher(lambda subject, clazz: isinstance(subject, clazz))
+        Expectation("to_be_a", instance_matcher).assert_expected(self.subject, clazz)
 
 class RaiseExpectation:
     def __init__(self):
@@ -35,7 +35,7 @@ class RaiseExpectation:
             method()
         except Exception as e:
             self.actual_exception = e
-            return e.args[0] == message
+            return equal_to.matches(e.args[0], message)
 
     def message_format(self):
         if self.actual_exception is None:
@@ -45,7 +45,7 @@ class RaiseExpectation:
                    self.actual_exception.args[0]
 
     def assert_expected(self, subject, *params):
-        return Expectation("to_raise_error_message", self.check_error, self.message_format).assert_expected(subject,
+        return Expectation("to_raise_error_message", Matcher(self.check_error), self.message_format).assert_expected(subject,
                                                                                                             *params)
 
 
@@ -55,7 +55,7 @@ class InverseExpectation:
         self.message_format = message_format
 
     def assert_expected(self, subject, *params):
-        if self.matcher.comparator(subject, *params):
+        if self.matcher.matches(subject, *params):
             message_format = self.default_message() if self.message_format is None else self.message_format()
             message = message_format.format(subject=subject, *params)
             cprint("\n" + message + "\n", 'yellow')
@@ -66,13 +66,13 @@ class InverseExpectation:
 
 
 class Expectation:
-    def __init__(self, name, comparator, message_format=None):
+    def __init__(self, name, matcher, message_format=None):
         self.name = name
-        self.comparator = comparator
+        self.matcher = matcher
         self.message_format = message_format
 
     def assert_expected(self, subject, *params):
-        if not self.comparator(subject, *params):
+        if not self.matcher.matches(subject, *params):
             message_format = self.default_message() if self.message_format is None else self.message_format()
             message = message_format.format(subject=subject, *params)
             cprint("\n" + message + "\n", 'yellow')
