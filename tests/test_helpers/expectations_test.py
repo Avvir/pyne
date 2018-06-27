@@ -1,6 +1,6 @@
 from .expectations import expect
 import re
-from .matchers import anything
+from .matchers import anything, match
 
 
 def test__to_be__can_pass():
@@ -28,7 +28,7 @@ def test__not_to_be__can_pass():
 
 
 def test__not_to_be__when_equal__fails_with_message():
-    expect(lambda : expect(1).not_to_be(1)).to_raise_error_message("Expected (1) not to be (1)")
+    expect(lambda: expect(1).not_to_be(1)).to_raise_error_message("Expected (1) not to be (1)")
 
 
 def test__to_have_length__can_pass():
@@ -77,6 +77,7 @@ def test__to_raise_error_message__can_fail_because_no_error_is_raised():
     finally:
         assert re.search("but no exception was raised", error.args[0])
 
+
 def test__to_raise_error_message__can_pass_with_matcher():
     def error_method():
         raise Exception("some message")
@@ -93,9 +94,10 @@ def test__to_be_a__can_pass():
 
     expect(SomeClass()).to_be_a(SomeClass)
 
+
 def test__to_be_a__when_the_type_is_different__fails_with_message():
     class SomeClass:
         pass
 
-    # message = "Expected (hello) to be a (SomeClass)"
-    expect(lambda :expect('hello').to_be_a(SomeClass)).to_raise_error_message(anything())
+    expect(lambda: expect('hello').to_be_a(SomeClass)).to_raise_error_message(
+        match("Expected \(hello\) to be a .*SomeClass.*"))

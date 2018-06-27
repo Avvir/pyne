@@ -1,3 +1,6 @@
+import re
+
+
 class Matcher:
     def __init__(self, comparator, *params):
         self.comparator = comparator
@@ -26,3 +29,7 @@ def equal_to(value):
 
 def anything():
     return Matcher(lambda subject, *params: True)
+
+
+def match(regular_expression):
+    return Matcher(lambda subject, *params: re.search(params[0], subject), regular_expression)
