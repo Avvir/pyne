@@ -1,6 +1,6 @@
 from .expectations import expect
 import re
-from .matchers import anything, match
+from .matchers import anything, match, contains_text
 
 
 def test__to_be__can_pass():
@@ -84,6 +84,7 @@ def test__to_raise_error_message__can_pass_with_matcher():
 
     expect(error_method).to_raise_error_message(anything())
 
+
 def test__to_raise_error_message__with_unmatched_matcher__failures_shows_matcher_name():
     def error_method():
         raise Exception("some message")
@@ -95,6 +96,19 @@ def test__to_raise_error_message__with_unmatched_matcher__failures_shows_matcher
         error = e
     finally:
         assert re.search(".*to raise an exception with message \(match\('other message',\).*", error.args[0])
+
+
+def test__to_raise_error_message__when_actual_message_contains_curly_braces__shows_message():
+    def error_method():
+        raise Exception("{oh man} {stuff!} {whoa}")
+
+    error = None
+    try:
+        expect(error_method).to_raise_error_message(match("other message"))
+    except AssertionError as e:
+        error = e
+    finally:
+        expect(error.args[0]).to_be(contains_text("{oh man} {stuff!} {whoa}"))
 
 
 def test__to_be_a__can_pass():

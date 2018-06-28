@@ -1,5 +1,5 @@
 from .expectations import expect
-from .matchers import anything, match
+from .matchers import anything, match, contains_text
 
 
 def test__anything__satisfies_to_be():
@@ -13,3 +13,11 @@ def test__match__can_match_regex():
 
 def test__match__when_string_is_different__does_not_match():
     expect("hello world").not_to_be(match("happy.*world"))
+
+
+def test__contains_text__can_match_text():
+    expect("hello world").to_be(contains_text("world"))
+
+
+def test__contains_text__when_string_is_different__does_not_match():
+    expect("hello world").not_to_be(contains_text(".*"))

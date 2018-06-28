@@ -42,3 +42,7 @@ def anything():
 
 def match(regular_expression):
     return Matcher("match", lambda subject, *params: re.search(params[0], subject), regular_expression)
+
+
+def contains_text(text):
+    return Matcher("contains_text", lambda subject, *params: params[0] in subject, text)
