@@ -2,17 +2,21 @@ import re
 
 
 class Matcher:
-    def __init__(self, comparator, *params):
+    def __init__(self, name, comparator, *params):
+        self.name = name
         self.comparator = comparator
         self.params = params
 
     def matches(self, subject):
         return self.comparator(subject, *self.params)
 
+    def format(self):
+        return "{matcher_name}{params}".format(matcher_name=self.name, params=self.params)
+
 
 class InverseMatcher(Matcher):
-    def __init__(self, comparator, *params):
-        super().__init__(lambda subject: not comparator.matches(subject), *params)
+    def __init__(self, name, comparator, *params):
+        super().__init__(name, lambda subject: not comparator.matches(subject), *params)
 
 
 def is_matcher(possible_matcher):
@@ -29,12 +33,12 @@ def equal_to_comparator(subject, *params):
 
 
 def equal_to(value):
-    return Matcher(equal_to_comparator, value)
+    return Matcher("equal_to", equal_to_comparator, value)
 
 
 def anything():
-    return Matcher(lambda subject, *params: True)
+    return Matcher("anything", lambda subject, *params: True)
 
 
 def match(regular_expression):
-    return Matcher(lambda subject, *params: re.search(params[0], subject), regular_expression)
+    return Matcher("match", lambda subject, *params: re.search(params[0], subject), regular_expression)

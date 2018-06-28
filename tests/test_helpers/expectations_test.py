@@ -84,6 +84,18 @@ def test__to_raise_error_message__can_pass_with_matcher():
 
     expect(error_method).to_raise_error_message(anything())
 
+def test__to_raise_error_message__with_unmatched_matcher__failures_shows_matcher_name():
+    def error_method():
+        raise Exception("some message")
+
+    error = None
+    try:
+        expect(error_method).to_raise_error_message(match("other message"))
+    except AssertionError as e:
+        error = e
+    finally:
+        assert re.search(".*to raise an exception with message \(match\('other message',\).*", error.args[0])
+
 
 def test__to_be_a__can_pass():
     expect(1).to_be_a(int)
