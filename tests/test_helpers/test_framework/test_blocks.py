@@ -9,10 +9,18 @@ class BehaviorBlock:
 
 class DescribeBlock(BehaviorBlock):
     def __init__(self, parent, context_description, method):
+        class Context(object):
+            def __init__(self):
+                if parent is not None:
+                    for attr in dir(parent.context):
+                        if not hasattr(self, attr):
+                            setattr(self, attr, getattr(parent.context, attr))
+
         super().__init__(parent, method)
         self.describe_blocks = []
         self.before_each_blocks = []
         self.it_blocks = []
+        self.context = Context()
         self.context_description = context_description
 
 

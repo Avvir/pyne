@@ -1,11 +1,11 @@
 from tests.test_helpers.test_framework.test_blocks import DescribeBlock
-from tests.test_helpers.test_framework.test_collector import test_collector, it, describe, before_each
+from tests.test_helpers.test_framework.test_collector import test_collection, it, describe, before_each
 from tests.test_helpers.test_framework.expectations import expect
 
 
 def test__it__adds_it_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collector.current_describe = current_describe
+    test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -17,7 +17,7 @@ def test__it__adds_it_block_to_current_describe():
 
 def test__describe__adds_describe_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collector.current_describe = current_describe
+    test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -29,7 +29,7 @@ def test__describe__adds_describe_block_to_current_describe():
 
 def test__before_each__adds_before_each_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collector.current_describe = current_describe
+    test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -54,7 +54,7 @@ def test__collect_describe__adds_children_to_the_describe():
             pass
     describe_block = DescribeBlock(None, None, describe_block_method)
 
-    test_collector.collect_describe(describe_block)
+    test_collection.collect_describe(describe_block)
 
     expect(describe_block.before_each_blocks).to_have_length(1)
     expect(describe_block.describe_blocks).to_have_length(1)
@@ -78,7 +78,7 @@ def test__collect_describe__when_there_are_nested_describes__collects_them():
                 pass
     describe_block = DescribeBlock(None, None, describe_block_method)
 
-    test_collector.collect_describe(describe_block)
+    test_collection.collect_describe(describe_block)
 
     expect(describe_block.describe_blocks[0].before_each_blocks).to_have_length(1)
     expect(describe_block.describe_blocks[0].describe_blocks).to_have_length(1)
