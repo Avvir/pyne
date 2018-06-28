@@ -46,3 +46,11 @@ def match(regular_expression):
 
 def contains_text(text):
     return Matcher("contains_text", lambda subject, *params: params[0] in subject, text)
+
+
+def contains(item):
+    return Matcher("contains", lambda subject, *params: params[0] in subject, item)
+
+
+def contained_in(collection):
+    return Matcher("contained_in", lambda subject, *params: subject in params[0], collection)
