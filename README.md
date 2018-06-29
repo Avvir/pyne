@@ -1,20 +1,14 @@
-# Run with Docker
+# Local Setup
 
-save planned elements:
+## Install Dependencies
+
 ```bash
-docker build . -t element-extractor
-docker run -e ENVIRONMENT=acceptance -e AVVIR_FLOOR=[your floor id here] -v [path to ifc directory]:/workspace element-extractor --ifc /workspace/[your-ifc.ifc]
+pip install pipenv
+pipenv install
 ```
 
-save scanned elements:
-```bash
-docker build . -t element-extractor
-docker run -e ENVIRONMENT=acceptance -e AVVIR_SCAN_ID=[your scan id here] -v [path to ifc directory]:/workspace element-extractor --ifc /workspace/[your-ifc.ifc] --progress
-```
+## Test
 
-
-access the container interactively:
 ```bash
-docker build . -t element-extractor
-docker run -it --entrypoint bash element-extractor
+pipenv run pytest
 ```
