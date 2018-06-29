@@ -1,7 +1,7 @@
-from tests.test_helpers.test_framework.test_blocks import DescribeBlock, ItBlock, BeforeEachBlock
+from tests.test_helpers.test_framework.pyne_test_blocks import DescribeBlock, ItBlock, BeforeEachBlock
 
 
-class TestCollector:
+class PyneTestCollector:
     def __init__(self):
         self.top_level_describe = DescribeBlock(None, None, None)
         self.current_describe = self.top_level_describe
@@ -18,7 +18,7 @@ class TestCollector:
         self.current_describe = self.top_level_describe
 
 
-test_collection = TestCollector()
+test_collection = PyneTestCollector()
 
 
 def reset():

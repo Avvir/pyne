@@ -1,5 +1,5 @@
-from tests.test_helpers.test_framework.test_blocks import DescribeBlock
-from tests.test_helpers.test_framework.test_collector import test_collection, it, describe, before_each
+from tests.test_helpers.test_framework.pyne_test_blocks import DescribeBlock
+from tests.test_helpers.test_framework.pyne_test_collector import test_collection, it, describe, before_each
 from tests.test_helpers.test_framework.expectations import expect
 
 

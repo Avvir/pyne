@@ -1,6 +1,6 @@
 from tests.test_helpers.test_framework.expectations import expect
-from tests.test_helpers.test_framework.test_collector import it, reset, describe, before_each
-from tests.test_helpers.test_framework.tester import pyne
+from tests.test_helpers.test_framework.pyne_test_collector import it, reset, describe, before_each
+from tests.test_helpers.test_framework.pyne_tester import pyne
 
 
 def test__pyne__collects_tests():
