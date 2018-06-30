@@ -1,6 +1,6 @@
-from source.expectations import expect
+from pyne.expectations import expect
 import re
-from source.matchers import anything, match, contains_text
+from pyne.matchers import anything, match, contains_text
 
 
 def test__to_be__can_pass():

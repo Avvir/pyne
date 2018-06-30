@@ -1,7 +1,7 @@
-from source.expectations import expect
-from source.matchers import anything
-from source.pyne_test_collector import reset, it, describe, test_collection, before_each
-from source.pyne_test_runner import run_tests
+from pyne.expectations import expect
+from pyne.matchers import anything
+from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
+from pyne.pyne_test_runner import run_tests
 
 
 def test__when_there_is_an_it__runs_the_it():
@@ -162,7 +162,6 @@ def test__when_a_test_fails__it_continues_running_tests():
     def do_first_thing(self):
         self.calls.append("it1")
         raise Exception("Some First Exception")
-
 
     @it
     def do_second_thing(self):

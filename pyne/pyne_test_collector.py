@@ -1,4 +1,4 @@
-from source.pyne_test_blocks import DescribeBlock, ItBlock, BeforeEachBlock
+from pyne.pyne_test_blocks import DescribeBlock, ItBlock, BeforeEachBlock
 
 def no_tests():
     raise Exception("No tests to run.")
