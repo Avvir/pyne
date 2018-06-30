@@ -34,7 +34,7 @@ class Expectation:
     def assert_expected(self, subject, *params):
         if not self.matcher.matches(subject):
             message_format = self.default_message() if self.message_format is None else self.message_format()
-            message = message_format.format(subject=subject, *params)
+            message = message_format.format(*params, subject=subject)
             cprint("\n" + message + "\n", 'yellow')
             raise AssertionError(message)
 
@@ -46,7 +46,7 @@ class RaiseExpectation(Expectation):
     def __init__(self, *params):
         self.expected_message = params[0]
         self.actual_exception = None
-        super().__init__("to_raise_error_message", Matcher(self.check_error, *params), self.message_format)
+        super().__init__("to_raise_error_message", Matcher(self.check_error, params[0]), self.message_format)
 
     def check_error(self, method, message):
         self.expected_message = message
@@ -61,7 +61,7 @@ class RaiseExpectation(Expectation):
             return "Expected ({subject}) to raise an exception with message ({0}) but no exception was raised"
         else:
             return "Expected ({subject}) to raise an exception with message ({0}) but message was " + \
-                   self.actual_exception.args[0]
+                   ("{0}".format(self.actual_exception.args[0]))
 
 
 class InverseExpectation(Expectation):
