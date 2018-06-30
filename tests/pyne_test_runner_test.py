@@ -173,3 +173,31 @@ def test__when_a_test_fails__it_continues_running_tests():
         pass
     finally:
         expect(context.calls).to_be(["it1", "it2"])
+
+def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    @describe
+    def some_describe():
+        @before_each
+        def some_before_each_that_raises(self):
+            raise Exception("Some Setup exception")
+
+        @it
+        def some_test():
+            pass
+
+    @describe
+    def some_second_describe():
+        @it
+        def some_second_test(self):
+            self.calls.append("some-it")
+
+    try:
+        run_tests(test_collection.top_level_describe)
+    except Exception:
+        pass
+    finally:
+        expect(context.calls).to_be(["some-it"])

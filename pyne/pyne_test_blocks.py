@@ -1,7 +1,8 @@
 class BehaviorBlock:
-    def __init__(self, parent, method):
+    def __init__(self, parent, method, description):
         self.method = method
         self.parent = parent
+        self.description = description
 
     def run(self):
         pass
@@ -16,12 +17,11 @@ class DescribeBlock(BehaviorBlock):
                         if not hasattr(self, attr):
                             setattr(self, attr, getattr(parent.context, attr))
 
-        super().__init__(parent, method)
+        super().__init__(parent, method, context_description)
         self.describe_blocks = []
         self.before_each_blocks = []
         self.it_blocks = []
         self.context = Context()
-        self.context_description = context_description
 
 
 class ItBlock(BehaviorBlock):
@@ -31,8 +31,7 @@ class ItBlock(BehaviorBlock):
         pass
 
     def __init__(self, parent, description, method):
-        super().__init__(parent, method)
-        self.description = description
+        super().__init__(parent, method, description)
 
     def run(self):
         try:
@@ -44,7 +43,7 @@ class ItBlock(BehaviorBlock):
 
 class BeforeEachBlock(BehaviorBlock):
     def __init__(self, parent, method):
-        super().__init__(parent, method)
+        super().__init__(parent, method, "@before_each")
 
     def run(self):
         self.method()
