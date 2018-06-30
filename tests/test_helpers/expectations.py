@@ -54,6 +54,9 @@ class Expectation:
                 formatted_params.append(param)
         return formatted_params, formatted_subject
 
+    def escape_for_formatting(self, string):
+        return string.replace("{", "{{").replace("}", "}}")
+
 
 class RaiseExpectation(Expectation):
     def __init__(self, *params):
@@ -75,8 +78,7 @@ class RaiseExpectation(Expectation):
             return "Expected ({subject}) to raise an exception with message ({0}) but no exception was raised"
         else:
             return "Expected ({subject}) to raise an exception with message ({0}) but message was (" + \
-                   ("{0}".format(self.actual_exception.args[0])) + ")"
-
+                   (self.escape_for_formatting("{0}".format(self.actual_exception.args[0]))) + ")"
 
 class InverseExpectation(Expectation):
     def __init__(self, expectation):
