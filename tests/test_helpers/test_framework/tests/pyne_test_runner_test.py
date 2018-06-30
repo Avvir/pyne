@@ -159,13 +159,13 @@ def test__when_a_test_fails__it_continues_running_tests():
     context.calls = []
 
     @it
-    def do_third_thing(self):
+    def do_first_thing(self):
         self.calls.append("it1")
-        expect(2).to_be(1)
+        raise Exception("Some First Exception")
 
 
     @it
-    def do_fourth_thing(self):
+    def do_second_thing(self):
         self.calls.append("it2")
 
     try:
