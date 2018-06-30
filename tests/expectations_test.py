@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 import re
-from pyne.matchers import anything, match, contains_text
+from pyne.matchers import anything, match, contains_text, equal_to
 
 
 def test__to_be__can_pass():
@@ -127,3 +127,18 @@ def test__to_be_a__when_the_type_is_different__fails_with_message():
 
     expect(lambda: expect('hello').to_be_a(SomeClass)).to_raise_error_message(
         match("Expected \(hello\) to be a .*SomeClass.*"))
+
+
+def test__to_contain__can_pass():
+    expect(["hello"]).to_contain("hello")
+    expect("hello").to_contain("he")
+
+
+def test__to_contain__when_item_not_contained__fails_with_message():
+    expect(lambda: expect(["some-item"]).to_contain("some-other-item")).to_raise_error_message(
+        contains_text("Expected (['some-item']) to contain (some-other-item)")
+    )
+
+
+def test__to_contain__can_pass_with_matcher():
+    expect(["hello"]).to_contain(equal_to("hello"))

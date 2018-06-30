@@ -3,13 +3,14 @@ class PyneResultReporter:
         self._print = _print
         self.failed = False
 
-    def report_result(self, method_to_run):
+    def report_result(self, method_to_run, behavior_description):
         try:
             method_to_run()
             self._print(".", end="")
         except Exception as e:
             self.failed = True
             self._print("x", end="")
+            self._print(behavior_description)
             self._print(e)
 
     def combine_ancestor_descriptions(self, ancestors_description, inner_description):

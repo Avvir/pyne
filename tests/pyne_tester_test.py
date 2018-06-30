@@ -42,5 +42,3 @@ def test_pyne_decoration_runs_tests():
             ran_thing("it1")
 
     expect(things_run).to_be(["before1", "it1"])
-
-

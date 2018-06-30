@@ -49,7 +49,16 @@ def contains_text(text):
 
 
 def contains(item):
-    return Matcher("contains", lambda subject, *params: params[0] in subject, item)
+    def contains_comparator(subject, *params):
+        if is_matcher(item):
+            for candidate in subject:
+                if item.matches(candidate):
+                    return True
+            return False
+        else:
+            return item in subject
+
+    return Matcher("contains", contains_comparator, item)
 
 
 def contained_in(collection):

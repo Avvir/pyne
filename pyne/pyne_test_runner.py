@@ -15,12 +15,12 @@ def run_tests(describe_block):
             def method_to_run():
                 before_block.method(describe_block.context)
 
-            reporter.report_result(method_to_run)
+            reporter.report_result(method_to_run, "some_test_name")
 
         def method_to_run():
             it_block.method(describe_block.context)
 
-        reporter.report_result(method_to_run)
+        reporter.report_result(method_to_run, "some_test_name")
 
     for nested_describe_block in describe_block.describe_blocks:
         run_tests(nested_describe_block)
