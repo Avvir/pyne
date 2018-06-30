@@ -1,5 +1,5 @@
 from termcolor import cprint
-from .matchers import Matcher, equal_to
+from .matchers import Matcher, InverseMatcher, equal_to
 
 
 class Expectations:
@@ -62,11 +62,6 @@ class RaiseExpectation(Expectation):
         else:
             return "Expected ({subject}) to raise an exception with message ({0}) but message was " + \
                    self.actual_exception.args[0]
-
-
-class InverseMatcher(Matcher):
-    def __init__(self, comparator, *params):
-        super().__init__(lambda subject: not comparator.matches(subject), *params)
 
 
 class InverseExpectation(Expectation):

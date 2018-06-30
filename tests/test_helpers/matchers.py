@@ -10,6 +10,11 @@ class Matcher:
         return self.comparator(subject, *self.params)
 
 
+class InverseMatcher(Matcher):
+    def __init__(self, comparator, *params):
+        super().__init__(lambda subject: not comparator.matches(subject), *params)
+
+
 def is_matcher(possible_matcher):
     return isinstance(possible_matcher, Matcher)
 
