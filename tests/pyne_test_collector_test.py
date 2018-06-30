@@ -1,6 +1,6 @@
-from tests.test_helpers.test_framework.pyne_test_blocks import DescribeBlock
-from tests.test_helpers.test_framework.pyne_test_collector import test_collection, it, describe, before_each
-from tests.test_helpers.test_framework.expectations import expect
+from source.pyne_test_blocks import DescribeBlock
+from source.pyne_test_collector import test_collection, it, describe, before_each
+from source.expectations import expect
 
 
 def test__it__adds_it_block_to_current_describe():

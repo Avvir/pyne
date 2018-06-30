@@ -1,7 +1,7 @@
-from tests.test_helpers.test_framework.expectations import expect
-from tests.test_helpers.test_framework.matchers import anything
-from tests.test_helpers.test_framework.pyne_test_collector import reset, it, describe, test_collection, before_each
-from tests.test_helpers.test_framework.pyne_test_runner import run_tests
+from source.expectations import expect
+from source.matchers import anything
+from source.pyne_test_collector import reset, it, describe, test_collection, before_each
+from source.pyne_test_runner import run_tests
 
 
 def test__when_there_is_an_it__runs_the_it():

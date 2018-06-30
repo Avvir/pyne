@@ -1,6 +1,6 @@
-from tests.test_helpers.test_framework.expectations import expect
+from source.expectations import expect
 import re
-from tests.test_helpers.test_framework.matchers import anything, match, contains_text
+from source.matchers import anything, match, contains_text
 
 
 def test__to_be__can_pass():
