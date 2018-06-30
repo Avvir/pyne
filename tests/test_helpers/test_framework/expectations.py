@@ -45,7 +45,7 @@ class Expectation:
     def unmatcherify(self, params, subject):
         formatted_subject = subject
         formatted_params = []
-        if(is_matcher(subject)):
+        if (is_matcher(subject)):
             formatted_subject = subject.format()
         for param in params:
             if is_matcher(param):
@@ -79,6 +79,7 @@ class RaiseExpectation(Expectation):
         else:
             return "Expected ({subject}) to raise an exception with message ({0}) but message was (" + \
                    (self.escape_for_formatting("{0}".format(self.actual_exception.args[0]))) + ")"
+
 
 class InverseExpectation(Expectation):
     def __init__(self, expectation):
