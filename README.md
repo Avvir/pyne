@@ -28,5 +28,5 @@ pipenv install
 ## Test
 
 ```bash
-pipenv run pytest
+pipenv run pytest tests
 ```
