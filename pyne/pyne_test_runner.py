@@ -25,5 +25,5 @@ def run_tests(describe_block):
     for nested_describe_block in describe_block.describe_blocks:
         run_tests(nested_describe_block)
 
-    if (describe_block.parent is None):
+    if describe_block.parent is None:
         reporter.report_end_result()

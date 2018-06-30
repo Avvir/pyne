@@ -8,7 +8,7 @@ def fake_print(text):
     printed_text.append(text)
 
 
-def test_report_result__when_a_test_fails__it_prints_an_x():
+def test_report_result__when_a_test_fails__it_prints_an_x_and_the_exception():
     printed_text.clear()
     reporter = PyneResultReporter(fake_print)
 
@@ -18,6 +18,7 @@ def test_report_result__when_a_test_fails__it_prints_an_x():
     reporter.report_result(failing_method)
 
     expect(printed_text[0]).to_be("x")
+    expect(printed_text[1]).to_be_a(Exception)
 
 
 def test_report_result__when_a_test_succeeds__it_prints_a_dot():
