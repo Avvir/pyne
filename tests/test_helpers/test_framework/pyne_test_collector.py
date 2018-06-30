@@ -1,9 +1,11 @@
 from tests.test_helpers.test_framework.pyne_test_blocks import DescribeBlock, ItBlock, BeforeEachBlock
 
+def no_tests():
+    raise Exception("No tests to run.")
 
 class PyneTestCollector:
     def __init__(self):
-        self.top_level_describe = DescribeBlock(None, None, None)
+        self.top_level_describe = DescribeBlock(None, None, no_tests)
         self.current_describe = self.top_level_describe
 
     def collect_describe(self, describe_block):
@@ -14,7 +16,7 @@ class PyneTestCollector:
             self.collect_describe(describe_block)
 
     def reset(self):
-        self.top_level_describe = DescribeBlock(None, None, None)
+        self.top_level_describe = DescribeBlock(None, None, no_tests)
         self.current_describe = self.top_level_describe
 
 

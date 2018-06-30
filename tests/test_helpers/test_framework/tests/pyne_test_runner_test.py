@@ -151,3 +151,26 @@ def test__when_there_are_before_each_blocks_for_another_describe__it_doesnt_run_
     run_tests(test_collection.top_level_describe)
 
     expect(context.calls).to_be(["it1"])
+
+
+def test__when_a_test_fails__it_continues_running_tests():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    @it
+    def do_third_thing(self):
+        self.calls.append("it1")
+        expect(2).to_be(1)
+
+
+    @it
+    def do_fourth_thing(self):
+        self.calls.append("it2")
+
+    try:
+        run_tests(test_collection.top_level_describe)
+    except Exception:
+        pass
+    finally:
+        expect(context.calls).to_be(["it1", "it2"])
