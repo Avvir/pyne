@@ -19,6 +19,10 @@ class Expectations:
     def to_raise_error_message(self, message):
         RaiseExpectation().assert_expected(self.subject, message)
 
+    def to_be_a(self, clazz):
+        Expectation("to_be_a", lambda subject, clazz: isinstance(subject, clazz))\
+            .assert_expected(self.subject, clazz)
+
 
 class RaiseExpectation:
     def __init__(self):
@@ -76,7 +80,6 @@ class Expectation:
 
     def default_message(self):
         return "Expected ({subject}) " + " ".join(self.name.split("_")) + " ({0})"
-
 
 def expect(subject):
     return Expectations(subject)
