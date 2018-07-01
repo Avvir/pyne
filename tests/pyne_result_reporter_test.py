@@ -59,4 +59,6 @@ def test__end_result__when_all_tests_passed__it_prints_success():
 
 
 def test__end_result__when_no_tests_run():
-    pass
+    reporter = PyneResultReporter(fake_print)
+
+    expect(reporter.report_end_result).to_raise_error_message("No tests to run!")

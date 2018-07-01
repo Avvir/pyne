@@ -2,8 +2,10 @@ class PyneResultReporter:
     def __init__(self, _print=print):
         self._print = _print
         self.failed = False
+        self.has_run_behavior = False
 
     def report_result(self, method_to_run, behavior_description):
+        self.has_run_behavior = True
         try:
             method_to_run()
             self._print(".", end="")
@@ -19,5 +21,7 @@ class PyneResultReporter:
     def report_end_result(self):
         if self.failed:
             raise Exception("Tests failed.")
+        elif not self.has_run_behavior:
+            raise Exception("No tests to run!")
         else:
             self._print("Success!")

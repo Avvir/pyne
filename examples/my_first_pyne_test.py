@@ -47,3 +47,19 @@ def a_failing_group():
         @it
         def failing_tests_print_x(self):
             raise Exception("some error")
+
+        @it
+        def prints_a_dot_for_each_one(self):
+            pass
+
+        @it
+        def prints_a_dot_for_each_one(self):
+            pass
+
+        @it
+        def prints_a_dot_for_each_one(self):
+            pass
+
+        @it
+        def prints_a_dot_for_each_one(self):
+            pass
