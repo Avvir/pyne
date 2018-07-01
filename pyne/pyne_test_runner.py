@@ -16,7 +16,7 @@ def run_tests(describe_block, result_reporter, is_top_level=True):
         def method_to_run():
             it_block.method(describe_block.context)
 
-        result_reporter.report_result(method_to_run, None)
+        result_reporter.report_result(method_to_run, it_block.description)
 
     for nested_describe_block in describe_block.describe_blocks:
         run_tests(nested_describe_block, result_reporter, False)

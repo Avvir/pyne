@@ -4,6 +4,10 @@ class PyneResultReporter:
         self.failed = False
         self.has_run_behavior = False
 
+    def reset(self):
+        self.failed = False
+        self.has_run_behavior = False
+
     def report_result(self, method_to_run, behavior_description):
         self.has_run_behavior = True
         try:
@@ -25,3 +29,6 @@ class PyneResultReporter:
             raise Exception("No tests to run!")
         else:
             self._print("Success!")
+
+
+reporter = PyneResultReporter()
