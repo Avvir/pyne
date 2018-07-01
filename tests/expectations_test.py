@@ -14,7 +14,7 @@ def test__to_be__fails_with_message():
     except AssertionError as e:
         exception = e
     finally:
-        assert "Expected (1) to be (2)" == exception.args[0]
+        assert "Expected <1> to be <2>" == exception.args[0]
 
 
 def test__to_be__with_a_matcher_can_pass():
@@ -28,7 +28,7 @@ def test__not_to_be__can_pass():
 
 
 def test__not_to_be__when_equal__fails_with_message():
-    expect(lambda: expect(1).not_to_be(1)).to_raise_error_message("Expected (1) not to be (1)")
+    expect(lambda: expect(1).not_to_be(1)).to_raise_error_message("Expected <1> not to be <1>")
 
 
 def test__to_have_length__can_pass():
@@ -42,7 +42,7 @@ def test__to_have_length__fails_with_message():
     except AssertionError as e:
         exception = e
     finally:
-        assert "Expected ([123, 123, 123]) to have length (4)" == exception.args[0]
+        assert "Expected <[123, 123, 123]> to have length <4>" == exception.args[0]
 
 
 def test__to_raise_error_message__can_pass():
@@ -95,7 +95,7 @@ def test__to_raise_error_message__with_unmatched_matcher__failures_shows_matcher
     except AssertionError as e:
         error = e
     finally:
-        assert re.search(".*to raise an exception with message \(match\('other message',\).*", error.args[0])
+        assert re.search(".*to raise an exception with message <match\('other message',\).*", error.args[0])
 
 
 def test__to_raise_error_message__when_actual_message_contains_curly_braces__shows_message():
@@ -126,7 +126,7 @@ def test__to_be_a__when_the_type_is_different__fails_with_message():
         pass
 
     expect(lambda: expect('hello').to_be_a(SomeClass)).to_raise_error_message(
-        match("Expected \(hello\) to be a .*SomeClass.*"))
+        match("Expected <hello> to be a .*SomeClass.*"))
 
 
 def test__to_contain__can_pass():
@@ -136,7 +136,7 @@ def test__to_contain__can_pass():
 
 def test__to_contain__when_item_not_contained__fails_with_message():
     expect(lambda: expect(["some-item"]).to_contain("some-other-item")).to_raise_error_message(
-        contains_text("Expected (['some-item']) to contain (some-other-item)")
+        contains_text("Expected <['some-item']> to contain <some-other-item>")
     )
 
 

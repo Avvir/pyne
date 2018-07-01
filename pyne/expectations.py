@@ -43,7 +43,7 @@ class Expectation:
             raise AssertionError(message)
 
     def default_message(self):
-        return "Expected ({subject}) " + " ".join(self.name.split("_")) + " ({0})"
+        return "Expected <{subject}> " + " ".join(self.name.split("_")) + " <{0}>"
 
     def unmatcherify(self, params, subject):
         formatted_subject = subject
@@ -78,10 +78,10 @@ class RaiseExpectation(Expectation):
 
     def message_format(self):
         if self.actual_exception is None:
-            return "Expected ({subject}) to raise an exception with message ({0}) but no exception was raised"
+            return "Expected <{subject}> to raise an exception with message <{0}> but no exception was raised"
         else:
-            return "Expected ({subject}) to raise an exception with message ({0}) but message was (" + \
-                   (self.escape_for_formatting("{0}".format(self.actual_exception.args[0]))) + ")"
+            return "Expected <{subject}> to raise an exception with message <{0}> but message was <" + \
+                   (self.escape_for_formatting("{0}".format(self.actual_exception.args[0]))) + ">"
 
 
 class InverseExpectation(Expectation):
