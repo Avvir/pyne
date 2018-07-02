@@ -91,6 +91,15 @@ do_test = create_named_string_decorator("do_test", is_leaf=True)
 
 ### Everything above here would exist in a module """
 
+def normal_decorator(fun):
+    """To show how normal decorators interact with test functions."""
+    def inner_fun(): 
+        print("********")
+        res = fun()
+        print("********")
+        return res
+    return inner_fun
+
 # Define our tests in a 'pyne_tree'
 print("\n\nCreating the pyne tree.\n\n")
 @pyne_tree("A: this is the top most decorator")
@@ -115,6 +124,7 @@ def my_tree():
             return "pass"
 
     @do_test("4: Our fourth test")
+    @normal_decorator
     def _():
         print("Test 4 executed!")
         return "pass"
