@@ -45,7 +45,7 @@ def match(regular_expression):
 
 
 def contains_text(text):
-    return Matcher("contains_text", lambda subject, *params: params[0] in subject, text)
+    return Matcher("contains_text", lambda subject, *params: isinstance(subject, str) and params[0] in subject, text)
 
 
 def contains(item):
@@ -56,10 +56,17 @@ def contains(item):
                     return True
             return False
         else:
-            return item in subject
+            try:
+                return item in subject
+            except TypeError:
+                return False
 
     return Matcher("contains", contains_comparator, item)
 
 
 def contained_in(collection):
     return Matcher("contained_in", lambda subject, *params: subject in params[0], collection)
+
+
+def instance_of(clazz):
+    return Matcher("instance_of", lambda subject: isinstance(subject, clazz))

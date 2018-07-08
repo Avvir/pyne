@@ -155,7 +155,6 @@ def test__when_there_are_before_each_blocks_for_another_describe__it_doesnt_run_
 
 
 def test__when_a_test_fails__it_continues_running_tests():
-
     reset()
     context = test_collection.current_describe.context
     context.calls = []
@@ -175,6 +174,7 @@ def test__when_a_test_fails__it_continues_running_tests():
         pass
     finally:
         expect(context.calls).to_be(["it1", "it2"])
+
 
 def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
     reset()

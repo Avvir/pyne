@@ -1,5 +1,5 @@
 from termcolor import cprint
-from .matchers import Matcher, InverseMatcher, equal_to, is_matcher, contains
+from .matchers import Matcher, InverseMatcher, equal_to, is_matcher, contains, instance_of
 
 
 class Expectations:
@@ -21,8 +21,7 @@ class Expectations:
         RaiseExpectation(message).assert_expected(self.subject, message)
 
     def to_be_a(self, clazz):
-        instance_matcher = Matcher("instance_of", lambda subject: isinstance(subject, clazz))
-        Expectation("to_be_a", instance_matcher).assert_expected(self.subject, clazz)
+        Expectation("to_be_a", instance_of(clazz)).assert_expected(self.subject, clazz)
 
     def to_contain(self, item_or_text):
         Expectation("to_contain", contains(item_or_text)).assert_expected(self.subject, item_or_text)
