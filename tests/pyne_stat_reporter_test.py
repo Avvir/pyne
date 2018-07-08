@@ -1,18 +1,11 @@
 from pyne.expectations import expect
-from pyne.matchers import anything
 from pyne.pyne_result_reporters import PyneStatReporter
 from pyne.pyne_test_blocks import ItBlock, DescribeBlock
-from pyne.pyne_test_collector import test_collection
-
-printed_text = []
-
-
-def fake_print(text, end=None):
-    printed_text.append(text)
+from tests.test_helpers.fake_print import StubPrint, printed_text
 
 
 def test__report_failure__increases_the_failure_count():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -23,7 +16,7 @@ def test__report_failure__increases_the_failure_count():
 
 
 def test__report_failure__increases_the_test_run_count():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -34,7 +27,7 @@ def test__report_failure__increases_the_test_run_count():
 
 
 def test__report_failure__sets_overall_failure():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -44,7 +37,7 @@ def test__report_failure__sets_overall_failure():
 
 
 def test__report_failure__increases_the_total_timing():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
     it_block = ItBlock(None, None, None)
 
     reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
@@ -54,7 +47,7 @@ def test__report_failure__increases_the_total_timing():
 
 
 def test__report_success__increases_the_test_run_count():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -65,7 +58,7 @@ def test__report_success__increases_the_test_run_count():
 
 
 def test__report_success__increases_the_passes_count():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -76,7 +69,7 @@ def test__report_success__increases_the_passes_count():
 
 
 def test__report_success__increases_the_total_timing():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -87,7 +80,7 @@ def test__report_success__increases_the_total_timing():
 
 
 def test__report_enter_context__increases_depth():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     describe_block = DescribeBlock(None, None, None)
 
@@ -99,7 +92,7 @@ def test__report_enter_context__increases_depth():
 
 
 def test__report_exit_context__decreases_depth():
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
 
     describe_block = DescribeBlock(None, None, None)
     reporter.report_enter_context(describe_block)
@@ -112,63 +105,51 @@ def test__report_exit_context__decreases_depth():
     expect(reporter.depth).to_be(0)
 
 
-def test__report_end_result__when_a_test_has_failed__it_raises_test_failed():
-    reporter = PyneStatReporter(fake_print)
-
-    it_block = ItBlock(None, None, None)
-    reporter.report_failure(it_block, it_block, Exception("some exception"), 0)
-
-    expect(reporter.report_end_result).to_raise_error_message("Tests failed.")
-
-
 def test__report_end_result__when_a_test_has_failed__it_prints_stats():
-    reporter = PyneStatReporter(fake_print)
+    with StubPrint():
+        reporter = PyneStatReporter()
 
-    it_block = ItBlock(None, None, None)
-    reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
-    reporter.report_success(it_block, 500)
-    reporter.report_success(it_block, 500)
+        it_block = ItBlock(None, None, None)
+        reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
+        reporter.report_success(it_block, 500)
+        reporter.report_success(it_block, 500)
 
-    printed_text.clear()
+        printed_text.clear()
 
-    expect(reporter.report_end_result).to_raise_error_message(anything())
+        reporter.report_end_result()
 
-    expect(printed_text[0]).to_contain("1 failed, 2 passed in 2.00 seconds")
+        expect(printed_text[0]).to_contain("1 failed, 2 passed in 2.00 seconds")
 
 
 def test__report_end_result__when_all_tests_passed__it_prints_stats():
-    reporter = PyneStatReporter(fake_print)
+    with StubPrint():
+        reporter = PyneStatReporter()
 
-    it_block = ItBlock(None, None, None)
-    reporter.report_success(it_block, 1000)
-    reporter.report_success(it_block, 500)
-    printed_text.clear()
+        it_block = ItBlock(None, None, None)
+        reporter.report_success(it_block, 1000)
+        reporter.report_success(it_block, 500)
+        printed_text.clear()
 
-    reporter.report_end_result()
+        reporter.report_end_result()
 
-    expect(printed_text[0]).to_contain("2 passed in 1.50 seconds")
-
-
-def test__report_end_result__when_no_tests_run__raises_error():
-    reporter = PyneStatReporter(fake_print)
-
-    expect(reporter.report_end_result).to_raise_error_message("No tests to run!")
+        expect(printed_text[0]).to_contain("2 passed in 1.50 seconds")
 
 
 def test__report_end_result__when_no_tests_run__reports_stats():
-    reporter = PyneStatReporter(fake_print)
+    with StubPrint():
+        reporter = PyneStatReporter()
 
-    printed_text.clear()
+        printed_text.clear()
 
-    expect(reporter.report_end_result).to_raise_error_message(anything())
+        reporter.report_end_result()
 
-    expect(printed_text[0]).to_contain("Ran 0 tests")
+        expect(printed_text[0]).to_contain("Ran 0 tests")
 
 
 def test__reset__sets_stats_to_0():
     describe_block = DescribeBlock(None, None, None)
     it_block = ItBlock(None, None, None)
-    reporter = PyneStatReporter(fake_print)
+    reporter = PyneStatReporter()
     reporter.report_enter_context(describe_block)
     reporter.report_enter_context(describe_block)
     reporter.report_success(it_block, 1000)

@@ -42,7 +42,7 @@ def my_first_test():
         expect(1).to_be(1)
 
 
-@pyne
+# @pyne
 def a_failing_group():
     @describe
     def when_there_are_lots_of_tests():
@@ -77,7 +77,7 @@ def a_failing_group():
         @describe("When things are nested further")
         def _():
             @before_each
-            def do():
+            def do(self):
                 raise Exception("some setup error")
 
             @it

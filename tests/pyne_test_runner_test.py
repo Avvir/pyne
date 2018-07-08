@@ -2,7 +2,7 @@ from time import sleep
 
 from pyne.expectations import expect
 from pyne.matchers import anything, at_least
-from pyne.pyne_result_reporters import PyneDotReporter
+from pyne.pyne_result_reporters import ExceptionReporter
 from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
 from pyne.pyne_test_runner import run_tests
 
@@ -16,7 +16,7 @@ def test__when_there_is_an_it__runs_the_it():
     def do_something(self):
         self.call_count += 1
 
-    run_tests(test_collection.top_level_describe, PyneDotReporter())
+    run_tests(test_collection.top_level_describe, ExceptionReporter())
     expect(context.call_count).to_be(1)
 
 
@@ -32,7 +32,7 @@ def test__when_there_is_an_it__reports_the_timing():
     def _(self):
         sleep(0.04)
 
-    reporter = PyneDotReporter()
+    reporter = ExceptionReporter()
     run_tests(test_collection.top_level_describe, reporter)
     expect(reporter.stats.total_timing_millis).to_be(at_least(90))
 
@@ -44,7 +44,7 @@ def test__when_a_test_fails__raises_an_error():
     def failing_test(self):
         expect(1).to_be(2)
 
-    expect(lambda: run_tests(test_collection.current_describe, PyneDotReporter())) \
+    expect(lambda: run_tests(test_collection.current_describe, ExceptionReporter())) \
         .to_raise_error_message(anything())
 
 
@@ -65,7 +65,7 @@ def test__when_there_is_a_before_each__runs_it_before_each_test():
     def second(self):
         self.calls.append("it2")
 
-    run_tests(test_collection.top_level_describe, PyneDotReporter())
+    run_tests(test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["before", "it1", "before", "it2"])
 
@@ -106,7 +106,7 @@ def test__when_there_are_before_each_blocks_in_parent_describes__runs_them_befor
 
     blocks_ = outer_describe.describe_blocks[0]
     nested_describe = blocks_.describe_blocks[0]
-    run_tests(nested_describe, PyneDotReporter())
+    run_tests(nested_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["before1", "before2", "before3", "it1", "before1", "before2", "before3", "it2"])
 
@@ -142,7 +142,7 @@ def test__when_there_are_nested_describes__it_runs_them():
 
     outer_describe = test_collection.current_describe.describe_blocks[0]
     test_collection.collect_describe(outer_describe)
-    run_tests(test_collection.top_level_describe, PyneDotReporter())
+    run_tests(test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["it1", "it2", "it3", "it4"])
 
@@ -168,7 +168,7 @@ def test__when_there_are_before_each_blocks_for_another_describe__it_doesnt_run_
 
     outer_describe = test_collection.current_describe.describe_blocks[0]
     test_collection.collect_describe(outer_describe)
-    run_tests(test_collection.top_level_describe, PyneDotReporter())
+    run_tests(test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["it1"])
 
@@ -188,7 +188,7 @@ def test__when_a_test_fails__it_continues_running_tests():
         self.calls.append("it2")
 
     try:
-        run_tests(test_collection.top_level_describe, PyneDotReporter())
+        run_tests(test_collection.top_level_describe, ExceptionReporter())
     except Exception:
         pass
     finally:
@@ -221,7 +221,7 @@ def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
     outer_describe = test_collection.current_describe.describe_blocks[0]
     test_collection.collect_describe(outer_describe)
     try:
-        run_tests(test_collection.top_level_describe, PyneDotReporter())
+        run_tests(test_collection.top_level_describe, ExceptionReporter())
     except Exception:
         pass
     finally:
