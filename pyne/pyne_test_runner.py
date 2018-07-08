@@ -1,3 +1,6 @@
+from time import perf_counter
+
+
 def befores_to_run(describe_block):
     if describe_block.parent is None:
         return describe_block.before_each_blocks
@@ -21,15 +24,20 @@ def run_tests(describe_block, result_reporter, is_top_level=True):
 
 
 def run_test(context, before_blocks, it_block, reporter):
+    start_seconds = perf_counter()
     for before_block in before_blocks:
         try:
             before_block.method(context)
         except Exception as e:
-            reporter.report_failure(before_block, it_block, e, 0)
+            seconds = perf_counter() - start_seconds
+            reporter.report_failure(before_block, it_block, e, seconds*1000)
             return
 
     try:
         it_block.method(context)
-        reporter.report_success(it_block, 0)
+        seconds = perf_counter() - start_seconds
+
+        reporter.report_success(it_block, seconds*1000)
     except Exception as e:
-        reporter.report_failure(it_block, it_block, e, 0)
+        seconds = perf_counter() - start_seconds
+        reporter.report_failure(it_block, it_block, e, seconds*1000)

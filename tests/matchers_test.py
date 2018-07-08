@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.matchers import anything, match, contains_text, contains, instance_of
+from pyne.matchers import anything, match, contains_text, contains, instance_of, at_least
 
 
 def test__anything__satisfies_to_be():
@@ -41,3 +41,15 @@ def test__instance_of__can_match_type():
 
 def test__instance_of__when_subject_is_different_type__does_not_match():
     expect("hello").not_to_be(instance_of(int))
+
+
+def test__at_least__matches_a_larger_number():
+    expect(2).to_be(at_least(1))
+
+
+def test__at_least__when_numbers_are_equal__matches():
+    expect(2).to_be(at_least(2))
+
+
+def test__at_least__when_number_is_smaller__does_not_match():
+    expect(1).not_to_be(at_least(2))

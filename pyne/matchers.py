@@ -70,3 +70,7 @@ def contained_in(collection):
 
 def instance_of(clazz):
     return Matcher("instance_of", lambda subject: isinstance(subject, clazz))
+
+
+def at_least(number):
+    return Matcher("at_least", lambda subject: subject >= number)

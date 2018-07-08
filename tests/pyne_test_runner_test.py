@@ -1,5 +1,7 @@
+from time import sleep
+
 from pyne.expectations import expect
-from pyne.matchers import anything
+from pyne.matchers import anything, at_least
 from pyne.pyne_result_reporters import PyneDotReporter
 from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
 from pyne.pyne_test_runner import run_tests
@@ -16,6 +18,23 @@ def test__when_there_is_an_it__runs_the_it():
 
     run_tests(test_collection.top_level_describe, PyneDotReporter())
     expect(context.call_count).to_be(1)
+
+
+def test__when_there_is_an_it__reports_the_timing():
+    reset()
+    context = test_collection.current_describe.context
+
+    @before_each
+    def _(self):
+        sleep(0.05)
+
+    @it("does something")
+    def _(self):
+        sleep(0.04)
+
+    reporter = PyneDotReporter()
+    run_tests(test_collection.top_level_describe, reporter)
+    expect(reporter.stats.total_timing_millis).to_be(at_least(90))
 
 
 def test__when_a_test_fails__raises_an_error():
