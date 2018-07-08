@@ -10,19 +10,31 @@ def my_first_test():
     @describe
     def when_there_are_lots_of_tests():
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
+        @describe("When things are nested further")
+        def _():
+            @it
+            def prints_inner_results(self):
+                pass
+
+        @describe("When things are nested further")
+        def _():
+            @it
+            def prints_inner_results(self):
+                pass
+
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
     @it
@@ -35,15 +47,15 @@ def a_failing_group():
     @describe
     def when_there_are_lots_of_tests():
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
@@ -51,19 +63,28 @@ def a_failing_group():
             raise Exception("some error")
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
+        @describe("When things are nested further")
+        def _():
+            @before_each
+            def do():
+                raise Exception("some setup error")
+
+            @it
+            def prints_inner_results(self):
+                pass
         @it
-        def prints_a_dot_for_each_one(self):
+        def prints_a_result_for_each_one(self):
             pass
 
 
@@ -82,17 +103,16 @@ def _calculate():
     def do(self):
         self.calculator = Calculator()
 
-    @it
-    def can_add_two_numbers_together(self):
+    @it("can add two numbers together")
+    def _(self):
         expect(self.calculator.calculate("1 + 1")).to_be(2)
 
-    @it
-    def can_subtract(self):
+    @it("can subtract")
+    def _(self):
         expect(self.calculator.calculate("2 - 1")).to_be(1)
 
-    @it
-    def does_not_run_arbitrary_code(self):
-
+    @it("does not run arbitrary code")
+    def _(self):
         def extra_method(self):
             self.__format__ = lambda s: "Some Broken Calculator"
 

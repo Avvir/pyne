@@ -163,3 +163,23 @@ def test__report_end_result__when_no_tests_run__reports_stats():
     expect(reporter.report_end_result).to_raise_error_message(anything())
 
     expect(printed_text[0]).to_contain("Ran 0 tests")
+
+
+def test__reset__sets_stats_to_0():
+    describe_block = DescribeBlock(None, None, None)
+    it_block = ItBlock(None, None, None)
+    reporter = PyneStatReporter(fake_print)
+    reporter.report_enter_context(describe_block)
+    reporter.report_enter_context(describe_block)
+    reporter.report_success(it_block, 1000)
+    reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
+    reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
+
+    reporter.reset()
+
+    expect(reporter.stats.passes_reported).to_be(0)
+    expect(reporter.stats.is_failure).to_be(False)
+    expect(reporter.stats.total_timing_millis).to_be(0)
+    expect(reporter.stats.failures_reported).to_be(0)
+    expect(reporter.stats.tests_reported).to_be(0)
+    expect(reporter.depth).to_be(0)
