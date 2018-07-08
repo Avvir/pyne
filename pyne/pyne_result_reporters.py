@@ -91,4 +91,27 @@ class PyneTreeReporter(PyneStatReporter):
         self._print(colored(" ✓", 'green') + "  " * self.depth + colored(it_block.description, 'white', None, ['dark']))
 
 
-reporter = PyneTreeReporter()
+class PyneSummaryReporter(PyneTreeReporter):
+    def __init__(self, _print=print):
+        super().__init__(_print)
+        self.failure_messages = []
+
+    def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
+        PyneStatReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
+        full_description = it_block.description
+        self.failure_messages.append(
+            colored("🌲 Failure: \"{full_description}\" in <{behavior_description}> ", 'red', None, ['bold']).format(
+                full_description=full_description,
+                behavior_description=failed_behavior.description))
+        self.failure_messages.append(filtered_exception)
+        PyneTreeReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
+
+    def report_end_result(self):
+        print("\n\n")
+        for message in self.failure_messages:
+            self._print(message)
+
+        PyneTreeReporter.report_end_result(self)
+
+
+reporter = PyneSummaryReporter()
