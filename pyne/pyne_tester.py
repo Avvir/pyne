@@ -1,4 +1,4 @@
-from pyne.pyne_result_reporter import reporter
+from pyne.pyne_result_reporters import reporter
 from pyne.pyne_test_blocks import DescribeBlock
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests

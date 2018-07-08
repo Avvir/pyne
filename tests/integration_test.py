@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.matchers import contains
-from pyne.pyne_result_reporter import reporter
+from pyne.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import it, describe, before_each
 from pyne.pyne_tester import pyne
 
