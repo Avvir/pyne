@@ -15,6 +15,31 @@ def test__it__adds_it_block_to_current_describe():
     expect(current_describe.it_blocks[0].method).to_be(some_method)
 
 
+def test__it__when_using_string_description__adds_it_block_to_describe():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    it("some it name")(some_method)
+
+    expect(current_describe.it_blocks).to_have_length(1)
+    expect(current_describe.it_blocks[0].method).to_be(some_method)
+
+
+def test__it__when_using_string_description__sets_the_description():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    it("some cool thing happens")(some_method)
+
+    expect(current_describe.it_blocks[0].description).to_be("some cool thing happens")
+
+
 def test__describe__adds_describe_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
     test_collection.current_describe = current_describe
@@ -23,8 +48,34 @@ def test__describe__adds_describe_block_to_current_describe():
         pass
 
     describe(some_method)
+
     expect(current_describe.describe_blocks).to_have_length(1)
     expect(current_describe.describe_blocks[0].method).to_be(some_method)
+
+
+def test__describe__when_using_string_description__adds_describe_block_to_current_describe():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    describe("some context")(some_method)
+
+    expect(current_describe.describe_blocks).to_have_length(1)
+    expect(current_describe.describe_blocks[0].method).to_be(some_method)
+
+
+def test__describe__when_using_string_description__sets_description():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    describe("some awesome description")(some_method)
+
+    expect(current_describe.describe_blocks[0].description).to_be("some awesome description")
 
 
 def test__before_each__adds_before_each_block_to_current_describe():
@@ -52,6 +103,7 @@ def test__collect_describe__adds_children_to_the_describe():
         @before_each
         def do():
             pass
+
     describe_block = DescribeBlock(None, None, describe_block_method)
 
     test_collection.collect_describe(describe_block)
@@ -76,6 +128,7 @@ def test__collect_describe__when_there_are_nested_describes__collects_them():
             @describe
             def when_something_is_true():
                 pass
+
     describe_block = DescribeBlock(None, None, describe_block_method)
 
     test_collection.collect_describe(describe_block)
@@ -83,6 +136,3 @@ def test__collect_describe__when_there_are_nested_describes__collects_them():
     expect(describe_block.describe_blocks[0].before_each_blocks).to_have_length(1)
     expect(describe_block.describe_blocks[0].describe_blocks).to_have_length(1)
     expect(describe_block.describe_blocks[0].it_blocks).to_have_length(1)
-
-
-

@@ -10,8 +10,14 @@ def test_reports_failures():
     try:
         @pyne
         def some_test_suite():
+            @describe("some scenario")
+            def _():
+                @it
+                def some_test(self):
+                    pass
+
             @describe
-            def some_scenario():
+            def some_other_scenario():
                 @it
                 def some_failing_test(self):
                     raise Exception("some failing test")
@@ -64,8 +70,8 @@ def test__when_a_before_each_fails__reports_the_name_of_failed_tests():
             def some_failing_setup(self):
                 raise Exception("some exception")
 
-            @it
-            def some_test(self):
+            @it("some test")
+            def _(self):
                 pass
 
             @it
@@ -76,7 +82,7 @@ def test__when_a_before_each_fails__reports_the_name_of_failed_tests():
         pass
     finally:
         expect(printed_text).to_contain(contains("@before_each"))
-        expect(printed_text).to_contain(contains("some_test"))
+        expect(printed_text).to_contain(contains("some test"))
         expect(printed_text).to_contain(contains("some_other_test"))
 
 
