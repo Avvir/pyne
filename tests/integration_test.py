@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.matchers import contains
-from pyne.pyne_test_collector import it, describe, before_each
+from pyne.pyne_test_collector import it, describe, before_each, xit
 from pyne.pyne_tester import pyne
 from tests.test_helpers.fake_print import printed_text, StubPrint
 
@@ -74,6 +74,21 @@ def test__when_a_before_each_fails__reports_the_name_of_failed_tests():
             expect(printed_text).to_contain(contains("@before_each"))
             expect(printed_text).to_contain(contains("some test"))
             expect(printed_text).to_contain(contains("some_other_test"))
+
+
+def test__when_a_test_is_pending__reports_there_are_pending_tests():
+    with StubPrint():
+        @pyne
+        def some_test_suite():
+            @it("some test")
+            def _(self):
+                pass
+
+            @xit
+            def some_other_test(self):
+                pass
+
+        expect(printed_text).to_contain(contains("pending"))
 
 
 def test__when_a_before_each_fails__does_not_run_tests_that_depend_on_the_before_block():

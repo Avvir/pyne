@@ -44,6 +44,21 @@ def it(method_or_description):
             ItBlock(test_collection.current_describe, method.__name__, method))
 
 
+def xit(method_or_description):
+    if isinstance(method_or_description, str):
+        description = method_or_description
+
+        def named_xit(method):
+            test_collection.current_describe.it_blocks.append(
+                ItBlock(test_collection.current_describe, description, method, pending=True))
+
+        return named_xit
+    else:
+        method = method_or_description
+        test_collection.current_describe.it_blocks.append(
+            ItBlock(test_collection.current_describe, method.__name__, method, pending=True))
+
+
 def describe(method_or_description):
     if isinstance(method_or_description, str):
         description = method_or_description

@@ -6,9 +6,10 @@ from termcolor import colored
 class PyneStats:
     def __init__(self):
         self.is_failure = False
-        self.tests_reported = 0
-        self.passes_reported = 0
-        self.failures_reported = 0
+        self.test_count = 0
+        self.pass_count = 0
+        self.failure_count = 0
+        self.pending_count = 0
         self.total_timing_millis = 0
 
 
@@ -28,15 +29,19 @@ class StatTrackingReporter:
         self.depth -= 1
 
     def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
-        self.stats.failures_reported += 1
-        self.stats.tests_reported += 1
+        self.stats.failure_count += 1
+        self.stats.test_count += 1
         self.stats.is_failure = True
         self.stats.total_timing_millis += timing_millis
 
     def report_success(self, it_block, timing_millis):
-        self.stats.passes_reported += 1
-        self.stats.tests_reported += 1
+        self.stats.pass_count += 1
+        self.stats.test_count += 1
         self.stats.total_timing_millis += timing_millis
+
+    def report_pending(self, it_block):
+        self.stats.pending_count += 1
+        self.stats.test_count += 1
 
     def report_end_result(self):
         pass
@@ -57,7 +62,7 @@ class ExceptionReporter(StatTrackingReporter):
         sleep(0.01)
         if self.stats.is_failure:
             raise TestFailureException()
-        elif self.stats.tests_reported == 0:
+        elif self.stats.test_count == 0:
             raise NoTestsException()
 
 
@@ -65,21 +70,22 @@ class PyneStatReporter(StatTrackingReporter):
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
-        if self.stats.is_failure:
-            stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 {fails} failed, {passes} passed in {seconds:0.2f} seconds 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲' \
-                .format(fails=self.stats.failures_reported,
-                        passes=self.stats.passes_reported,
-                        seconds=self.stats.total_timing_millis / 1000)
-            print(stats)
-
-        elif self.stats.tests_reported == 0:
+        if self.stats.test_count == 0:
             stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 Ran 0 tests 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲'
             print(stats)
 
         else:
-            stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 {count} passed in {seconds:0.2f} seconds 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲' \
-                .format(count=self.stats.tests_reported,
-                        seconds=self.stats.total_timing_millis / 1000)
+            failures = "{0} failed, ".format(self.stats.failure_count) if self.stats.failure_count > 0 else ""
+            pendings = ", {0} pending".format(self.stats.pending_count) if self.stats.pending_count > 0 else ""
+
+            stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 ' \
+                    '{failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds' \
+                    ' 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲' \
+                .format(
+                pendings=pendings,
+                failures=failures,
+                pass_count=self.stats.pass_count,
+                seconds=self.stats.total_timing_millis / 1000)
             print(stats)
 
 
@@ -90,6 +96,10 @@ class PyneDotReporter(StatTrackingReporter):
     def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
         print("x", end="")
+
+    def report_pending(self, it_block):
+        StatTrackingReporter.report_pending(self, it_block)
+        print("-", end="")
 
     def report_success(self, it_block, timing_millis):
         StatTrackingReporter.report_success(self, it_block, timing_millis)
@@ -112,8 +122,12 @@ class PyneTreeReporter(StatTrackingReporter):
         StatTrackingReporter.report_success(self, it_block, timing_millis)
         print(colored(" ✓", 'green') + "  " * self.depth + colored(it_block.description, 'white', None, ['dark']))
 
+    def report_pending(self, it_block):
+        StatTrackingReporter.report_pending(self, it_block)
+        print(colored(" -", 'yellow') + "  " * self.depth + colored(it_block.description, 'yellow', None, ['dark']))
 
-class PyneSummaryReporter(StatTrackingReporter):
+
+class PyneFailureSummaryReporter(StatTrackingReporter):
     def __init__(self):
         super().__init__()
         self.failure_messages = []
@@ -163,5 +177,9 @@ class CompositeReporter:
         for reporter in self.reporters:
             reporter.report_end_result()
 
+    def report_pending(self, it_block):
+        for reporter in self.reporters:
+            reporter.report_pending(it_block)
 
-reporter = CompositeReporter(PyneTreeReporter(), PyneStatReporter(), PyneSummaryReporter(), ExceptionReporter())
+
+reporter = CompositeReporter(PyneTreeReporter(), PyneStatReporter(), PyneFailureSummaryReporter(), ExceptionReporter())

@@ -12,7 +12,10 @@ def run_tests(describe_block, result_reporter, is_top_level=True):
     result_reporter.report_enter_context(describe_block)
 
     for it_block in describe_block.it_blocks:
-        run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
+        if it_block.pending:
+            result_reporter.report_pending(it_block)
+        else:
+            run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
 
     for nested_describe_block in describe_block.describe_blocks:
         run_tests(nested_describe_block, result_reporter, False)
@@ -30,14 +33,14 @@ def run_test(context, before_blocks, it_block, reporter):
             before_block.method(context)
         except Exception as e:
             seconds = perf_counter() - start_seconds
-            reporter.report_failure(before_block, it_block, e, seconds*1000)
+            reporter.report_failure(before_block, it_block, e, seconds * 1000)
             return
 
     try:
         it_block.method(context)
         seconds = perf_counter() - start_seconds
 
-        reporter.report_success(it_block, seconds*1000)
+        reporter.report_success(it_block, seconds * 1000)
     except Exception as e:
         seconds = perf_counter() - start_seconds
-        reporter.report_failure(it_block, it_block, e, seconds*1000)
+        reporter.report_failure(it_block, it_block, e, seconds * 1000)

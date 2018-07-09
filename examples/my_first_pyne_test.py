@@ -1,7 +1,7 @@
 import re
 
 from pyne.expectations import expect
-from pyne.pyne_test_collector import it, describe, before_each
+from pyne.pyne_test_collector import it, describe, before_each, xit
 from pyne.pyne_tester import pyne
 
 
@@ -25,6 +25,10 @@ def my_first_test():
         def _():
             @it
             def prints_inner_results(self):
+                pass
+
+            @xit("can be pending")
+            def _(self):
                 pass
 
         @describe("When things are nested further")

@@ -92,3 +92,33 @@ def test__report_failure__indents_based_on_tree_depth():
         first_index = printed_text[1].find("Some it")
         expect(printed_text[3].find("Some it")).to_be(first_index + 2)
         expect(printed_text[5].find("Some it")).to_be(first_index + 4)
+
+
+def test__report_pending__prints_test_description():
+    with StubPrint():
+        it_block = ItBlock(None, "Some it block description", None)
+        reporter = PyneTreeReporter()
+
+        reporter.report_pending(it_block)
+
+        expect(printed_text[0]).to_contain("Some it block description")
+
+
+def test__report_pending__indents_based_on_tree_depth():
+    with StubPrint():
+        describe_block = DescribeBlock(None, "Some context description", None)
+        it_block = ItBlock(None, "Some it block description", None)
+        reporter = PyneTreeReporter()
+
+        reporter.report_enter_context(describe_block)
+        reporter.report_pending(it_block)
+
+        reporter.report_enter_context(describe_block)
+        reporter.report_pending(it_block)
+
+        reporter.report_enter_context(describe_block)
+        reporter.report_pending(it_block)
+
+        first_index = printed_text[1].find("Some it")
+        expect(printed_text[3].find("Some it")).to_be(first_index + 2)
+        expect(printed_text[5].find("Some it")).to_be(first_index + 4)

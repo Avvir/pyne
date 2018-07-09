@@ -24,8 +24,9 @@ class DescribeBlock(BehaviorBlock):
 
 class ItBlock(BehaviorBlock):
 
-    def __init__(self, parent, description, method):
+    def __init__(self, parent, description, method, pending=False):
         super().__init__(parent, method, description)
+        self.pending = pending
 
 
 class BeforeEachBlock(BehaviorBlock):

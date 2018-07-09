@@ -2,7 +2,8 @@ from time import sleep
 
 from pyne.expectations import expect
 from pyne.matchers import anything, at_least
-from pyne.pyne_result_reporters import ExceptionReporter
+from pyne.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
+from pyne.pyne_test_blocks import ItBlock
 from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
 from pyne.pyne_test_runner import run_tests
 
@@ -226,3 +227,39 @@ def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
         pass
     finally:
         expect(context.calls).to_be(["some-it"])
+
+
+def test__when_a_test_is_pended__it_does_not_run_the_test():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    def it1(self):
+        self.calls.append("it1")
+
+    test_collection.current_describe.it_blocks = [
+        ItBlock(test_collection.current_describe, "some test", it1, pending=True)
+    ]
+
+    run_tests(test_collection.current_describe, StatTrackingReporter())
+
+    expect(context.calls).to_have_length(0)
+
+
+def test__when_a_test_is_pended__it_reports_the_test_as_pending():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    def it1(self):
+        self.calls.append("it1")
+
+    test_collection.current_describe.it_blocks = [
+        ItBlock(test_collection.current_describe, "some test", it1, pending=True)
+    ]
+
+    reporter = StatTrackingReporter()
+    run_tests(test_collection.current_describe, reporter)
+
+    expect(reporter.stats.test_count).to_be(1)
+    expect(reporter.stats.pending_count).to_be(1)
