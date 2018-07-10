@@ -1,6 +1,7 @@
 import re
 
 from pyne.expectations import expect
+from pyne.pyne_result_reporters import TestFailureException
 from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit
 from pyne.pyne_tester import pyne
 
@@ -99,51 +100,54 @@ def my_first_test():
             def _(self):
                 pass
 
-# @pyne
-def a_failing_group():
-    @describe
-    def when_there_are_lots_of_tests():
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @it
-        def failing_tests_print_x(self):
-            raise Exception("some error")
-
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
-
-        @describe("When things are nested further")
-        def _():
-            @before_each
-            def do(self):
-                raise Exception("some setup error")
-
+try:
+    @pyne
+    def a_failing_group():
+        @describe
+        def when_there_are_lots_of_tests():
             @it
-            def prints_inner_results(self):
+            def prints_a_result_for_each_one(self):
                 pass
 
-        @it
-        def prints_a_result_for_each_one(self):
-            pass
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+
+            @it
+            def failing_tests_print_x(self):
+                raise Exception("some error")
+
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+
+            @describe("When things are nested further")
+            def _():
+                @before_each
+                def do(self):
+                    raise Exception("some setup error")
+
+                @it
+                def prints_inner_results(self):
+                    pass
+
+            @it
+            def prints_a_result_for_each_one(self):
+                pass
+except TestFailureException:
+    pass
 
 
 class Calculator:
@@ -180,3 +184,46 @@ def _calculate():
         ).to_raise_error_message("invalid expression")
 
         expect(self.calculator.__format__("")).not_to_be("Some Broken Calculator")
+
+
+
+@pyne
+def my_first_test():
+    @describe("when a test is focused")
+    def _():
+        @it("skips non-focused tests")
+        def _(self):
+            pass
+
+        @it("skips non-focused tests")
+        def _(self):
+            pass
+
+        @describe("When things are nested further")
+        def _():
+            @fit("runs the focused test")
+            def _(self):
+                pass
+
+            @it("skips non-focused tests")
+            def _(self):
+                pass
+
+            @xit("skips pending tests")
+            def _(self):
+                pass
+
+        @describe("When things are nested")
+        def _():
+
+            @it("skips non-focused tests")
+            def _(self):
+                pass
+
+            @fit("runs only the focused test")
+            def _(self):
+                pass
+
+            @xit("skips pending tests")
+            def _(self):
+                pass

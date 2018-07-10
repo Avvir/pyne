@@ -132,6 +132,10 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
         super().__init__()
         self.failure_messages = []
 
+    def reset(self):
+        StatTrackingReporter.reset(self)
+        self.failure_messages = []
+
     def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
         full_description = it_block.description
@@ -144,9 +148,10 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
-        print("\n\n")
+        print("\n")
         for message in self.failure_messages:
             print(message)
+        print("\n")
 
 
 class CompositeReporter:
@@ -182,4 +187,5 @@ class CompositeReporter:
             reporter.report_pending(it_block)
 
 
-reporter = CompositeReporter(PyneTreeReporter(), PyneStatSummaryReporter(), PyneFailureSummaryReporter(), ExceptionReporter())
+reporter = CompositeReporter(PyneTreeReporter(), PyneStatSummaryReporter(), PyneFailureSummaryReporter(),
+                             ExceptionReporter())
