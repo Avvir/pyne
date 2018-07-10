@@ -92,3 +92,26 @@ def xdescribe(method_or_description):
 def before_each(method):
     test_collection.current_describe.before_each_blocks.append(
         BeforeEachBlock(test_collection.current_describe, method))
+
+
+def fit(method_or_description):
+    flag_ancestors_of_focus(test_collection.current_describe)
+
+    if isinstance(method_or_description, str):
+        description = method_or_description
+
+        def named_focused_it(method):
+            test_collection.current_describe.it_blocks.append(
+                ItBlock(test_collection.current_describe, description, method, focused=True))
+
+        return named_focused_it
+    else:
+        method = method_or_description
+        test_collection.current_describe.it_blocks.append(
+            ItBlock(test_collection.current_describe, method.__name__, method, focused=True))
+
+
+def flag_ancestors_of_focus(describe_block):
+    if describe_block is not None and not describe_block.has_focused_descendants:
+        describe_block.has_focused_descendants = True
+        flag_ancestors_of_focus(describe_block.parent)

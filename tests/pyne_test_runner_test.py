@@ -303,3 +303,32 @@ def test__when_a_describe_block_with_nested_describes_is_pended__it_reports_the_
 
     expect(reporter.stats.test_count).to_be(1)
     expect(reporter.stats.pending_count).to_be(1)
+
+
+def test__when_a_describe_block_has_focused_descendants__it_runs_only_the_focused_tests():
+    reset()
+
+    describe_block = DescribeBlock(None, "some describe", None)
+    inner_describe = DescribeBlock(describe_block, "some inner description", None)
+    other_inner_describe = DescribeBlock(describe_block, "some other inner description", None)
+    describe_block.describe_blocks = [inner_describe, other_inner_describe]
+
+    def it1(self):
+        pass
+
+    inner_describe.it_blocks = [
+        ItBlock(describe_block, "some test", it1, focused=True),
+        ItBlock(describe_block, "some test", it1)
+    ]
+    describe_block.has_focused_descendants = True
+    inner_describe.has_focused_descendants = True
+
+    other_inner_describe.it_blocks = [
+        ItBlock(describe_block, "some other test", it1),
+        ItBlock(describe_block, "some third test", it1)
+    ]
+
+    reporter = StatTrackingReporter()
+    run_tests(describe_block, reporter)
+
+    expect(reporter.stats.test_count).to_be(1)

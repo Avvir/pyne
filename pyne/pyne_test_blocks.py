@@ -21,13 +21,15 @@ class DescribeBlock(BehaviorBlock):
         self.it_blocks = []
         self.context = Context(parent)
         self.pending = pending
+        self.has_focused_descendants = False
 
 
 class ItBlock(BehaviorBlock):
 
-    def __init__(self, parent, description, method, pending=False):
+    def __init__(self, parent, description, method, pending=False, focused=False):
         super().__init__(parent, method, description)
         self.pending = pending
+        self.focused = focused
 
 
 class BeforeEachBlock(BehaviorBlock):

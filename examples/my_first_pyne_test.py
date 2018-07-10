@@ -1,7 +1,7 @@
 import re
 
 from pyne.expectations import expect
-from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe
+from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit
 from pyne.pyne_tester import pyne
 
 
@@ -58,6 +58,47 @@ def my_first_test():
         expect(1).to_be(1)
 
 
+@pyne
+def my_first_test():
+    @describe("when a test is focused")
+    def _():
+        @it("skips non-focused tests")
+        def _(self):
+            pass
+
+        @it("skips non-focused tests")
+        def _(self):
+            pass
+
+        @describe("When things are nested further")
+        def _():
+            @fit("runs the focused test")
+            def _(self):
+                pass
+
+            @it("skips non-focused tests")
+            def _(self):
+                pass
+
+            @xit("skips pending tests")
+            def _(self):
+                pass
+
+        @describe("When things are nested")
+        def _():
+
+            @it("skips non-focused tests")
+            def _(self):
+                pass
+
+            @fit("runs only the focused test")
+            def _(self):
+                pass
+
+            @xit("skips pending tests")
+            def _(self):
+                pass
+
 # @pyne
 def a_failing_group():
     @describe
@@ -99,6 +140,7 @@ def a_failing_group():
             @it
             def prints_inner_results(self):
                 pass
+
         @it
         def prints_a_result_for_each_one(self):
             pass
