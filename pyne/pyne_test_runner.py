@@ -8,22 +8,27 @@ def befores_to_run(describe_block):
         return befores_to_run(describe_block.parent) + describe_block.before_each_blocks
 
 
-def run_tests(describe_block, result_reporter, is_top_level=True):
+def run_tests(describe_block, result_reporter, is_top_level=True, parent_is_pending=False):
     result_reporter.report_enter_context(describe_block)
 
-    for it_block in describe_block.it_blocks:
-        if it_block.pending:
+    is_pending_describe = describe_block.pending or parent_is_pending
+    if is_pending_describe:
+        for it_block in describe_block.it_blocks:
             result_reporter.report_pending(it_block)
-        else:
-            run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
+    else:
+        for it_block in describe_block.it_blocks:
+            if it_block.pending:
+                result_reporter.report_pending(it_block)
+            else:
+                run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
 
     for nested_describe_block in describe_block.describe_blocks:
-        run_tests(nested_describe_block, result_reporter, False)
+        run_tests(nested_describe_block, result_reporter, False, is_pending_describe)
+
+    result_reporter.report_exit_context(describe_block)
 
     if is_top_level:
         result_reporter.report_end_result()
-
-    result_reporter.report_exit_context(describe_block)
 
 
 def run_test(context, before_blocks, it_block, reporter):

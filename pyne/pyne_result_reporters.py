@@ -66,7 +66,7 @@ class ExceptionReporter(StatTrackingReporter):
             raise NoTestsException()
 
 
-class PyneStatReporter(StatTrackingReporter):
+class PyneStatSummaryReporter(StatTrackingReporter):
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
@@ -182,4 +182,4 @@ class CompositeReporter:
             reporter.report_pending(it_block)
 
 
-reporter = CompositeReporter(PyneTreeReporter(), PyneStatReporter(), PyneFailureSummaryReporter(), ExceptionReporter())
+reporter = CompositeReporter(PyneTreeReporter(), PyneStatSummaryReporter(), PyneFailureSummaryReporter(), ExceptionReporter())

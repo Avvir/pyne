@@ -3,7 +3,7 @@ from time import sleep
 from pyne.expectations import expect
 from pyne.matchers import anything, at_least
 from pyne.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
-from pyne.pyne_test_blocks import ItBlock
+from pyne.pyne_test_blocks import ItBlock, DescribeBlock
 from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
 from pyne.pyne_test_runner import run_tests
 
@@ -260,6 +260,46 @@ def test__when_a_test_is_pended__it_reports_the_test_as_pending():
 
     reporter = StatTrackingReporter()
     run_tests(test_collection.current_describe, reporter)
+
+    expect(reporter.stats.test_count).to_be(1)
+    expect(reporter.stats.pending_count).to_be(1)
+
+
+def test__when_a_describe_block_is_pended__it_reports_the_contained_tests_as_pending():
+    reset()
+
+    describe_block = DescribeBlock(None, "some describe", None, pending=True)
+
+    def it1(self):
+        pass
+
+    describe_block.it_blocks = [
+        ItBlock(describe_block, "some test", it1)
+    ]
+
+    reporter = StatTrackingReporter()
+    run_tests(describe_block, reporter)
+
+    expect(reporter.stats.test_count).to_be(1)
+    expect(reporter.stats.pending_count).to_be(1)
+
+
+def test__when_a_describe_block_with_nested_describes_is_pended__it_reports_the_contained_tests_as_pending():
+    reset()
+
+    describe_block = DescribeBlock(None, "some describe", None, pending=True)
+    inner_describe = DescribeBlock(describe_block, "some inner description", None)
+    describe_block.describe_blocks = [inner_describe]
+
+    def it1(self):
+        pass
+
+    inner_describe.it_blocks = [
+        ItBlock(describe_block, "some test", it1)
+    ]
+
+    reporter = StatTrackingReporter()
+    run_tests(describe_block, reporter)
 
     expect(reporter.stats.test_count).to_be(1)
     expect(reporter.stats.pending_count).to_be(1)

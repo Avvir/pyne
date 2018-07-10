@@ -74,6 +74,21 @@ def describe(method_or_description):
             DescribeBlock(test_collection.current_describe, method.__name__, method))
 
 
+def xdescribe(method_or_description):
+    if isinstance(method_or_description, str):
+        description = method_or_description
+
+        def named_describe(method):
+            test_collection.current_describe.describe_blocks.append(
+                DescribeBlock(test_collection.current_describe, description, method, pending=True))
+
+        return named_describe
+    else:
+        method = method_or_description
+        test_collection.current_describe.describe_blocks.append(
+            DescribeBlock(test_collection.current_describe, method.__name__, method, pending=True))
+
+
 def before_each(method):
     test_collection.current_describe.before_each_blocks.append(
         BeforeEachBlock(test_collection.current_describe, method))

@@ -1,11 +1,11 @@
 from pyne.expectations import expect
-from pyne.pyne_result_reporters import PyneStatReporter
+from pyne.pyne_result_reporters import PyneStatSummaryReporter
 from pyne.pyne_test_blocks import ItBlock, DescribeBlock
 from tests.test_helpers.fake_print import StubPrint, printed_text
 
 
 def test__report_failure__increases_the_failure_count():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -16,7 +16,7 @@ def test__report_failure__increases_the_failure_count():
 
 
 def test__report_failure__increases_the_test_run_count():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -27,7 +27,7 @@ def test__report_failure__increases_the_test_run_count():
 
 
 def test__report_failure__sets_overall_failure():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -37,7 +37,7 @@ def test__report_failure__sets_overall_failure():
 
 
 def test__report_failure__increases_the_total_timing():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
     it_block = ItBlock(None, None, None)
 
     reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
@@ -47,7 +47,7 @@ def test__report_failure__increases_the_total_timing():
 
 
 def test__report_success__increases_the_test_run_count():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -58,7 +58,7 @@ def test__report_success__increases_the_test_run_count():
 
 
 def test__report_success__increases_the_passes_count():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -69,7 +69,7 @@ def test__report_success__increases_the_passes_count():
 
 
 def test__report_success__increases_the_total_timing():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -80,7 +80,7 @@ def test__report_success__increases_the_total_timing():
 
 
 def test__report_pending__increases_the_test_run_count():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     it_block = ItBlock(None, None, None)
 
@@ -91,7 +91,7 @@ def test__report_pending__increases_the_test_run_count():
 
 
 def test__report_enter_context__increases_depth():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     describe_block = DescribeBlock(None, None, None)
 
@@ -103,7 +103,7 @@ def test__report_enter_context__increases_depth():
 
 
 def test__report_exit_context__decreases_depth():
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
 
     describe_block = DescribeBlock(None, None, None)
     reporter.report_enter_context(describe_block)
@@ -118,7 +118,7 @@ def test__report_exit_context__decreases_depth():
 
 def test__report_end_result__when_a_test_has_failed__it_prints_stats():
     with StubPrint():
-        reporter = PyneStatReporter()
+        reporter = PyneStatSummaryReporter()
 
         it_block = ItBlock(None, None, None)
         reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
@@ -134,7 +134,7 @@ def test__report_end_result__when_a_test_has_failed__it_prints_stats():
 
 def test__report_end_result__when_all_tests_passed__it_prints_stats():
     with StubPrint():
-        reporter = PyneStatReporter()
+        reporter = PyneStatSummaryReporter()
 
         it_block = ItBlock(None, None, None)
         reporter.report_success(it_block, 1000)
@@ -148,7 +148,7 @@ def test__report_end_result__when_all_tests_passed__it_prints_stats():
 
 def test__report_end_result__test_is_pending__reports_stats():
     with StubPrint():
-        reporter = PyneStatReporter()
+        reporter = PyneStatSummaryReporter()
 
         passing_it_block = ItBlock(None, None, None)
         pending_it_block = ItBlock(None, None, None, pending=True)
@@ -163,7 +163,7 @@ def test__report_end_result__test_is_pending__reports_stats():
 
 def test__report_end_result__when_no_tests_run__reports_stats():
     with StubPrint():
-        reporter = PyneStatReporter()
+        reporter = PyneStatSummaryReporter()
 
         printed_text.clear()
 
@@ -175,7 +175,7 @@ def test__report_end_result__when_no_tests_run__reports_stats():
 def test__reset__sets_stats_to_0():
     describe_block = DescribeBlock(None, None, None)
     it_block = ItBlock(None, None, None)
-    reporter = PyneStatReporter()
+    reporter = PyneStatSummaryReporter()
     reporter.report_enter_context(describe_block)
     reporter.report_enter_context(describe_block)
     reporter.report_success(it_block, 1000)

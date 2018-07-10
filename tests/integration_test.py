@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.matchers import contains
-from pyne.pyne_test_collector import it, describe, before_each, xit
+from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe
 from pyne.pyne_tester import pyne
 from tests.test_helpers.fake_print import printed_text, StubPrint
 
@@ -87,6 +87,23 @@ def test__when_a_test_is_pending__reports_there_are_pending_tests():
             @xit
             def some_other_test(self):
                 pass
+
+        expect(printed_text).to_contain(contains("pending"))
+
+
+def test__when_a_describe_block_is_pending__reports_there_are_pending_tests():
+    with StubPrint():
+        @pyne
+        def some_test_suite():
+            @it("some test")
+            def _(self):
+                pass
+
+            @xdescribe("some tests")
+            def _():
+                @it
+                def some_other_test(self):
+                    pass
 
         expect(printed_text).to_contain(contains("pending"))
 
