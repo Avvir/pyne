@@ -16,17 +16,4 @@ def when_two_numbers_are_added_together():
     expect(self.calculator.calculate("22 + 11")).to_be(33)
 ```
 
-# Local Setup
-
-## Install Dependencies
-
-```bash
-pip install pipenv
-pipenv install
-```
-
-## Test
-
-```bash
-pipenv run pytest tests
-```
+For instructions on how to contribute to Pyne, read [CONTRIBUTING.md](CONTRIBUTING.md)
