@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 pytest = "*"
 termcolor = "*"
+click = "*"
+click-didyoumean = "*"
+click-completion = "*"
 
 [dev-packages]
 
