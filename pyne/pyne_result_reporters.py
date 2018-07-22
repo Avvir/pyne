@@ -1,4 +1,5 @@
 from time import sleep
+from traceback import print_exception
 
 from termcolor import colored
 
@@ -150,7 +151,10 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
 
         print("\n")
         for message in self.failure_messages:
-            print(message)
+            if isinstance(message, Exception):
+                print_exception(type(message), message, message.__traceback__)
+            else:
+                print(message)
         print("\n")
 
 

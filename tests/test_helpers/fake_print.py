@@ -1,8 +1,11 @@
+import sys
+
 printed_text = []
 
 
-def fake_print(text, end=None):
-    printed_text.append(text)
+def fake_print(*objects, sep=' ', end='\n', file=sys.stdout, flush=False):
+    for object in objects:
+        printed_text.append(object)
 
 
 class StubPrint:

@@ -87,7 +87,6 @@ def my_first_test():
 
         @describe("When things are nested")
         def _():
-
             @it("skips non-focused tests")
             def _(self):
                 pass
@@ -99,6 +98,7 @@ def my_first_test():
             @xit("skips pending tests")
             def _(self):
                 pass
+
 
 try:
     @pyne
@@ -143,6 +143,18 @@ try:
                 def prints_inner_results(self):
                     pass
 
+            @describe("When things are nested further")
+            def _():
+                @before_each
+                def do(self):
+                    raise Exception("some setup error")
+
+                @describe("When things are nested further")
+                def _():
+                    @it
+                    def prints_inner_results(self):
+                        pass
+
             @it
             def prints_a_result_for_each_one(self):
                 pass
@@ -186,7 +198,6 @@ def _calculate():
         expect(self.calculator.__format__("")).not_to_be("Some Broken Calculator")
 
 
-
 @pyne
 def my_first_test():
     @describe("when a test is focused")
@@ -215,7 +226,6 @@ def my_first_test():
 
         @describe("When things are nested")
         def _():
-
             @it("skips non-focused tests")
             def _(self):
                 pass
