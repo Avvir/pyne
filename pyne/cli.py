@@ -25,7 +25,6 @@ class PyneCliHelper:
 
     @staticmethod
     def load_all_tests_in_dir(dirname):
-        sys.path.append(dirname)
         for importer, package_name, _ in pkgutil.iter_modules([dirname]):
             if "_test" == package_name[-5:] and package_name not in sys.modules:
                 module = importer.find_module(package_name
