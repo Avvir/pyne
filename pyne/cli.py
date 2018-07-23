@@ -13,7 +13,7 @@ from click import (
 from pyne.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
-from .pyne_config import config
+from pyne.pyne_config import config
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
