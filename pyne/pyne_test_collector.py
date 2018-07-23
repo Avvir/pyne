@@ -7,10 +7,12 @@ def no_tests():
 
 class PyneTestCollector:
     def __init__(self):
-        self.top_level_describe = DescribeBlock(None, None, no_tests)
+        self.top_level_describe = DescribeBlock(None, "All Tests", no_tests)
         self.current_describe = self.top_level_describe
 
     def collect_describe(self, describe_block):
+        if describe_block.parent is None:
+            self.top_level_describe.describe_blocks.append(describe_block)
         self.current_describe = describe_block
         describe_block.method()
 

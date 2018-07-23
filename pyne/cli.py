@@ -10,27 +10,54 @@ from click import (
     pass_context,
     Path)
 
-# Enable shell completion.
+from pyne.pyne_result_reporters import reporter
+from pyne.pyne_test_collector import test_collection
+from pyne.pyne_test_runner import run_tests
+from .pyne_config import config
+
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
+
+class PyneCliHelper:
+    def __init__(self):
+        self.report_between_suites = False
+
+    @staticmethod
+    def load_all_tests_in_dir(dirname):
+        sys.path.append(dirname)
+        for importer, package_name, _ in pkgutil.iter_modules([dirname]):
+            if "_test" == package_name[-5:] and package_name not in sys.modules:
+                module = importer.find_module(package_name
+                                              ).load_module(package_name)
+                # print(module)
+
+    def setup_reporting(self):
+        self.report_between_suites = config.report_between_suites
+        config.report_between_suites = False
+        reporter.reset()
+
+
+cli_helper = PyneCliHelper()
 
 
 @group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
 @argument('path', required=False, type=Path(resolve_path=True), default=".")
 @pass_context
 def main(context, path):
-    def load_all_modules_from_dir(dirname):
-        sys.path.append(dirname)
-        for importer, package_name, _ in pkgutil.iter_modules([dirname]):
-            if "_test" == package_name[-5:] and package_name not in sys.modules:
-                module = importer.find_module(package_name
-                                              ).load_module(package_name)
-                print(module)
+    cli_helper.setup_reporting()
 
-    load_all_modules_from_dir(path)
+    cli_helper.load_all_tests_in_dir(path)
+
     for content in os.listdir(path):
-        if content[-3:] != ".py" and content[-2:] != "__" and content[0] != ".":
-            load_all_modules_from_dir(path + "/" + content)
+        content_path = os.path.join(path, content)
+        if os.path.isdir(content_path):
+            cli_helper.load_all_tests_in_dir(content_path)
+
+    describe_block = test_collection.top_level_describe
+    run_tests(describe_block, reporter)
+
+    config.report_between_suites = cli_helper.report_between_suites
 
 
 if __name__ == "__main__":
