@@ -23,4 +23,10 @@ setuptools.setup(
             "pyne=pyne:cli",
         ]
     },
+    install_requires=[
+        'termcolor',
+        'click',
+        'click-didyoumean',
+        'click-completion'
+    ]
 )
