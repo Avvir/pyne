@@ -18,9 +18,26 @@ def some_file():
 ```
 You can see more examples in the [examples folder](./examples)
 
-To run pyne tests, you can use the cli:
+## Running tests
+### Run a file
+
+```bash
+python some_test.py
+```
+
+### Run all tests
+
+To run all the tests in a directory, you can use the cli:
 ```bash
 ./pyne/cli.py
 ```
+
+### Run only some tests
+
+You can focus on a single test by using `@fit` instead of `@it`
+Or a single decribe block by using `@fdescribe` instead of `@describe`
+
+
+# Contribution / Development
 
 For instructions on how to contribute to Pyne, read [CONTRIBUTING.md](CONTRIBUTING.md)

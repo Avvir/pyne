@@ -29,7 +29,7 @@ class PyneCliHelper:
             if "_test" == package_name[-5:] and package_name not in sys.modules:
                 module = importer.find_module(package_name
                                               ).load_module(package_name)
-                # print(module)
+                print(module)
 
     def setup_reporting(self):
         self.report_between_suites = config.report_between_suites

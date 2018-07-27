@@ -4,6 +4,6 @@ from pyne.pyne_tester import pyne
 
 @pyne
 def another_sample_test():
-    @it("can pass")
+    @it("can also pass")
     def _(self):
         pass
