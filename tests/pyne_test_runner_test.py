@@ -332,3 +332,29 @@ def test__when_a_describe_block_has_focused_descendants__it_runs_only_the_focuse
     run_tests(describe_block, reporter)
 
     expect(reporter.stats.test_count).to_be(1)
+
+
+def test__when_a_describe_block_is_focused__it_runs_descendant_tests():
+    reset()
+
+    describe_block = DescribeBlock(None, "some describe", None, has_focused_descendants=True)
+    inner_describe = DescribeBlock(describe_block, "some inner description", None, focused=True)
+    other_inner_describe = DescribeBlock(describe_block, "some other inner description", None)
+    describe_block.describe_blocks = [inner_describe, other_inner_describe]
+
+    def it1(self):
+        pass
+
+    inner_describe.it_blocks = [
+        ItBlock(describe_block, "some test", it1),
+        ItBlock(describe_block, "some test", it1)
+    ]
+    other_inner_describe.it_blocks = [
+        ItBlock(describe_block, "some other test", it1),
+        ItBlock(describe_block, "some third test", it1)
+    ]
+
+    reporter = StatTrackingReporter()
+    run_tests(describe_block, reporter)
+
+    expect(reporter.stats.test_count).to_be(2)

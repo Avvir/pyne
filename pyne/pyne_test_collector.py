@@ -92,6 +92,16 @@ def xdescribe(method_or_description):
             DescribeBlock(test_collection.current_describe, method.__name__, method, pending=True))
 
 
+def fdescribe(description):
+    flag_ancestors_of_focus(test_collection.current_describe)
+
+    def named_focused_describe(method):
+        test_collection.current_describe.describe_blocks.append(
+            DescribeBlock(test_collection.current_describe, description, method, focused=True))
+
+    return named_focused_describe
+
+
 def before_each(method):
     test_collection.current_describe.before_each_blocks.append(
         BeforeEachBlock(test_collection.current_describe, method))

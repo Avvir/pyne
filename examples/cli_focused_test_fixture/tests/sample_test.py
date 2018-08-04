@@ -1,4 +1,4 @@
-from pyne.pyne_test_collector import it, fit
+from pyne.pyne_test_collector import it, fit, fdescribe, describe
 from pyne.pyne_tester import pyne
 
 
@@ -15,3 +15,15 @@ def sample_test():
     @it("can be ignored")
     def _(self):
         pass
+
+    @fdescribe("a focused block")
+    def _():
+        @it("runs its children")
+        def _(self):
+            pass
+
+        @describe("its grandchildren")
+        def _():
+            @it("also run")
+            def _(self):
+                pass

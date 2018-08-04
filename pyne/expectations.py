@@ -47,7 +47,7 @@ class Expectation:
     def unmatcherify(self, params, subject):
         formatted_subject = subject
         formatted_params = []
-        if (is_matcher(subject)):
+        if is_matcher(subject):
             formatted_subject = subject.format()
         for param in params:
             if is_matcher(param):

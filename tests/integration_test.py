@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.matchers import contains
-from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit
+from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit, fdescribe
 from pyne.pyne_tester import pyne
 from tests.test_helpers.fake_print import printed_text, StubPrint
 
@@ -138,7 +138,7 @@ def test__when_a_test_is_focused__skips_other_tests():
     @pyne
     def some_test_suite():
         @before_each
-        def some_failing_setup(self):
+        def _(self):
             self.calls = calls
 
         @it
@@ -152,3 +152,31 @@ def test__when_a_test_is_focused__skips_other_tests():
         @it
         def some_other_test(self):
             self.calls.append("it3")
+
+    expect(calls).to_have_length(1)
+
+
+def test__when_a_describe_is_focused__skips_other_tests():
+    calls = []
+
+    @pyne
+    def some_test_suite():
+        @before_each
+        def _(self):
+            self.calls = calls
+
+        @it
+        def some_other_test(self):
+            self.calls.append("it1")
+
+        @fdescribe("some test")
+        def _():
+            @it("does something")
+            def _(self):
+                self.calls.append("it2")
+
+        @it
+        def some_other_test(self):
+            self.calls.append("it3")
+
+    expect(calls).to_be(["it2"])

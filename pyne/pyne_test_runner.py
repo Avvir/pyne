@@ -38,16 +38,19 @@ def run_non_pended_tests(describe_block, result_reporter, parent_is_pending=Fals
 
 
 def run_only_focused_tests(describe_block, result_reporter):
-    result_reporter.report_enter_context(describe_block)
+    if describe_block.focused:
+        run_non_pended_tests(describe_block, result_reporter)
+    else:
+        result_reporter.report_enter_context(describe_block)
 
-    for it_block in describe_block.it_blocks:
-        if it_block.focused:
-            run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
+        for it_block in describe_block.it_blocks:
+            if it_block.focused:
+                run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
 
-    for nested_describe_block in describe_block.describe_blocks:
-        run_only_focused_tests(nested_describe_block, result_reporter)
+        for nested_describe_block in describe_block.describe_blocks:
+            run_only_focused_tests(nested_describe_block, result_reporter)
 
-    result_reporter.report_exit_context(describe_block)
+        result_reporter.report_exit_context(describe_block)
 
 
 def run_test(context, before_blocks, it_block, reporter):

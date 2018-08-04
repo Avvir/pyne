@@ -20,3 +20,9 @@ Pyne needs to be on the python path in order to use the cli:
 ```bash
 PYTHONPATH=`pwd` ./pyne/cli.py
 ```
+
+# TODO
+
+- better readability on tests with lots of commandline output
+- installable cli
+- cli options around focusing

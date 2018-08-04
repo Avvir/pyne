@@ -1,5 +1,5 @@
 from pyne.pyne_test_blocks import DescribeBlock
-from pyne.pyne_test_collector import test_collection, it, describe, before_each, fit
+from pyne.pyne_test_collector import test_collection, it, describe, before_each, fit, fdescribe
 from pyne.expectations import expect
 
 
@@ -52,6 +52,17 @@ def test__fit__adds_an_it_block_to_current_describe():
     expect(current_describe.it_blocks[0].method).to_be(some_method)
 
 
+def test__fit__flags_the_it_block_as_focused():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    fit(some_method)
+    expect(current_describe.it_blocks[0].focused).to_be(True)
+
+
 def test__fit__flags_ancestors_as_having_focused_descendant():
     grandparent_describe = DescribeBlock(None, None, None)
     parent_describe = DescribeBlock(grandparent_describe, None, None)
@@ -65,6 +76,45 @@ def test__fit__flags_ancestors_as_having_focused_descendant():
     expect(current_describe.has_focused_descendants).to_be(True)
     expect(parent_describe.has_focused_descendants).to_be(True)
     expect(grandparent_describe.has_focused_descendants).to_be(True)
+
+
+def test__fdescribe__flags_ancestors_as_having_focused_descendant():
+    grandparent_describe = DescribeBlock(None, None, None)
+    parent_describe = DescribeBlock(grandparent_describe, None, None)
+    current_describe = DescribeBlock(parent_describe, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    fdescribe("some context")(some_method)
+
+    expect(current_describe.has_focused_descendants).to_be(True)
+    expect(parent_describe.has_focused_descendants).to_be(True)
+    expect(grandparent_describe.has_focused_descendants).to_be(True)
+
+
+def test__fdescribe__adds_a_describe_block_to_current_describe():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    fdescribe("some context")(some_method)
+    expect(current_describe.describe_blocks).to_have_length(1)
+    expect(current_describe.describe_blocks[0].method).to_be(some_method)
+
+
+def test__fdescribe__flags_the_it_block_as_focused():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+
+    def some_method():
+        pass
+
+    fdescribe("some context")(some_method)
+    expect(current_describe.describe_blocks[0].focused).to_be(True)
 
 
 def test__describe__adds_describe_block_to_current_describe():
