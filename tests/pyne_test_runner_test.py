@@ -2,28 +2,29 @@ from time import sleep
 
 from pyne.expectations import expect
 from pyne.matchers import anything, at_least
+from pyne.pyne_config import config
 from pyne.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
 from pyne.pyne_test_blocks import ItBlock, DescribeBlock
-from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
+from pyne.pyne_test_collector import reset, it, describe, before_each
 from pyne.pyne_test_runner import run_tests
 
 
 def test__when_there_is_an_it__runs_the_it():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.call_count = 0
 
     @it
     def do_something(self):
         self.call_count += 1
 
-    run_tests(test_collection.top_level_describe, ExceptionReporter())
+    run_tests(config.test_collection.top_level_describe, ExceptionReporter())
     expect(context.call_count).to_be(1)
 
 
 def test__when_there_is_an_it__reports_the_timing():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
 
     @before_each
     def _(self):
@@ -34,7 +35,7 @@ def test__when_there_is_an_it__reports_the_timing():
         sleep(0.04)
 
     reporter = ExceptionReporter()
-    run_tests(test_collection.top_level_describe, reporter)
+    run_tests(config.test_collection.top_level_describe, reporter)
     expect(reporter.stats.total_timing_millis).to_be(at_least(90))
 
 
@@ -45,13 +46,13 @@ def test__when_a_test_fails__raises_an_error():
     def failing_test(self):
         expect(1).to_be(2)
 
-    expect(lambda: run_tests(test_collection.current_describe, ExceptionReporter())) \
+    expect(lambda: run_tests(config.test_collection.current_describe, ExceptionReporter())) \
         .to_raise_error_message(anything())
 
 
 def test__when_there_is_a_before_each__runs_it_before_each_test():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @before_each
@@ -66,14 +67,14 @@ def test__when_there_is_a_before_each__runs_it_before_each_test():
     def second(self):
         self.calls.append("it2")
 
-    run_tests(test_collection.top_level_describe, ExceptionReporter())
+    run_tests(config.test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["before", "it1", "before", "it2"])
 
 
 def test__when_there_are_before_each_blocks_in_parent_describes__runs_them_before_each_test():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @describe
@@ -102,8 +103,8 @@ def test__when_there_are_before_each_blocks_in_parent_describes__runs_them_befor
                 def do_second_thing(self):
                     self.calls.append("it2")
 
-    outer_describe = test_collection.current_describe.describe_blocks[0]
-    test_collection.collect_describe(outer_describe)
+    outer_describe = config.test_collection.current_describe.describe_blocks[0]
+    config.test_collection.collect_describe(outer_describe)
 
     blocks_ = outer_describe.describe_blocks[0]
     nested_describe = blocks_.describe_blocks[0]
@@ -114,7 +115,7 @@ def test__when_there_are_before_each_blocks_in_parent_describes__runs_them_befor
 
 def test__when_there_are_nested_describes__it_runs_them():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @describe
@@ -141,16 +142,16 @@ def test__when_there_are_nested_describes__it_runs_them():
                 def do_fourth_thing(self):
                     self.calls.append("it4")
 
-    outer_describe = test_collection.current_describe.describe_blocks[0]
-    test_collection.collect_describe(outer_describe)
-    run_tests(test_collection.top_level_describe, ExceptionReporter())
+    outer_describe = config.test_collection.current_describe.describe_blocks[0]
+    config.test_collection.collect_describe(outer_describe)
+    run_tests(config.test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["it1", "it2", "it3", "it4"])
 
 
 def test__when_there_are_before_each_blocks_for_another_describe__it_doesnt_run_them():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @describe
@@ -167,16 +168,16 @@ def test__when_there_are_before_each_blocks_for_another_describe__it_doesnt_run_
             def do_something_1(self):
                 self.calls.append("it1")
 
-    outer_describe = test_collection.current_describe.describe_blocks[0]
-    test_collection.collect_describe(outer_describe)
-    run_tests(test_collection.top_level_describe, ExceptionReporter())
+    outer_describe = config.test_collection.current_describe.describe_blocks[0]
+    config.test_collection.collect_describe(outer_describe)
+    run_tests(config.test_collection.top_level_describe, ExceptionReporter())
 
     expect(context.calls).to_be(["it1"])
 
 
 def test__when_a_test_fails__it_continues_running_tests():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @it
@@ -189,7 +190,7 @@ def test__when_a_test_fails__it_continues_running_tests():
         self.calls.append("it2")
 
     try:
-        run_tests(test_collection.top_level_describe, ExceptionReporter())
+        run_tests(config.test_collection.top_level_describe, ExceptionReporter())
     except Exception:
         pass
     finally:
@@ -198,7 +199,7 @@ def test__when_a_test_fails__it_continues_running_tests():
 
 def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     @describe
@@ -219,10 +220,10 @@ def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
             def some_second_test(self):
                 self.calls.append("some-it")
 
-    outer_describe = test_collection.current_describe.describe_blocks[0]
-    test_collection.collect_describe(outer_describe)
+    outer_describe = config.test_collection.current_describe.describe_blocks[0]
+    config.test_collection.collect_describe(outer_describe)
     try:
-        run_tests(test_collection.top_level_describe, ExceptionReporter())
+        run_tests(config.test_collection.top_level_describe, ExceptionReporter())
     except Exception:
         pass
     finally:
@@ -231,35 +232,35 @@ def test__when_a_before_block_fails__it_runs_it_blocks_in_the_next_describe():
 
 def test__when_a_test_is_pended__it_does_not_run_the_test():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     def it1(self):
         self.calls.append("it1")
 
-    test_collection.current_describe.it_blocks = [
-        ItBlock(test_collection.current_describe, "some test", it1, pending=True)
+    config.test_collection.current_describe.it_blocks = [
+        ItBlock(config.test_collection.current_describe, "some test", it1, pending=True)
     ]
 
-    run_tests(test_collection.current_describe, StatTrackingReporter())
+    run_tests(config.test_collection.current_describe, StatTrackingReporter())
 
     expect(context.calls).to_have_length(0)
 
 
 def test__when_a_test_is_pended__it_reports_the_test_as_pending():
     reset()
-    context = test_collection.current_describe.context
+    context = config.test_collection.current_describe.context
     context.calls = []
 
     def it1(self):
         self.calls.append("it1")
 
-    test_collection.current_describe.it_blocks = [
-        ItBlock(test_collection.current_describe, "some test", it1, pending=True)
+    config.test_collection.current_describe.it_blocks = [
+        ItBlock(config.test_collection.current_describe, "some test", it1, pending=True)
     ]
 
     reporter = StatTrackingReporter()
-    run_tests(test_collection.current_describe, reporter)
+    run_tests(config.test_collection.current_describe, reporter)
 
     expect(reporter.stats.test_count).to_be(1)
     expect(reporter.stats.pending_count).to_be(1)

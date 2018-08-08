@@ -4,6 +4,6 @@ from pyne.pyne_tester import pyne
 
 @pyne
 def sample_test():
-    @it("can pass")
+    @it("has some behavior")
     def _(self):
         pass

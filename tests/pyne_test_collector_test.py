@@ -1,11 +1,12 @@
 from pyne.pyne_test_blocks import DescribeBlock
-from pyne.pyne_test_collector import test_collection, it, describe, before_each, fit, fdescribe
+from pyne.pyne_test_collector import it, describe, before_each, fit, fdescribe
+from pyne.pyne_config import config
 from pyne.expectations import expect
 
 
 def test__it__adds_it_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -17,7 +18,7 @@ def test__it__adds_it_block_to_current_describe():
 
 def test__it__when_using_string_description__adds_it_block_to_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -30,7 +31,7 @@ def test__it__when_using_string_description__adds_it_block_to_describe():
 
 def test__it__when_using_string_description__sets_the_description():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -42,7 +43,7 @@ def test__it__when_using_string_description__sets_the_description():
 
 def test__fit__adds_an_it_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -54,7 +55,7 @@ def test__fit__adds_an_it_block_to_current_describe():
 
 def test__fit__flags_the_it_block_as_focused():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -67,7 +68,7 @@ def test__fit__flags_ancestors_as_having_focused_descendant():
     grandparent_describe = DescribeBlock(None, None, None)
     parent_describe = DescribeBlock(grandparent_describe, None, None)
     current_describe = DescribeBlock(parent_describe, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -82,7 +83,7 @@ def test__fdescribe__flags_ancestors_as_having_focused_descendant():
     grandparent_describe = DescribeBlock(None, None, None)
     parent_describe = DescribeBlock(grandparent_describe, None, None)
     current_describe = DescribeBlock(parent_describe, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -96,7 +97,7 @@ def test__fdescribe__flags_ancestors_as_having_focused_descendant():
 
 def test__fdescribe__adds_a_describe_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -108,7 +109,7 @@ def test__fdescribe__adds_a_describe_block_to_current_describe():
 
 def test__fdescribe__flags_the_it_block_as_focused():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -119,7 +120,7 @@ def test__fdescribe__flags_the_it_block_as_focused():
 
 def test__describe__adds_describe_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -132,7 +133,7 @@ def test__describe__adds_describe_block_to_current_describe():
 
 def test__describe__when_using_string_description__adds_describe_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -145,7 +146,7 @@ def test__describe__when_using_string_description__adds_describe_block_to_curren
 
 def test__describe__when_using_string_description__sets_description():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -157,7 +158,7 @@ def test__describe__when_using_string_description__sets_description():
 
 def test__before_each__adds_before_each_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
-    test_collection.current_describe = current_describe
+    config.test_collection.current_describe = current_describe
 
     def some_method():
         pass
@@ -183,7 +184,7 @@ def test__collect_describe__adds_children_to_the_describe():
 
     describe_block = DescribeBlock(None, None, describe_block_method)
 
-    test_collection.collect_describe(describe_block)
+    config.test_collection.collect_describe(describe_block)
 
     expect(describe_block.before_each_blocks).to_have_length(1)
     expect(describe_block.describe_blocks).to_have_length(1)
@@ -208,7 +209,7 @@ def test__collect_describe__when_there_are_nested_describes__collects_them():
 
     describe_block = DescribeBlock(None, None, describe_block_method)
 
-    test_collection.collect_describe(describe_block)
+    config.test_collection.collect_describe(describe_block)
 
     expect(describe_block.describe_blocks[0].before_each_blocks).to_have_length(1)
     expect(describe_block.describe_blocks[0].describe_blocks).to_have_length(1)
