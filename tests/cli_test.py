@@ -25,10 +25,12 @@ def test__when_there_is_a_tests_directory_with_a_test_file__runs_the_test():
         copy_to_working_directory(pyne_path)
 
         result = runner.invoke(cli.main)
+
+        expect(result.output).to_contain("some_single_test")
         expect(result.output).to_contain("1 passed")
 
 
-def test__when_there_is_a_focused_test__runs_only_that_test():
+def test__when_there_are_focused_tests__runs_only_those_tests():
     runner = CliRunner()
     with runner.isolated_filesystem():
         copy_to_working_directory(path.join(cli_focused_test_fixture_path, 'tests'))
@@ -36,7 +38,7 @@ def test__when_there_is_a_focused_test__runs_only_that_test():
 
         result = runner.invoke(cli.main)
         expect(result.output).to_contain("can be focused")
-        expect(result.output).to_contain("2 passed")
+        expect(result.output).to_contain("4 passed")
 
 
 def test__when_there_are_two_test_files__summarizes_the_results_together():
@@ -46,4 +48,6 @@ def test__when_there_are_two_test_files__summarizes_the_results_together():
         copy_to_working_directory(pyne_path)
 
         result = runner.invoke(cli.main)
+        expect(result.output).to_contain("some_first_file_test")
+        expect(result.output).to_contain("some_second_file_test")
         expect(result.output).to_contain("2 passed")

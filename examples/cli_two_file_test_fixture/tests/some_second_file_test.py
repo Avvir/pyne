@@ -3,7 +3,7 @@ from pyne.pyne_tester import pyne
 
 
 @pyne
-def another_sample_test():
+def some_second_file_test():
     @it("can also pass")
     def _(self):
         pass

@@ -35,6 +35,7 @@ class PyneCliHelper:
         self.report_between_suites = config.report_between_suites
         config.report_between_suites = False
         reporter.reset()
+        test_collection.reset()
 
 
 cli_helper = PyneCliHelper()

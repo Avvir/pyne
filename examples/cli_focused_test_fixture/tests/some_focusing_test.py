@@ -3,7 +3,7 @@ from pyne.pyne_tester import pyne
 
 
 @pyne
-def sample_test():
+def some_focusing_test():
     @fit("can be focused")
     def _(self):
         pass
