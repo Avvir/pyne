@@ -2,7 +2,7 @@ import re
 
 from pyne.expectations import expect
 from pyne.pyne_result_reporters import TestFailureException
-from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit
+from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit, after_each
 from pyne.pyne_tester import pyne
 
 
@@ -103,8 +103,8 @@ def my_first_test():
 try:
     @pyne
     def a_failing_group():
-        @describe
-        def when_there_are_lots_of_tests():
+        @describe("when there are lots of tests")
+        def _():
             @it
             def prints_a_result_for_each_one(self):
                 pass
@@ -133,11 +133,35 @@ try:
             def prints_a_result_for_each_one(self):
                 pass
 
-            @describe("When things are nested further")
+            @describe("When setup fails")
             def _():
                 @before_each
-                def do(self):
+                def _(self):
                     raise Exception("some setup error")
+
+                @it
+                def prints_inner_results(self):
+                    pass
+
+            @describe("when setup and teardown both fail")
+            def _():
+                @before_each
+                def _(self):
+                    raise Exception("some setup error")
+
+                @after_each
+                def _(self):
+                    raise Exception("some teardown error")
+
+                @it
+                def prints_inner_results(self):
+                    pass
+
+            @describe("when teardown fails")
+            def _():
+                @after_each
+                def _(self):
+                    raise Exception("some teardown error")
 
                 @it
                 def prints_inner_results(self):
@@ -146,7 +170,7 @@ try:
             @describe("When things are nested further")
             def _():
                 @before_each
-                def do(self):
+                def _(self):
                     raise Exception("some setup error")
 
                 @describe("When things are nested further")
@@ -174,7 +198,7 @@ class Calculator:
 @pyne
 def _calculate():
     @before_each
-    def do(self):
+    def _(self):
         self.calculator = Calculator()
 
     @it("can add two numbers together")

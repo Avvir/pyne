@@ -4,7 +4,7 @@ from pyne.expectations import expect
 from pyne.matchers import anything, at_least
 from pyne.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
 from pyne.pyne_test_blocks import ItBlock, DescribeBlock
-from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each
+from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each, after_each
 from pyne.pyne_test_runner import run_tests
 
 
@@ -358,3 +358,66 @@ def test__when_a_describe_block_is_focused__it_runs_descendant_tests():
     run_tests(describe_block, reporter)
 
     expect(reporter.stats.test_count).to_be(2)
+
+
+def test__when_there_is_a_after_each__runs_it_after_each_test():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    @after_each
+    def do(self):
+        self.calls.append("after")
+
+    @it
+    def first(self):
+        self.calls.append("it1")
+
+    @it
+    def second(self):
+        self.calls.append("it2")
+
+    run_tests(test_collection.top_level_describe, ExceptionReporter())
+
+    expect(context.calls).to_be(["it1", "after", "it2", "after"])
+
+
+def test__when_there_are_after_each_blocks_in_parent_describes__runs_them_after_each_test():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    @describe
+    def when_context_1():
+        @after_each
+        def do(self):
+            self.calls.append("after1")
+
+        @describe
+        def when_context_2():
+            @after_each
+            def do(self):
+                self.calls.append("after2")
+
+            @describe
+            def when_context_3():
+                @after_each
+                def do(self):
+                    self.calls.append("after3")
+
+                @it
+                def do_first_thing(self):
+                    self.calls.append("it1")
+
+                @it
+                def do_second_thing(self):
+                    self.calls.append("it2")
+
+    outer_describe = test_collection.current_describe.describe_blocks[0]
+    test_collection.collect_describe(outer_describe)
+
+    blocks_ = outer_describe.describe_blocks[0]
+    nested_describe = blocks_.describe_blocks[0]
+    run_tests(nested_describe, ExceptionReporter())
+
+    expect(context.calls).to_be(["it1", "after1", "after2", "after3", "it2", "after1", "after2", "after3"])

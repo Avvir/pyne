@@ -12,3 +12,4 @@ def pyne(tests_method):
     test_collection.collect_describe(describe_block)
     if config.report_between_suites:
         run_tests(describe_block, reporter)
+    return tests_method

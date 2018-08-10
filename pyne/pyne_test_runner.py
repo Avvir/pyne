@@ -8,6 +8,13 @@ def befores_to_run(describe_block):
         return befores_to_run(describe_block.parent) + describe_block.before_each_blocks
 
 
+def afters_to_run(describe_block):
+    if describe_block.parent is None:
+        return describe_block.after_each_blocks
+    else:
+        return afters_to_run(describe_block.parent) + describe_block.after_each_blocks
+
+
 def run_tests(describe_block, result_reporter):
     if describe_block.has_focused_descendants:
         run_only_focused_tests(describe_block, result_reporter)
@@ -29,7 +36,11 @@ def run_non_pended_tests(describe_block, result_reporter, parent_is_pending=Fals
             if it_block.pending:
                 result_reporter.report_pending(it_block)
             else:
-                run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
+                run_test(describe_block.context,
+                         befores_to_run(describe_block),
+                         it_block,
+                         afters_to_run(describe_block),
+                         result_reporter)
 
     for nested_describe_block in describe_block.describe_blocks:
         run_non_pended_tests(nested_describe_block, result_reporter, is_pending_describe)
@@ -45,7 +56,11 @@ def run_only_focused_tests(describe_block, result_reporter):
 
         for it_block in describe_block.it_blocks:
             if it_block.focused:
-                run_test(describe_block.context, befores_to_run(describe_block), it_block, result_reporter)
+                run_test(describe_block.context,
+                         befores_to_run(describe_block),
+                         it_block,
+                         afters_to_run(describe_block),
+                         result_reporter)
 
         for nested_describe_block in describe_block.describe_blocks:
             run_only_focused_tests(nested_describe_block, result_reporter)
@@ -53,21 +68,37 @@ def run_only_focused_tests(describe_block, result_reporter):
         result_reporter.report_exit_context(describe_block)
 
 
-def run_test(context, before_blocks, it_block, reporter):
-    start_seconds = perf_counter()
-    for before_block in before_blocks:
+class BlockFailureResult:
+    def __init__(self, block, exception):
+        self.block = block
+        self.exception = exception
+
+
+def run_test(context, before_blocks, it_block, after_blocks, reporter):
+
+    start_milliseconds = perf_counter()
+
+    failure = run_blocks(before_blocks, context)
+
+    if failure is None:
+        failure = run_blocks([it_block], context)
+
+    if failure is None:
+        failure = run_blocks(after_blocks, context)
+    else:
+        run_blocks(after_blocks, context)
+        
+    seconds = (perf_counter() - start_milliseconds) * 1000
+    if failure:
+        reporter.report_failure(failure.block, it_block, failure.exception, seconds)
+    else:
+        reporter.report_success(it_block, seconds)
+
+
+def run_blocks(blocks, context):
+    for block in blocks:
         try:
-            before_block.method(context)
+            block.method(context)
         except Exception as e:
-            seconds = perf_counter() - start_seconds
-            reporter.report_failure(before_block, it_block, e, seconds * 1000)
-            return
-
-    try:
-        it_block.method(context)
-        seconds = perf_counter() - start_seconds
-
-        reporter.report_success(it_block, seconds * 1000)
-    except Exception as e:
-        seconds = perf_counter() - start_seconds
-        reporter.report_failure(it_block, it_block, e, seconds * 1000)
+            return BlockFailureResult(block, e)
+    return None

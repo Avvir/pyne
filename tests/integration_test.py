@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.matchers import contains
-from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit, fdescribe
+from pyne.pyne_test_collector import it, describe, before_each, after_each, xit, xdescribe, fit, fdescribe
 from pyne.pyne_tester import pyne
 from tests.test_helpers.fake_print import printed_text, StubPrint
 
@@ -130,6 +130,30 @@ def test__when_a_before_each_fails__does_not_run_tests_that_depend_on_the_before
         pass
     finally:
         expect(calls).to_have_length(0)
+
+
+def test__when_a_before_each_fails__still_runs_the_after_each():
+    calls = []
+    try:
+        @pyne
+        def some_test_suite():
+            @before_each
+            def some_failing_setup(self):
+                self.calls = calls
+                raise Exception("some exception")
+
+            @it("does something")
+            def some_test(self):
+                self.calls.append("it1")
+
+            @after_each
+            def some_after_each(self):
+                self.calls.append("some_after_each")
+
+    except Exception:
+        pass
+    finally:
+        expect(calls).to_be(["some_after_each"])
 
 
 def test__when_a_test_is_focused__skips_other_tests():

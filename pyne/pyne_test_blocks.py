@@ -16,6 +16,7 @@ class Context(object):
 class DescribeBlock(BehaviorBlock):
     def __init__(self, parent, context_description, method, pending=False, focused=False, has_focused_descendants=False):
         super().__init__(parent, method, context_description)
+        self.after_each_blocks = []
         self.describe_blocks = []
         self.before_each_blocks = []
         self.it_blocks = []
@@ -36,3 +37,8 @@ class ItBlock(BehaviorBlock):
 class BeforeEachBlock(BehaviorBlock):
     def __init__(self, parent, method):
         super().__init__(parent, method, "@before_each")
+
+
+class AfterEachBlock(BehaviorBlock):
+    def __init__(self, parent, method):
+        super().__init__(parent, method, "@after_each")
