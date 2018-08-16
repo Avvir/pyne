@@ -31,10 +31,16 @@ def equal_to_comparator(subject, *params):
     else:
         return subject == params[0]
 
+def equal_to(value, comparator=None):
+    if comparator is None:
+        comparator = equal_to_comparator
+    return Matcher("equal_to", comparator, value)
 
-def equal_to(value):
-    return Matcher("equal_to", equal_to_comparator, value)
+def same_instance_as(value):
+    return Matcher("same_instance_as", lambda a, b: a is b, value)
 
+def is_none():
+    return Matcher("is_none", lambda subject, *params: subject is None, None)
 
 def anything():
     return Matcher("anything", lambda subject, *params: True)
@@ -68,9 +74,10 @@ def contained_in(collection):
     return Matcher("contained_in", lambda subject, *params: subject in params[0], collection)
 
 
-def instance_of(clazz):
-    return Matcher("instance_of", lambda subject: isinstance(subject, clazz))
+def instance_of(class_):
+    return Matcher("instance_of", lambda subject: isinstance(subject, class_))
 
 
 def at_least(number):
     return Matcher("at_least", lambda subject: subject >= number)
+
