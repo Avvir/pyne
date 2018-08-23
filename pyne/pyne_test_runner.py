@@ -1,5 +1,5 @@
 from time import perf_counter
-
+from . import pyne_pdb
 
 def befores_to_run(describe_block):
     if describe_block.parent is None:
@@ -79,14 +79,20 @@ def run_test(context, before_blocks, it_block, after_blocks, reporter):
     start_milliseconds = perf_counter()
 
     failure = run_blocks(before_blocks, context)
+    if failure and pyne_pdb.pdb_enabled:
+        pyne_pdb.handle_before_failure(context, before_blocks)
 
     if failure is None:
         failure = run_blocks([it_block], context)
+        if failure and pyne_pdb.pdb_enabled:
+            pyne_pdb.handle_it_failure(context, before_blocks, it_block)
 
     if failure is None:
         failure = run_blocks(after_blocks, context)
     else:
-        run_blocks(after_blocks, context)
+        after_failure = run_blocks(after_blocks, context)
+        if after_failure and pyne_pdb.pdb_enabled:
+            pyne_pdb.handle_after_failure(context, before_blocks, it_block, after_blocks)
         
     seconds = (perf_counter() - start_milliseconds) * 1000
     if failure:
@@ -100,5 +106,8 @@ def run_blocks(blocks, context):
         try:
             block.method(context)
         except Exception as e:
+            # Save traceback to enable post-mortem using pdb
+            import sys
+            sys.last_traceback = e.__traceback__
             return BlockFailureResult(block, e)
     return None
