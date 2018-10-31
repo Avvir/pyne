@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.matchers import anything, match, contains_text, contains, instance_of, at_least
+from pyne.matchers import anything, at_least, contains, contains_text, instance_of, match
 
 
 def test__anything__satisfies_to_be():

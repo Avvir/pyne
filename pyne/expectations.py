@@ -19,7 +19,7 @@ class Expectations:
 
     def to_raise_error_with_message(self, message):
         RaiseMessageExpectation(message).assert_expected(self.subject, message)
-    
+
     def to_raise_error_of_type(self, exception_class):
         RaiseTypeExpectation(exception_class).assert_expected(self.subject, exception_class)
 
@@ -47,7 +47,7 @@ class Expectation:
         self.name = name
         self.matcher = matcher
         self.message_format = message_format
-    
+
     def get_inverse(self):
         return InverseExpectation(self)
 
@@ -82,11 +82,10 @@ class RaiseExpectation(Expectation):
     def __init__(self, error_matcher, message_format=None, exception_format=None):
         if exception_format is None:
             exception_format = lambda e: repr(e)
-        error_description = error_matcher.name
-        name = "to_raise_error_" + error_description
-        matcher_name = "raises_error_" + error_description
+        matcher_name = error_matcher.name
+        name = "to_raise_error_" + matcher_name
         self.actual_exception = None
-        self.error_description = error_description.replace("_", " ")
+        self.error_description = matcher_name.replace("_", " ")
         super().__init__(name, Matcher(matcher_name, self.check_error),
                          self.message_format)
         self.error_matcher = error_matcher
@@ -98,13 +97,14 @@ class RaiseExpectation(Expectation):
         except Exception as e:
             self.actual_exception = e
             return self.error_matcher.matches(e)
-    
+
     def message_format(self):
         if self.actual_exception is None:
-            return "Expected <{subject}> to raise an exception %s <{0}> but no exception was raised" % self.error_description
+            return "Expected <{subject}> to raise an exception " + self.error_description + " <{0}> but no exception was raised"
         else:
-            return "Expected <{subject}> to raise an exception %s <{0}> but the exception was <" % self.error_description +\
-                    (self.escape_for_formatting("{0}".format(self.exception_format(self.actual_exception)))) + ">" 
+            return "Expected <{subject}> to raise an exception " + self.error_description + " <{0}> but the exception was <" + \
+                   (self.escape_for_formatting("{0}".format(self.exception_format(self.actual_exception)))) + ">"
+
 
 class RaiseMessageExpectation(RaiseExpectation):
     def __init__(self, *params):
@@ -114,16 +114,27 @@ class RaiseMessageExpectation(RaiseExpectation):
                                   equal_to(message).matches(exception.args[0]),
                                   expected_message)
         super().__init__(message_matcher, exception_format=lambda e: e.args[0])
-    
+
 
 class RaiseTypeExpectation(RaiseExpectation):
     def __init__(self, *params):
-        expected_type = params[0]
+        self.expected_type = params[0]
         self.inner_matcher = Matcher("of_type",
-                                     lambda exception, class_:
-                                     instance_of(class_).matches(exception),
-                                     expected_type)
+                                     lambda exception, clazz:
+                                     instance_of(clazz).matches(exception),
+                                     self.expected_type)
         super().__init__(self.inner_matcher)
+
+    def message_format(self):
+        if self.actual_exception is None:
+            return "Expected <{subject}> to raise an exception of type <" + self.formatted_expected_type() + "> but no exception was raised"
+        else:
+            return "Expected <{subject}> to raise an exception of type <" + self.formatted_expected_type() + "> but the exception was <" + \
+                   (self.escape_for_formatting("{0}".format(self.exception_format(self.actual_exception)))) + ">"
+
+    def formatted_expected_type(self):
+        return self.expected_type.__name__
+
 
 class InverseExpectation(Expectation):
     def __init__(self, expectation):

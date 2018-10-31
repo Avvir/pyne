@@ -217,7 +217,7 @@ def _calculate():
         self.calculator.extra_method = extra_method
         expect(
             lambda: self.calculator.calculate('self.extra_method(self)')
-        ).to_raise_error_message("invalid expression")
+        ).to_raise_error_with_message("invalid expression")
 
         expect(self.calculator.__format__("")).not_to_be("Some Broken Calculator")
 

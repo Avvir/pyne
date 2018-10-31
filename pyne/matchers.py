@@ -74,8 +74,11 @@ def contained_in(collection):
     return Matcher("contained_in", lambda subject, *params: subject in params[0], collection)
 
 
-def instance_of(class_):
-    return Matcher("instance_of", lambda subject: isinstance(subject, class_))
+def instance_of(clazz):
+    if is_matcher(clazz):
+        return Matcher("instance_of", lambda subject: clazz.matches(subject.__class__))
+    else:
+        return Matcher("instance_of", lambda subject: isinstance(subject, clazz))
 
 
 def at_least(number):

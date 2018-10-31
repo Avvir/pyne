@@ -46,7 +46,7 @@ def test__when_a_test_fails__raises_an_error():
         expect(1).to_be(2)
 
     expect(lambda: run_tests(test_collection.current_describe, ExceptionReporter())) \
-        .to_raise_error_message(anything())
+        .to_raise_error_with_message(anything())
 
 
 def test__when_there_is_a_before_each__runs_it_before_each_test():
