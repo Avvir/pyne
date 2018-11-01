@@ -87,3 +87,7 @@ def instance_of(clazz):
 
 def at_least(number):
     return Matcher("at_least", lambda subject: subject >= number)
+
+
+def has_length(number):
+    return Matcher("has_length", lambda subject: len(subject) == number)

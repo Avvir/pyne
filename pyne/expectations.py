@@ -1,6 +1,6 @@
 from termcolor import cprint
 
-from .matchers import InverseMatcher, Matcher, contains, equal_to, instance_of, is_matcher, is_none
+from .matchers import InverseMatcher, Matcher, contains, equal_to, instance_of, is_matcher, is_none, has_length
 
 
 class Expectations:
@@ -14,9 +14,10 @@ class Expectations:
         Expectation("to_be", equal_to(expected)).get_inverse().assert_expected(self.subject, expected)
 
     def to_have_length(self, length):
-        length_matcher = Matcher("of_length", lambda subject, length: (equal_to(length).matches(len(subject))), length)
-        to_have_length_expectation = Expectation("to_have_length", length_matcher)
-        to_have_length_expectation.assert_expected(self.subject, length)
+        Expectation("to_have_length", has_length(length)).assert_expected(self.subject, length)
+
+    def not_to_have_length(self, length):
+        Expectation("to_have_length", has_length(length)).get_inverse().assert_expected(self.subject, length)
 
     def to_raise_error_with_message(self, message):
         RaiseMessageExpectation(message).assert_expected(self.subject, message)

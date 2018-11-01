@@ -10,8 +10,7 @@ def test__to_be__can_pass():
 def test__to_be__fails_with_message():
     expect_expectation_to_fail_with_message(
             lambda: expect(1).to_be(2),
-            "Expected <1> to be <2>"
-    )
+            "Expected <1> to be <2>")
 
 
 def test__to_be__with_a_matcher_can_pass():
@@ -27,19 +26,27 @@ def test__not_to_be__can_pass():
 def test__not_to_be__when_equal__fails_with_message():
     expect_expectation_to_fail_with_message(
             lambda: expect(1).not_to_be(1),
-            "Expected <1> not to be <1>"
-    )
+            "Expected <1> not to be <1>")
 
 
 def test__to_have_length__can_pass():
-    expect([123, 123, 123]).to_have_length(3)
+    expect([123, 123, 123, "123"]).to_have_length(4)
 
 
 def test__to_have_length__fails_with_message():
     expect_expectation_to_fail_with_message(
-            lambda: expect([123, 123, 123]).to_have_length(4),
-            "Expected <\[123, 123, 123\]> to have length <4>"
-    )
+            lambda: expect([123, 123, 123, "123"]).to_have_length(5),
+            "Expected <\[123, 123, 123, '123'\]> to have length <5>")
+
+
+def test__not_to_have_length__can_pass():
+    expect([123, 123]).not_to_have_length(3)
+
+
+def test__not_to_have_length__fails_with_message():
+    expect_expectation_to_fail_with_message(
+            lambda: expect([123, 123]).not_to_have_length(2),
+            "Expected <\[123, 123\]> not to have length <2>")
 
 
 def test__to_raise_error_with_message__can_pass():
@@ -56,8 +63,7 @@ def test__to_raise_error_with_message__can_fail_because_the_message_is_wrong():
     expect_expectation_to_fail_with_message(
             lambda: expect(error_method).to_raise_error_with_message("some other message"),
             "to raise an exception with message",
-            "but the exception was"
-    )
+            "but the exception was")
 
 
 def test__to_raise_error_with_message__can_fail_because_no_error_is_raised():
@@ -66,8 +72,7 @@ def test__to_raise_error_with_message__can_fail_because_no_error_is_raised():
 
     expect_expectation_to_fail_with_message(
             lambda: expect(successful_method).to_raise_error_with_message("some message"),
-            "but no exception was raised"
-    )
+            "but no exception was raised")
 
 
 def test__to_raise_error_with_message__can_pass_with_matcher():
@@ -94,7 +99,9 @@ def test__to_raise_error_of_type__can_fail_because_the_type_is_wrong():
     class SomeException(Exception):
         pass
 
-    expect_expectation_to_fail_with_message(lambda: expect(error_method).to_raise_error_of_type(SomeException), "to raise an exception of type <SomeException>", "but the exception was")
+    expect_expectation_to_fail_with_message(
+            lambda: expect(error_method).to_raise_error_of_type(SomeException),
+            "to raise an exception of type <SomeException>", "but the exception was")
 
 
 def test__to_raise_error_of_type__can_fail_because_no_error_is_raised():
@@ -104,7 +111,9 @@ def test__to_raise_error_of_type__can_fail_because_no_error_is_raised():
     class SomeException(Exception):
         pass
 
-    expect_expectation_to_fail_with_message(lambda: expect(successful_method).to_raise_error_of_type(SomeException), "but no exception was raised")
+    expect_expectation_to_fail_with_message(
+            lambda: expect(successful_method).to_raise_error_of_type(SomeException),
+            "but no exception was raised")
 
 
 def test__to_raise_error_of_type__can_pass_with_matcher():
@@ -118,14 +127,18 @@ def test__to_raise_error_with_message__with_unmatched_matcher__failures_shows_ma
     def error_method():
         raise Exception("some message")
 
-    expect_expectation_to_fail_with_message(lambda: expect(error_method).to_raise_error_with_message(match("other message")), ".*to raise an exception with message <match\('other message',\).*")
+    expect_expectation_to_fail_with_message(
+            lambda: expect(error_method).to_raise_error_with_message(match("other message")),
+            ".*to raise an exception with message <match\('other message',\).*")
 
 
 def test__to_raise_error_with_message__when_actual_message_contains_curly_braces__shows_message():
     def error_method():
         raise Exception("{oh man} {stuff!} {whoa}")
 
-    expect_expectation_to_fail_with_message(lambda: expect(error_method).to_raise_error_with_message(match("other message")), "{oh man\} {stuff!\} {whoa\}")
+    expect_expectation_to_fail_with_message(
+            lambda: expect(error_method).to_raise_error_with_message(match("other message")),
+            "{oh man\} {stuff!\} {whoa\}")
 
 
 def test__to_be_a__can_pass():
@@ -135,7 +148,9 @@ def test__to_be_a__can_pass():
 
 
 def test__to_be_a__when_the_type_is_different__fails_with_message():
-    expect_expectation_to_fail_with_message(lambda: expect('hello').to_be_a(SomeClass), "Expected <hello> to be a .*SomeClass.*")
+    expect_expectation_to_fail_with_message(
+            lambda: expect('hello').to_be_a(SomeClass),
+            "Expected <hello> to be a .*SomeClass.*")
 
 
 def test__to_contain__can_pass():
@@ -144,7 +159,9 @@ def test__to_contain__can_pass():
 
 
 def test__to_contain__when_item_not_contained__fails_with_message():
-    expect_expectation_to_fail_with_message(lambda: expect(["some-item"]).to_contain("some-other-item"), "Expected <\['some-item'\]> to contain <some-other-item>")
+    expect_expectation_to_fail_with_message(
+            lambda: expect(["some-item"]).to_contain("some-other-item"),
+            "Expected <\['some-item'\]> to contain <some-other-item>")
 
 
 def test__to_contain__can_pass_with_matcher():

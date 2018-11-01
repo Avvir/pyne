@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.matchers import anything, at_least, contains, contains_text, instance_of, match
+from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match
 
 
 def test__anything__satisfies_to_be():
@@ -53,3 +53,19 @@ def test__at_least__when_numbers_are_equal__matches():
 
 def test__at_least__when_number_is_smaller__does_not_match():
     expect(1).not_to_be(at_least(2))
+
+
+def test__has_length__matches_anything_with_length():
+    expect(str("string")).to_be(has_length(6))
+    expect(list([1, 2, 3])).to_be(has_length(3))
+    expect((1, 2)).to_be(has_length(2))
+    expect(range(10)).to_be(has_length(10))
+    expect(bytes(8)).to_be(has_length(8))
+    expect(bytearray(7)).to_be(has_length(7))
+    expect(dict(key="value")).to_be(has_length(1))
+    expect(set()).to_be(has_length(0))
+    expect(frozenset(range(9))).to_be(has_length(9))
+
+
+def test__has_length__when_length_is_different__does_not_match():
+    expect("string").not_to_be(has_length(2))
