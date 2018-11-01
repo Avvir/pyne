@@ -2,7 +2,7 @@ import re
 
 from pyne.expectations import expect
 from pyne.pyne_result_reporters import TestFailureException
-from pyne.pyne_test_collector import it, describe, before_each, xit, xdescribe, fit, after_each
+from pyne.pyne_test_collector import after_each, before_each, describe, fit, it, xdescribe, xit
 from pyne.pyne_tester import pyne
 
 
@@ -216,7 +216,7 @@ def _calculate():
 
         self.calculator.extra_method = extra_method
         expect(
-            lambda: self.calculator.calculate('self.extra_method(self)')
+                lambda: self.calculator.calculate('self.extra_method(self)')
         ).to_raise_error_with_message("invalid expression")
 
         expect(self.calculator.__format__("")).not_to_be("Some Broken Calculator")

@@ -1,4 +1,4 @@
-from pyne.pyne_test_collector import it, fit
+from pyne.pyne_test_collector import it
 from pyne.pyne_tester import pyne
 
 

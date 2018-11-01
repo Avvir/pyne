@@ -1,5 +1,6 @@
 from termcolor import cprint
-from .matchers import Matcher, InverseMatcher, equal_to, is_matcher, contains, instance_of, is_none
+
+from .matchers import InverseMatcher, Matcher, contains, equal_to, instance_of, is_matcher, is_none
 
 
 class Expectations:

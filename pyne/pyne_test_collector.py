@@ -1,4 +1,4 @@
-from pyne.pyne_test_blocks import DescribeBlock, ItBlock, BeforeEachBlock, AfterEachBlock
+from pyne.pyne_test_blocks import AfterEachBlock, BeforeEachBlock, DescribeBlock, ItBlock
 
 
 def no_tests():
@@ -38,13 +38,13 @@ def it(method_or_description):
 
         def named_it(method):
             test_collection.current_describe.it_blocks.append(
-                ItBlock(test_collection.current_describe, description, method))
+                    ItBlock(test_collection.current_describe, description, method))
 
         return named_it
     else:
         method = method_or_description
         test_collection.current_describe.it_blocks.append(
-            ItBlock(test_collection.current_describe, method.__name__, method))
+                ItBlock(test_collection.current_describe, method.__name__, method))
         return method_or_description
 
 
@@ -56,13 +56,13 @@ def fit(method_or_description):
 
         def named_focused_it(method):
             test_collection.current_describe.it_blocks.append(
-                ItBlock(test_collection.current_describe, description, method, focused=True))
+                    ItBlock(test_collection.current_describe, description, method, focused=True))
 
         return named_focused_it
     else:
         method = method_or_description
         test_collection.current_describe.it_blocks.append(
-            ItBlock(test_collection.current_describe, method.__name__, method, focused=True))
+                ItBlock(test_collection.current_describe, method.__name__, method, focused=True))
         return method_or_description
 
 
@@ -72,13 +72,13 @@ def xit(method_or_description):
 
         def named_xit(method):
             test_collection.current_describe.it_blocks.append(
-                ItBlock(test_collection.current_describe, description, method, pending=True))
+                    ItBlock(test_collection.current_describe, description, method, pending=True))
 
         return named_xit
     else:
         method = method_or_description
         test_collection.current_describe.it_blocks.append(
-            ItBlock(test_collection.current_describe, method.__name__, method, pending=True))
+                ItBlock(test_collection.current_describe, method.__name__, method, pending=True))
         return method_or_description
 
 
@@ -88,13 +88,13 @@ def describe(method_or_description):
 
         def named_describe(method):
             test_collection.current_describe.describe_blocks.append(
-                DescribeBlock(test_collection.current_describe, description, method))
+                    DescribeBlock(test_collection.current_describe, description, method))
 
         return named_describe
     else:
         method = method_or_description
         test_collection.current_describe.describe_blocks.append(
-            DescribeBlock(test_collection.current_describe, method.__name__, method))
+                DescribeBlock(test_collection.current_describe, method.__name__, method))
         return method_or_description
 
 
@@ -104,13 +104,13 @@ def xdescribe(method_or_description):
 
         def named_describe(method):
             test_collection.current_describe.describe_blocks.append(
-                DescribeBlock(test_collection.current_describe, description, method, pending=True))
+                    DescribeBlock(test_collection.current_describe, description, method, pending=True))
 
         return named_describe
     else:
         method = method_or_description
         test_collection.current_describe.describe_blocks.append(
-            DescribeBlock(test_collection.current_describe, method.__name__, method, pending=True))
+                DescribeBlock(test_collection.current_describe, method.__name__, method, pending=True))
         return method_or_description
 
 
@@ -119,20 +119,20 @@ def fdescribe(description):
 
     def named_focused_describe(method):
         test_collection.current_describe.describe_blocks.append(
-            DescribeBlock(test_collection.current_describe, description, method, focused=True))
+                DescribeBlock(test_collection.current_describe, description, method, focused=True))
 
     return named_focused_describe
 
 
 def before_each(method):
     test_collection.current_describe.before_each_blocks.append(
-        BeforeEachBlock(test_collection.current_describe, method))
+            BeforeEachBlock(test_collection.current_describe, method))
     return method
 
 
 def after_each(method):
     test_collection.current_describe.after_each_blocks.append(
-        AfterEachBlock(test_collection.current_describe, method))
+            AfterEachBlock(test_collection.current_describe, method))
     return method
 
 

@@ -1,4 +1,4 @@
-from pyne.pyne_test_collector import it, fit, fdescribe, describe
+from pyne.pyne_test_collector import describe, fdescribe, fit, it
 from pyne.pyne_tester import pyne
 
 
