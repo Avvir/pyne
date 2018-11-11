@@ -12,7 +12,7 @@ def some_file():
       def _(self):
         self.calculator = new Calculator()
 
-      @it("returns the sum)
+      @it("returns the sum")
       def _(self):
         expect(self.calculator.calculate("22 + 11")).to_be(33)
 ```
