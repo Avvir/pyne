@@ -24,12 +24,20 @@ class PyneCliHelper:
         self.report_between_suites = False
 
     @staticmethod
-    def load_all_tests_in_dir(dirname):
+    def load_tests_in_dir(dirname):
         for importer, package_name, _ in pkgutil.iter_modules([dirname]):
             if "_test" == package_name[-5:] and package_name not in sys.modules:
                 module = importer.find_module(package_name
                                               ).load_module(package_name)
                 print(module)
+
+    @staticmethod
+    def load_tests_in_subdirectories(path):
+        for content in os.listdir(path):
+            content_path = os.path.join(path, content)
+            if os.path.isdir(content_path):
+                cli_helper.load_tests_in_dir(content_path)
+                cli_helper.load_tests_in_subdirectories(content_path)
 
     def setup_reporting(self):
         self.report_between_suites = config.report_between_suites
@@ -47,12 +55,8 @@ cli_helper = PyneCliHelper()
 def main(context, path):
     cli_helper.setup_reporting()
 
-    cli_helper.load_all_tests_in_dir(path)
-
-    for content in os.listdir(path):
-        content_path = os.path.join(path, content)
-        if os.path.isdir(content_path):
-            cli_helper.load_all_tests_in_dir(content_path)
+    cli_helper.load_tests_in_dir(path)
+    cli_helper.load_tests_in_subdirectories(path)
 
     describe_block = test_collection.top_level_describe
     run_tests(describe_block, reporter)

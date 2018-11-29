@@ -34,11 +34,11 @@ def test_pyne_decoration_runs_tests():
     @pyne
     def first_test():
         @before_each
-        def do(self):
+        def _(self):
             ran_thing("before1")
 
-        @it
-        def does_something(self):
+        @it("does something")
+        def _(self):
             ran_thing("it1")
 
     expect(things_run).to_be(["before1", "it1"])

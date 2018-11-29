@@ -2,12 +2,12 @@ import shutil
 import os
 from os import path
 
-# import pytest
 from click.testing import CliRunner
 from pyne import cli
 from pyne.expectations import expect
+from pyne.pyne_config import config
 from tests.test_helpers.test_resource_paths import cli_test_fixture_path, pyne_path, cli_two_file_test_fixture_path, \
-    cli_focused_test_fixture_path
+    cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path
 
 
 def copy_to_working_directory(resource_path):
@@ -51,3 +51,19 @@ def test__when_there_are_two_test_files__summarizes_the_results_together():
         expect(result.output).to_contain("some_first_file_test")
         expect(result.output).to_contain("some_second_file_test")
         expect(result.output).to_contain("2 passed")
+
+
+def test__when_there_are_nested_directories_of_test_files__summarizes_the_results_together():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        copy_to_working_directory(path.join(cli_nested_directory_tests_fixture_path, 'tests'))
+        copy_to_working_directory(pyne_path)
+
+        result = runner.invoke(cli.main)
+        expect(result.output).to_contain("some_top_directory_test")
+        expect(result.output).to_contain("some_nested_directory_test")
+        expect(result.output).to_contain("1 failed, 3 passed")
+
+
+def test_cleanup():
+    config.report_between_suites = True
