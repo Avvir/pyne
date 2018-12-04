@@ -7,7 +7,7 @@ from pyne import cli
 from pyne.expectations import expect
 from pyne.pyne_config import config
 from tests.test_helpers.test_resource_paths import cli_test_fixture_path, pyne_path, cli_two_file_test_fixture_path, \
-    cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path
+    cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path, cli_hidden_file_path
 
 
 def copy_to_working_directory(resource_path):
@@ -64,6 +64,14 @@ def test__when_there_are_nested_directories_of_test_files__summarizes_the_result
         expect(result.output).to_contain("some_nested_directory_test")
         expect(result.output).to_contain("1 failed, 3 passed")
 
+def test_when_there_is_a_hidden_subdirectory__does_not_look_for_tests():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        copy_to_working_directory(path.join(cli_hidden_file_path, '.hidden_dir'))
+        copy_to_working_directory(pyne_path)
+
+        result = runner.invoke(cli.main)
+        expect(result.output).to_contain("Ran 0 tests")
 
 def test_cleanup():
     config.report_between_suites = True
