@@ -34,10 +34,11 @@ class PyneCliHelper:
     @staticmethod
     def load_tests_in_subdirectories(path):
         for content in os.listdir(path):
-            content_path = os.path.join(path, content)
-            if os.path.isdir(content_path):
-                cli_helper.load_tests_in_dir(content_path)
-                cli_helper.load_tests_in_subdirectories(content_path)
+            if content[:1] != '.':
+                content_path = os.path.join(path, content)
+                if os.path.isdir(content_path):
+                    cli_helper.load_tests_in_dir(content_path)
+                    cli_helper.load_tests_in_subdirectories(content_path)
 
     def setup_reporting(self):
         self.report_between_suites = config.report_between_suites
