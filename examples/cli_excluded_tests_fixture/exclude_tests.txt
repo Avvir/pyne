@@ -1,2 +1,0 @@
-excluded_test_a
-excluded_test_b

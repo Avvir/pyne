@@ -79,11 +79,11 @@ def test_when_there_is_a_list_of_excluded_tests__does_not_run_them():
         copy_to_working_directory(path.join(cli_excluded_tests_fixture_path, 'tests'))
         copy_to_working_directory(pyne_path)
         result = runner.invoke(cli.main)
-        expect(result.output).not_to_contain("excluded_a_test")
-        expect(result.output).not_to_contain("excluded_b_test")
-        expect(result.output).to_contain("included_c_test")
-        expect(result.output).to_contain("included_d_test")
-        expect(result.output).to_contain("included_e_test")
+        expect(result.output).not_to_contain("run_excluded_a_test")
+        expect(result.output).not_to_contain("run_excluded_b_test")
+        expect(result.output).to_contain("run_included_c_test")
+        expect(result.output).to_contain("run_included_d_test")
+        expect(result.output).to_contain("run_included_e_test")
         # import time
         # time.sleep(50000)
         

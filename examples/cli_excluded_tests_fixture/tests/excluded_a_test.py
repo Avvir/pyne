@@ -3,7 +3,7 @@ from pyne.pyne_tester import pyne
 
 
 @pyne
-def excluded_a_test():
+def run_excluded_a_test():
     @it("can pass")
     def _(self):
         pass

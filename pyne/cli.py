@@ -24,21 +24,32 @@ class PyneCliHelper:
         self.report_between_suites = False
 
     @staticmethod
-    def load_tests_in_dir(dirname):
+    def load_tests_in_dir(dirname, excluded_package_names):
+        excluded_pyne_test_filename = os.path.join(dirname, "excluded_pyne_tests.txt")
+        if os.path.exists(excluded_pyne_test_filename):
+            with open(excluded_pyne_test_filename, "r") as fh:
+                new_names = [n.strip() for n in fh.readlines()]
+                for name in new_names:
+                    excluded_package_names[name] = excluded_pyne_test_filename
+
         for importer, package_name, _ in pkgutil.iter_modules([dirname]):
             if "_test" == package_name[-5:] and package_name not in sys.modules:
+                if package_name in excluded_package_names:
+                    exclude_file = excluded_package_names[package_name]
+                    print("Ignoring %s from exclude file %s" % (package_name, exclude_file))
+                    continue
                 module = importer.find_module(package_name
                                               ).load_module(package_name)
                 print(module)
 
     @staticmethod
-    def load_tests_in_subdirectories(path):
+    def load_tests_in_subdirectories(path, excluded_package_names):
         for content in os.listdir(path):
             if content[:1] != '.':
                 content_path = os.path.join(path, content)
                 if os.path.isdir(content_path):
-                    cli_helper.load_tests_in_dir(content_path)
-                    cli_helper.load_tests_in_subdirectories(content_path)
+                    cli_helper.load_tests_in_dir(content_path, excluded_package_names)
+                    cli_helper.load_tests_in_subdirectories(content_path, excluded_package_names)
 
     def setup_reporting(self):
         self.report_between_suites = config.report_between_suites
@@ -55,9 +66,9 @@ cli_helper = PyneCliHelper()
 @pass_context
 def main(context, path):
     cli_helper.setup_reporting()
-
-    cli_helper.load_tests_in_dir(path)
-    cli_helper.load_tests_in_subdirectories(path)
+    excluded_package_names = dict()
+    cli_helper.load_tests_in_dir(path, excluded_package_names)
+    cli_helper.load_tests_in_subdirectories(path, excluded_package_names)
 
     describe_block = test_collection.top_level_describe
     run_tests(describe_block, reporter)

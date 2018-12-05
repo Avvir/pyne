@@ -3,7 +3,7 @@ from pyne.pyne_tester import pyne
 
 
 @pyne
-def included_c_test():
+def run_included_c_test():
     @it("can pass")
     def _(self):
         pass
