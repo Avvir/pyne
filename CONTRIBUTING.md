@@ -5,7 +5,7 @@
 
 ```bash
 pip install pipenv
-pipenv install
+pipenv install --dev
 ```
 
 ## Test

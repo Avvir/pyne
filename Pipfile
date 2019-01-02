@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "*"
 termcolor = "*"
 click = "*"
 click-didyoumean = "*"
 click-completion = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3"
