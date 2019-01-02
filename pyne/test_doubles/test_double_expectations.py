@@ -1,6 +1,6 @@
 from termcolor import cprint
 
-from pyne.expectation import Expectation
+from pyne.lib.expectation import Expectation
 
 
 def format_tuple_as_args(args_tuple):
