@@ -80,14 +80,18 @@ def contained_in(collection):
 
 def instance_of(clazz):
     if is_matcher(clazz):
-        return Matcher("instance_of", lambda subject: clazz.matches(subject.__class__))
+        return Matcher("instance_of", lambda subject, *params: clazz.matches(subject.__class__), clazz)
     else:
-        return Matcher("instance_of", lambda subject: isinstance(subject, clazz))
+        return Matcher("instance_of", lambda subject, *params: isinstance(subject, clazz), clazz)
 
 
 def at_least(number):
-    return Matcher("at_least", lambda subject: subject >= number)
+    return Matcher("at_least", lambda subject, *params: subject >= number, number)
 
 
 def has_length(number):
-    return Matcher("has_length", lambda subject: len(subject) == number)
+    return Matcher("has_length", lambda subject, *params: len(subject) == number, number)
+
+
+def between(lower, upper):
+    return Matcher("between", lambda subject, *params: lower < subject < upper, lower, upper)

@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match
+from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match, between
 
 
 def test__anything__satisfies_to_be():
@@ -17,6 +17,10 @@ def test__match__when_string_is_different__does_not_match():
 
 def test__contains_text__can_match_text():
     expect("hello world").to_be(contains_text("world"))
+
+
+def test__between__can_pass():
+    expect(1).to_be(between(0, 4))
 
 
 def test__contains_text__when_string_is_different__does_not_match():

@@ -1,6 +1,6 @@
 """Pyne tests for pyne.expectations"""
 from pyne.expectations import expect
-from pyne.pyne_test_collector import it, describe
+from pyne.pyne_test_collector import it, describe, fdescribe
 from pyne.pyne_tester import pyne
 
 # flake8: noqa

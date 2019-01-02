@@ -1,6 +1,6 @@
 from termcolor import cprint
 
-from .matchers import InverseMatcher, Matcher, contains, equal_to, instance_of, is_matcher, is_none, has_length
+from .matchers import InverseMatcher, Matcher, contains, equal_to, instance_of, is_matcher, is_none, has_length, between
 
 
 class Expectations:
@@ -36,26 +36,37 @@ class Expectations:
         expectation.assert_expected(self.subject, item_or_text)
 
     def to_be_none(self):
-        expectation = Expectation("to_be_none", is_none())
-        expectation.assert_expected(self.subject, ())
+        expectation = Expectation("to_be_none", is_none(), message_format="Expected <{subject}> to be None")
+        expectation.assert_expected(self.subject)
 
     def not_to_be_none(self):
-        expectation = Expectation("to_be_none", is_none()).get_inverse()
-        expectation.assert_expected(self.subject, ())
+        expectation = Expectation("to_be_none", is_none(),
+                                  message_format="Expected <{subject}> to be None").get_inverse()
+        expectation.assert_expected(self.subject)
+
+    def to_be_between(self, lower, upper):
+        expectation = ToBeBetweenExpectation(lower, upper)
+        expectation.assert_expected(self.subject, lower, upper)
 
 
 class Expectation:
     def __init__(self, name, matcher, message_format=None):
         self.name = name
         self.matcher = matcher
-        self.message_format = message_format
+        self._message_format = message_format
 
     def get_inverse(self):
         return InverseExpectation(self)
 
+    def message_format(self, subject, params):
+        if self._message_format is None:
+            return self.default_message()
+        else:
+            return self._message_format
+
     def assert_expected(self, subject, *params):
         if not self.matcher.matches(subject):
-            message_format = self.default_message() if self.message_format is None else self.message_format()
+            message_format = self.message_format(subject, params)
             formatted_params, formatted_subject = self.unmatcherify(params, subject)
             message = message_format.format(*formatted_params, subject=formatted_subject)
             cprint("\n" + message + "\n", 'yellow')
@@ -81,7 +92,7 @@ class Expectation:
 
 
 class RaiseExpectation(Expectation):
-    def __init__(self, error_matcher, message_format=None, exception_format=None):
+    def __init__(self, error_matcher, exception_format=None):
         if exception_format is None:
             exception_format = lambda e: repr(e)
         matcher_name = error_matcher.name
@@ -100,7 +111,7 @@ class RaiseExpectation(Expectation):
             self.actual_exception = e
             return self.error_matcher.matches(e)
 
-    def message_format(self):
+    def message_format(self, subject, params):
         if self.actual_exception is None:
             return "Expected <{subject}> to raise an exception " + self.error_description + " <{0}> but no exception was raised"
         else:
@@ -127,7 +138,7 @@ class RaiseTypeExpectation(RaiseExpectation):
                                      self.expected_type)
         super().__init__(self.inner_matcher)
 
-    def message_format(self):
+    def message_format(self, subject, params):
         if self.actual_exception is None:
             return "Expected <{subject}> to raise an exception of type <" + self.formatted_expected_type() + "> but no exception was raised"
         else:
@@ -138,11 +149,35 @@ class RaiseTypeExpectation(RaiseExpectation):
         return self.expected_type.__name__
 
 
+class ToBeBetweenExpectation(Expectation):
+    def __init__(self, lower, upper):
+        self.lower = lower
+        self.upper = upper
+        super().__init__("to_be_between", between(lower, upper), self.message_format)
+
+    def message_format(self, subject, params):
+        lower, upper = params
+        if subject < lower:
+            return "Expected <{subject}> to be between <{0}> and <{1}> " \
+                   "but it was less than or equal to <{0}>"
+        else:
+            return "Expected <{subject}> to be between <{0}> and <{1}> " \
+                   "but it was greater than or equal to <{1}>"
+
+
 class InverseExpectation(Expectation):
     def __init__(self, expectation):
         name = "not_" + expectation.name
         matcher = InverseMatcher("not_" + expectation.matcher.name, expectation.matcher)
-        super().__init__(name, matcher)
+
+        inverted_message = None
+        if expectation._message_format:
+            inverted_message = self.invert_message(expectation._message_format)
+
+        super().__init__(name, matcher, message_format=inverted_message)
+
+    def invert_message(self, message):
+        return message.replace(" to ", " not to ")
 
 
 def expect(subject):
