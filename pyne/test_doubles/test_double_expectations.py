@@ -1,16 +1,6 @@
 from termcolor import cprint
 
-import pyne.expectations
-from pyne.test_doubles.matchers import was_called_with
-
-Expectation = pyne.expectations.Expectation
-
-Expectations = pyne.expectations.Expectations
-
-
-class TestDoubleExpectations(Expectations):
-    def was_called_with(self, *args, **kwargs):
-        CalledWithExpectation(was_called_with(*args, **kwargs)).assert_expected(self.subject, args, kwargs)
+from pyne.expectation import Expectation
 
 
 def format_tuple_as_args(args_tuple):
@@ -64,8 +54,3 @@ class CalledWithExpectation(Expectation):
             raise AssertionError(message)
 
 
-def expect(subject):
-    return TestDoubleExpectations(subject)
-
-
-pyne.expectations.expect = expect

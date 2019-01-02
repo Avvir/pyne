@@ -1,5 +1,5 @@
 # noinspection PyUnresolvedReferences
-import pyne.test_doubles.expectations
+import pyne.test_doubles.test_double_expectations
 from pyne.expectations import expect
 from pyne.test_doubles.spy import stub
 from tests.test_helpers import SomeClass, expect_expectation_to_fail_with_message
