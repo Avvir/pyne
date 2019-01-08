@@ -3,9 +3,14 @@ class Spy:
         self.method = method
         self.instance = instance
         self.last_call = None
+        self.return_value = None
 
     def __call__(self, *args, **kwargs):
         self.last_call = (args, kwargs)
+        return self.return_value
+
+    def returns(self, return_value):
+        self.return_value = return_value
 
 
 # Stubbing classes
