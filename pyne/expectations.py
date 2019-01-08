@@ -2,9 +2,9 @@ from pyne.lib.expectation import Expectation
 from pyne.lib.raise_message_expectation import RaiseMessageExpectation
 from pyne.lib.raise_type_expectation import RaiseTypeExpectation
 from pyne.lib.to_be_between_expectation import ToBeBetweenExpectation
-from pyne.test_doubles.test_double_expectations import CalledWithExpectation
+from pyne.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
 from pyne.test_doubles.test_double_matchers import was_called_with
-from .matchers import contains, equal_to, instance_of, is_none, has_length
+from pyne.matchers import contains, equal_to, has_length, instance_of, is_none
 
 
 class Expectations:
@@ -44,13 +44,15 @@ class Expectations:
         expectation.assert_expected(self.subject)
 
     def not_to_be_none(self):
-        expectation = Expectation("to_be_none", is_none(),
-                                  message_format="Expected <{subject}> to be None").get_inverse()
+        expectation = Expectation("to_be_none", is_none(), message_format="Expected <{subject}> to be None").get_inverse()
         expectation.assert_expected(self.subject)
 
     def to_be_between(self, lower, upper):
         expectation = ToBeBetweenExpectation(lower, upper)
         expectation.assert_expected(self.subject, lower, upper)
+
+    def was_called(self):
+        CalledExpectation().assert_expected(self.subject)
 
     def was_called_with(self, *args, **kwargs):
         CalledWithExpectation(was_called_with(*args, **kwargs)).assert_expected(self.subject, args, kwargs)

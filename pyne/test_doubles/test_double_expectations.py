@@ -21,6 +21,20 @@ def format_params(args_tuple, kwargs_dict):
     return params
 
 
+class CalledExpectation(Expectation):
+    def __init__(self):
+        super().__init__("to_be_called", None)
+
+    def assert_expected(self, subject, *params):
+        if subject.last_call is None:
+            method = subject.method
+            instance = subject.instance
+            formatted_subject = instance.__class__.__name__ + "#" + method.__name__
+            message = "Expected that <{subject}> was called, but it was never called".format(subject=formatted_subject)
+            cprint("\n" + message + "\n", "yellow")
+            raise AssertionError(message)
+
+
 class CalledWithExpectation(Expectation):
     def __init__(self, matcher):
         super().__init__("to_be_called_with", matcher)
@@ -52,5 +66,3 @@ class CalledWithExpectation(Expectation):
 
             cprint("\n" + message + "\n", 'yellow')
             raise AssertionError(message)
-
-
