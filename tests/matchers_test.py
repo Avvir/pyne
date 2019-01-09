@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match, between
+from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match, between, about
 
 
 def test__anything__satisfies_to_be():
@@ -73,3 +73,15 @@ def test__has_length__matches_anything_with_length():
 
 def test__has_length__when_length_is_different__does_not_match():
     expect("string").not_to_be(has_length(2))
+
+
+def test__about__matches_numbers_within_a_given_tolerance():
+    expect(3.000001).to_be(about(3, 0.001))
+
+
+def test__about__when_no_tolerance_is_given__matches_numbers_within_one_thousandth_of_the_number():
+    expect(3.0001).to_be(about(3))
+
+
+def test__about__when_number_is_outside_tolerance__does_not_match():
+    expect(3.5).not_to_be(about(3))

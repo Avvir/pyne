@@ -4,7 +4,7 @@ from pyne.lib.raise_type_expectation import RaiseTypeExpectation
 from pyne.lib.to_be_between_expectation import ToBeBetweenExpectation
 from pyne.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
 from pyne.test_doubles.test_double_matchers import was_called_with
-from pyne.matchers import contains, equal_to, has_length, instance_of, is_none
+from pyne.matchers import contains, equal_to, has_length, instance_of, is_none, about
 
 
 class Expectations:
@@ -50,6 +50,10 @@ class Expectations:
     def to_be_between(self, lower, upper):
         expectation = ToBeBetweenExpectation(lower, upper)
         expectation.assert_expected(self.subject, lower, upper)
+
+    def to_be_about(self, number, tolerance=0.001):
+        expectation = Expectation("to_be_about", about(number, tolerance), message_format="Expected <{subject}> to be about <{0}>")
+        expectation.assert_expected(self.subject, number, tolerance)
 
     def was_called(self):
         CalledExpectation().assert_expected(self.subject)

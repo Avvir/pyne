@@ -10,7 +10,7 @@ def some_file():
     def _():
       @before_each
       def _(self):
-        self.calculator = new Calculator()
+        self.calculator = Calculator()
 
       @it("returns the sum")
       def _(self):
@@ -35,31 +35,16 @@ To run all the tests in a directory, you can use the cli:
 ### Run only some tests
 
 You can focus on a single test by using `@fit` instead of `@it`
-Or a single decribe block by using `@fdescribe` instead of `@describe`
+Or a single describe block by using `@fdescribe` instead of `@describe`
 
 ## Using Test Doubles
-### Importing
-In order to properly add the expectations to pyne:
-
-```python
-import pyne.test_doubles.expectations 
-```
-
-before:
-```python
-from pyne.expectations import expect
-```
-
-Once you've imported both modules, you can use the test doubles expectations like `was_called_with`.
-
 ### Spying
 
 In order to spy on an instances methods:
 
 ```python
-import pyne.test_doubles.expectations 
 from pyne.expectations import expect
-from pyne.pyne_test_collector import describe, it
+from pyne.pyne_test_collector import before_each, describe, it
 from pyne.test_doubles.spy import stub
 
 from some_module import SomeClass
@@ -75,6 +60,16 @@ def _():
     def _(self):
         self.class_instance.some_method("something")
         expect(self.class_instance.some_method).was_called_with("something")
+```
+
+If you need the method to still return something, you scan specify what it returns:
+
+```python
+    @before_each
+    def _(self):
+        self.class_instance = SomeClass()
+        stub(self.class_instance, self.class_instance.some_method)
+        self.class_instance.some_method.returns("some value")
 ```
 # Contribution / Development
 

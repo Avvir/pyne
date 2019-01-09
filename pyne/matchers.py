@@ -95,3 +95,7 @@ def has_length(number):
 
 def between(lower, upper):
     return Matcher("between", lambda subject, *params: lower < subject < upper, lower, upper)
+
+
+def about(number, tolerance=0.001):
+    return Matcher("about", lambda subject, *params: -tolerance < number - subject < tolerance, number)
