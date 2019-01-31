@@ -1,6 +1,7 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import stub
-from tests.test_helpers import SomeClass, expect_expectation_to_fail_with_message
+from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
+from tests.test_helpers.some_class import SomeClass
 
 
 def test__was_called_with__can_pass():

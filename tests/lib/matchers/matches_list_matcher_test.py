@@ -1,5 +1,5 @@
 from pyne.expectations import expect
-from pyne.lib.matches_list_matcher import MatchesListMatcher
+from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
 
 
 def test__matches_list_matcher__can_match():

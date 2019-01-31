@@ -1,7 +1,7 @@
 from pyne.lib.expectation import Expectation
-from pyne.lib.raise_message_expectation import RaiseMessageExpectation
-from pyne.lib.raise_type_expectation import RaiseTypeExpectation
-from pyne.lib.to_be_between_expectation import ToBeBetweenExpectation
+from pyne.lib.expectations.raise_message_expectation import RaiseMessageExpectation
+from pyne.lib.expectations.raise_type_expectation import RaiseTypeExpectation
+from pyne.lib.expectations.to_be_between_expectation import ToBeBetweenExpectation
 from pyne.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
 from pyne.test_doubles.test_double_matchers import was_called_with
 from pyne.matchers import contains, equal_to, has_length, instance_of, is_none, about

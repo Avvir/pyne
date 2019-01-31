@@ -1,5 +1,5 @@
 from pyne.test_doubles.spy import stub
-from tests.test_helpers import SomeClass
+from tests.test_helpers.some_class import SomeClass
 
 
 def test__returns__returns_the_given_value_when_the_stubbed_method_is_called():
