@@ -198,3 +198,14 @@ def test__to_be_about__when_the_number_is_outside_of_the_given_tolerance__fails_
         lambda: expect(3.5).to_be_about(3),
         "Expected <3.5> to be about <3>"
     )
+
+
+def test__to_match_list__can_pass():
+    expect([1, 2, 3]).to_match_list([1, 2, 3])
+
+
+def test__to_match_list__can_fail():
+    expect_expectation_to_fail_with_message(
+        lambda: expect([1, 2, 3]).to_match_list([2, 3, 4]),
+        "Expected <[1, 2, 3]> to match list <[2, 3, 4]>"
+    )

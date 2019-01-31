@@ -1,6 +1,7 @@
 import re
 
 from pyne.lib.matcher import Matcher
+from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
 
 
 def is_matcher(possible_matcher):
@@ -83,3 +84,7 @@ def between(lower, upper):
 
 def about(number, tolerance=0.001):
     return Matcher("about", lambda subject, *params: -tolerance < number - subject < tolerance, number)
+
+
+def matches_list(expected_list):
+    return MatchesListMatcher(expected_list)
