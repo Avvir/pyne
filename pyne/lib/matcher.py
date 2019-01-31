@@ -7,6 +7,9 @@ class Matcher:
     def matches(self, subject):
         return self.comparator(subject, *self.params)
 
+    def reason(self):
+        return None
+
     def format(self):
         return "{matcher_name}{params}".format(matcher_name=self.name, params=self.params)
 

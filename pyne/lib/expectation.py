@@ -24,6 +24,9 @@ class Expectation:
             message_format = self.message_format(subject, params)
             formatted_params, formatted_subject = self.unmatcherify(params, subject)
             message = message_format.format(*formatted_params, subject=formatted_subject)
+            reason = self.matcher.reason()
+            if reason is not None:
+                message += " but " + reason
             cprint("\n" + message + "\n", 'yellow')
             raise AssertionError(message)
 
