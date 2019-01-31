@@ -1,5 +1,6 @@
+from pyne.lib.matcher import Matcher
 from pyne.lib.raise_expectation import RaiseExpectation
-from pyne.matchers import Matcher, instance_of
+from pyne.matchers import instance_of
 
 
 class RaiseTypeExpectation(RaiseExpectation):

@@ -1,6 +1,7 @@
 from termcolor import cprint
 
-from pyne.matchers import is_matcher, InverseMatcher
+from pyne.lib.matcher import InverseMatcher
+from pyne.matchers import is_matcher
 
 
 class Expectation:

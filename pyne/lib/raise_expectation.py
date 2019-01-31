@@ -1,5 +1,5 @@
 from pyne.lib.expectation import Expectation
-from pyne.matchers import Matcher
+from pyne.lib.matcher import Matcher
 
 
 class RaiseExpectation(Expectation):

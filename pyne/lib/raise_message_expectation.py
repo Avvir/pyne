@@ -1,5 +1,6 @@
+from pyne.lib.matcher import Matcher
 from pyne.lib.raise_expectation import RaiseExpectation
-from pyne.matchers import Matcher, equal_to
+from pyne.matchers import equal_to
 
 
 class RaiseMessageExpectation(RaiseExpectation):
