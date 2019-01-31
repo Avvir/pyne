@@ -7,7 +7,7 @@ from pyne.test_doubles.test_double_matchers import was_called_with
 from pyne.matchers import contains, equal_to, has_length, instance_of, is_none, about, matches_list
 
 
-class Expectations:
+class PossibleExpectations:
     def __init__(self, subject):
         self.subject = subject
 
@@ -67,4 +67,4 @@ class Expectations:
 
 
 def expect(subject):
-    return Expectations(subject)
+    return PossibleExpectations(subject)

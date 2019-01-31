@@ -8,7 +8,7 @@ def test__anything__satisfies_to_be():
 
 
 def test__match__can_match_regex():
-    expect("hello (world)").to_be(match("h.*\(world\)"))
+    expect("hello (world)").to_be(match("h.*\\(world\\)"))
 
 
 def test__match__when_string_is_different__does_not_match():

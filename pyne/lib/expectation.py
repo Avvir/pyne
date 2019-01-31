@@ -15,7 +15,7 @@ class Expectation:
 
     def message_format(self, subject, params):
         if self._message_format is None:
-            return self.default_message()
+            return self.default_message(len(params))
         else:
             return self._message_format
 
@@ -27,8 +27,14 @@ class Expectation:
             cprint("\n" + message + "\n", 'yellow')
             raise AssertionError(message)
 
-    def default_message(self):
-        return "Expected <{subject}> " + " ".join(self.name.split("_")) + " <{0}>"
+    def default_message(self, param_count=1):
+        if param_count == 0:
+            return "Expected <{subject}> " + " ".join(self.name.split("_"))
+        elif param_count == 1:
+            return "Expected <{subject}> " + " ".join(self.name.split("_")) + " <{0}>"
+        else:
+            param_list_formatting = " <" + ", ".join(["<{" + str(i) + "}>" for i in range(param_count)]) + ">"
+            return "Expected <{subject}> " + " ".join(self.name.split("_")) + param_list_formatting
 
     def unmatcherify(self, params, subject):
         formatted_subject = subject

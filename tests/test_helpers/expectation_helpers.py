@@ -15,5 +15,5 @@ def expect_expectation_to_fail_with_message(expectation, *message_regexes):
                 matches = re.search(message_regex, actual_message)
                 if not matches:
                     print("Expected regex: ", message_regex)
-                    print("Actual message:   ", actual_message)
+                    print("Actual message: ", actual_message)
                 assert matches
