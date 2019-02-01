@@ -1,20 +1,7 @@
 import re
 
-from pyne.lib.matcher import Matcher
+from pyne.lib.matcher import Matcher, is_matcher, equal_to_comparator
 from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
-
-
-def is_matcher(possible_matcher):
-    return isinstance(possible_matcher, Matcher)
-
-
-def equal_to_comparator(subject, *params):
-    if is_matcher(subject):
-        return subject.matches(params[0])
-    elif is_matcher(params[0]):
-        return params[0].matches(subject)
-    else:
-        return subject == params[0]
 
 
 def equal_to(value, comparator=None):

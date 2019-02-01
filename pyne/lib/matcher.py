@@ -18,3 +18,16 @@ class Matcher:
 class InverseMatcher(Matcher):
     def __init__(self, name, comparator, *params):
         super().__init__(name, lambda subject: not comparator.matches(subject), *params)
+
+
+def is_matcher(possible_matcher):
+    return isinstance(possible_matcher, Matcher)
+
+
+def equal_to_comparator(subject, *params):
+    if is_matcher(subject):
+        return subject.matches(params[0])
+    elif is_matcher(params[0]):
+        return params[0].matches(subject)
+    else:
+        return subject == params[0]

@@ -1,4 +1,4 @@
-from pyne.lib.matcher import Matcher
+from pyne.lib.matcher import Matcher, equal_to_comparator
 
 
 class MatchesListMatcher(Matcher):
@@ -12,7 +12,7 @@ class MatchesListMatcher(Matcher):
             return False
         if len(subject) == len(expected):
             for subject_item, expected_item in zip(subject, expected):
-                if subject_item != expected_item:
+                if not equal_to_comparator(subject_item, expected_item):
                     return False
             return True
         else:

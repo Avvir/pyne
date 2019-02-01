@@ -1,5 +1,6 @@
 from pyne.expectations import expect
 from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
+from pyne.matchers import about
 
 
 def test__matches_list_matcher__can_match():
@@ -27,3 +28,7 @@ def test__matches_list_matcher__when_list_is_the_same_instance__explains_why_not
     matcher = MatchesListMatcher(some_list)
     matcher.matches(some_list)
     expect(matcher.reason()).to_contain("it was the exact same instance")
+
+
+def test__matches_list_matcher__supports_matchers_in_the_list():
+    expect([1]).to_be(MatchesListMatcher([about(1)]))
