@@ -19,3 +19,11 @@ def test__matches_list_matcher__when_list_is_the_same_instance__does_not_match()
     some_list = [1, 2, 3, 4]
 
     expect(some_list).not_to_be(MatchesListMatcher(some_list))
+
+
+def test__matches_list_matcher__when_list_is_the_same_instance__explains_why_not():
+    some_list = [1, 2, 3, 4]
+
+    matcher = MatchesListMatcher(some_list)
+    matcher.matches(some_list)
+    expect(matcher.reason()).to_contain("it was the exact same instance")

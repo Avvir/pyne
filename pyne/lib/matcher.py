@@ -3,6 +3,7 @@ class Matcher:
         self.name = name
         self.comparator = comparator
         self.params = params
+        self._reason = None
 
     def matches(self, subject):
         return self.comparator(subject, *self.params)
