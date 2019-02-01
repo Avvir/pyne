@@ -48,3 +48,14 @@ def test__assert_expected__when_the_matcher_takes_multiple_args__prints_the_fail
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject", "first-arg", 222222, "third-arg"),
         "Expected <some-subject> to meet some conditions of <<first-arg>, <222222>, <third-arg>>")
+
+
+def test__assert_expected__when_the_matcher_comparator_fails__treats_it_as_not_matching():
+    def comparator_that_raises(subject, *params):
+        return subject.do_something() is True
+
+    expectation = Expectation("to_meet_some_condition", Matcher("some_matcher", comparator_that_raises))
+
+    expect_expectation_to_fail_with_message(
+        lambda: expectation.assert_expected("some-subject"),
+        "Expected <some-subject> to meet some condition but matcher raised <AttributeError: 'str' object has no attribute 'do_something'>")

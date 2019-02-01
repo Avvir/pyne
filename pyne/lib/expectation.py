@@ -20,11 +20,19 @@ class Expectation:
             return self._message_format
 
     def assert_expected(self, subject, *params):
-        if not self.matcher.matches(subject):
+        matches = None
+        reason = None
+        try:
+            matches = self.matcher.matches(subject)
+        except Exception as e:
+            matches = False
+            reason = "matcher raised <" + str(type(e).__name__) + ": " + str(e) + ">"
+
+        if not matches:
             message_format = self.message_format(subject, params)
             formatted_params, formatted_subject = self.unmatcherify(params, subject)
             message = message_format.format(*formatted_params, subject=formatted_subject)
-            reason = self.matcher.reason()
+            reason = reason or self.matcher.reason()
             if reason is not None:
                 message += " but " + reason
             cprint("\n" + message + "\n", 'yellow')
