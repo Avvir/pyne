@@ -1,7 +1,7 @@
 class Spy:
-    def __init__(self, instance, method):
+    def __init__(self, stubbed_object=None, method=None):
         self.method = method
-        self.instance = instance
+        self.stubbed_object = stubbed_object
         self.last_call = None
         self.return_value = None
 
@@ -12,15 +12,11 @@ class Spy:
     def returns(self, return_value):
         self.return_value = return_value
 
-
-# Stubbing classes
-# def stub(clazz):
-#     def decorator(method):
-#         setattr(clazz, method.__name__, Spy(clazz, method))
-#         return method
-#
-#     return decorator
-
-
-def stub(instance, method):
-    instance.__setattr__(method.__name__, Spy(instance, method))
+    def restore(self):
+        self.last_call = None
+        self.return_value = None
+        if self.stubbed_object is not None:
+            if isinstance(self.stubbed_object, type):
+                setattr(self.stubbed_object, self.method.__name__, self.method)
+            else:
+                self.stubbed_object.__setattr__(self.method.__name__, self.method)

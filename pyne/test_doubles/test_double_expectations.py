@@ -21,6 +21,17 @@ def format_params(args_tuple, kwargs_dict):
     return params
 
 
+def format_subject(method, subject):
+    stubbed_object = subject.stubbed_object
+    if stubbed_object is None:
+        formatted_subject = "spy"
+    elif isinstance(stubbed_object, type):
+        formatted_subject = stubbed_object.__name__ + "::" + method.__name__
+    else:
+        formatted_subject = stubbed_object.__class__.__name__ + "#" + method.__name__
+    return formatted_subject
+
+
 class CalledExpectation(Expectation):
     def __init__(self):
         super().__init__("to_be_called", None)
@@ -28,8 +39,7 @@ class CalledExpectation(Expectation):
     def assert_expected(self, subject, *params):
         if subject.last_call is None:
             method = subject.method
-            instance = subject.instance
-            formatted_subject = instance.__class__.__name__ + "#" + method.__name__
+            formatted_subject = format_subject(method, subject)
             message = "Expected that <{subject}> was called, but it was never called".format(subject=formatted_subject)
             cprint("\n" + message + "\n", "yellow")
             raise AssertionError(message)
@@ -44,9 +54,8 @@ class CalledWithExpectation(Expectation):
             expected_args = params[0]
             expected_kwargs = params[1]
             method = subject.method
-            instance = subject.instance
-            formatted_subject = instance.__class__.__name__ + "#" + method.__name__
 
+            formatted_subject = format_subject(method, subject)
             expected_params = format_params(expected_args, expected_kwargs)
 
             if subject.last_call is not None:

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyne",
-    version="0.0.6",
+    version="0.1.5",
     author="Avvir",
     author_email="tira@avvir.io",
     description="A BDD Testing framework for python",
