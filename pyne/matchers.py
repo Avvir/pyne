@@ -62,7 +62,7 @@ def at_least(number):
 
 
 def has_length(number):
-    return Matcher("has_length", lambda subject, *params: len(subject) == number, number)
+    return Matcher("has_length", lambda subject, *params: equal_to_comparator(len(subject), number), number)
 
 
 def between(lower, upper):
