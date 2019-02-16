@@ -22,6 +22,10 @@ def test__matches_list_matcher__when_list_is_the_same_instance__does_not_match()
     expect(some_list).not_to_be(MatchesListMatcher(some_list))
 
 
+def test__matches_list_matcher__when_comparing_empty_tuples__matches():
+    expect(()).to_be(MatchesListMatcher(()))
+
+
 def test__matches_list_matcher__when_list_is_the_same_instance__explains_why_not():
     some_list = [1, 2, 3, 4]
 

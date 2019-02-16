@@ -8,9 +8,12 @@ class MatchesListMatcher(Matcher):
     def list_comparator(self, subject, *params):
         expected = params[0]
         if subject is expected:
-            self._reason = "it was the exact same instance"
-            return False
-        if len(subject) == len(expected):
+            if subject is ():
+                return True
+            else:
+                self._reason = "it was the exact same instance"
+                return False
+        elif len(subject) == len(expected):
             for subject_item, expected_item in zip(subject, expected):
                 if not equal_to_comparator(subject_item, expected_item):
                     return False
