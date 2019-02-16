@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import Spy
-from pyne.test_doubles.stub import stub
+from pyne.test_doubles.when_calling import spy_on
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
@@ -16,7 +16,7 @@ def test__was_called_with__can_pass():
 def test__for_an_instance_method__was_called_with__can_pass():
     some_instance = SomeClass()
 
-    stub(some_instance, some_instance.some_method)
+    spy_on(some_instance.some_method)
 
     some_instance.some_method("some-positional-argument", ["some-array-content"])
     expect(some_instance.some_method).was_called_with("some-positional-argument", ["some-array-content"])
@@ -24,7 +24,7 @@ def test__for_an_instance_method__was_called_with__can_pass():
 
 def test__for_a_static_method__was_called_with__can_pass():
     with TemporaryClass() as SomeTemporaryClass:
-        stub(SomeTemporaryClass, SomeTemporaryClass.some_static_method)
+        spy_on(SomeTemporaryClass.some_static_method, on=SomeTemporaryClass)
 
         SomeTemporaryClass.some_static_method("some-positional-argument", ["some-array-content"])
         expect(SomeTemporaryClass.some_static_method).was_called_with("some-positional-argument", ["some-array-content"])
@@ -42,7 +42,7 @@ def test__was_called_with__when_there_were_no_calls__fails_with_a_message():
 def test__for_an_instance_method__was_called_with__when_there_were_no_calls__fails_with_a_message():
     some_instance = SomeClass()
 
-    stub(some_instance, some_instance.some_method)
+    spy_on(some_instance.some_method)
 
     expect_expectation_to_fail_with_message(
             lambda: expect(some_instance.some_method).was_called_with("some-positional-argument", ["some-array-content"]),
@@ -52,7 +52,7 @@ def test__for_an_instance_method__was_called_with__when_there_were_no_calls__fai
 
 def test__for_a_static_method__was_called_with__when_there_were_no_calls__fails_with_a_message():
     with TemporaryClass() as SomeTemporaryClass:
-        stub(SomeTemporaryClass, SomeTemporaryClass.some_static_method)
+        spy_on(SomeTemporaryClass.some_static_method, on=SomeTemporaryClass)
 
         expect_expectation_to_fail_with_message(
                 lambda: expect(SomeTemporaryClass.some_static_method).was_called_with("some-positional-argument", ["some-array-content"]),
@@ -72,7 +72,7 @@ def test__was_called_with__when_the_method_was_called_with_the_wrong_parameters_
 def test__for_an_instance_method__was_called_with__when_the_method_was_called_with_the_wrong_parameters__fails_with_a_message():
     some_instance = SomeClass()
 
-    stub(some_instance, some_instance.some_method)
+    spy_on(some_instance.some_method)
 
     some_instance.some_method("some-positional-argument", "some-array-content")
     expect_expectation_to_fail_with_message(
@@ -83,7 +83,7 @@ def test__for_an_instance_method__was_called_with__when_the_method_was_called_wi
 
 def test__for_a_static_method__was_called_with__when_the_method_was_called_with_the_wrong_parameters__fails_with_a_message():
     with TemporaryClass() as SomeTemporaryClass:
-        stub(SomeTemporaryClass, SomeTemporaryClass.some_static_method)
+        spy_on(SomeTemporaryClass.some_static_method, on=SomeTemporaryClass)
 
         SomeTemporaryClass.some_static_method("some-positional-argument", "some-array-content")
         expect_expectation_to_fail_with_message(
@@ -96,13 +96,14 @@ def test__was_called__can_pass():
     spy = Spy()
 
     spy()
+
     expect(spy).was_called()
 
 
 def test__for_an_instance_method__was_called__can_pass():
     some_instance = SomeClass()
 
-    stub(some_instance, some_instance.some_method)
+    spy_on(some_instance.some_method)
 
     some_instance.some_method()
     expect(some_instance.some_method).was_called()
@@ -110,7 +111,7 @@ def test__for_an_instance_method__was_called__can_pass():
 
 def test__for_a_static_method__was_called__can_pass():
     with TemporaryClass() as SomeTemporaryClass:
-        stub(SomeTemporaryClass, SomeTemporaryClass.some_static_method)
+        spy_on(SomeTemporaryClass.some_static_method, on=SomeTemporaryClass)
 
         SomeTemporaryClass.some_static_method()
         expect(SomeTemporaryClass.some_static_method).was_called()
@@ -128,7 +129,7 @@ def test__was_called__when_there_were_no_calls__fails_with_a_message():
 def test__for_an_instance_method__was_called__when_there_were_no_calls__fails_with_a_message():
     some_instance = SomeClass()
 
-    stub(some_instance, some_instance.some_method)
+    spy_on(some_instance.some_method)
 
     expect_expectation_to_fail_with_message(
             lambda: expect(some_instance.some_method).was_called(),
@@ -138,7 +139,7 @@ def test__for_an_instance_method__was_called__when_there_were_no_calls__fails_wi
 
 def test__for_a_static_method__was_called__when_there_were_no_calls__fails_with_a_message():
     with TemporaryClass() as SomeTemporaryClass:
-        stub(SomeTemporaryClass, SomeTemporaryClass.some_static_method)
+        spy_on(SomeTemporaryClass.some_static_method, on=SomeTemporaryClass)
 
         expect_expectation_to_fail_with_message(
                 lambda: expect(SomeTemporaryClass.some_static_method).was_called(),

@@ -12,3 +12,6 @@ class SomeClass:
 
     def some_other_method(self, *args, **kwargs):
         pass
+
+    def some_positional_args_method(self, some_first_arg, some_second_arg):
+        pass
