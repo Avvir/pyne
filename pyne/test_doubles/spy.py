@@ -24,8 +24,5 @@ class Spy:
         self.last_call = None
         self.return_value = None
         if self.stubbed_object is not None:
-            if isinstance(self.stubbed_object, type):
-                setattr(self.stubbed_object, self.method.__name__, self.method)
-            else:
-                self.stubbed_object.__setattr__(self.method.__name__, self.method)
+            setattr(self.stubbed_object, self.method.__name__, self.method)
         return self
