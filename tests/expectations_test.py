@@ -63,8 +63,7 @@ def test__to_raise_error_with_message__can_fail_because_the_message_is_wrong():
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message("some other message"),
-        "to raise an exception with message",
-        "but the exception was")
+        "to raise an exception with message.* but the exception was")
 
 
 def test__to_raise_error_with_message__can_fail_because_no_error_is_raised():
@@ -102,7 +101,7 @@ def test__to_raise_error_of_type__can_fail_because_the_type_is_wrong():
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_of_type(SomeException),
-        "to raise an exception of type <SomeException>", "but the exception was")
+        "to raise an exception of type <SomeException>.* but the exception was")
 
 
 def test__to_raise_error_of_type__can_fail_because_no_error_is_raised():

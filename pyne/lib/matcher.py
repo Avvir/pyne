@@ -6,10 +6,15 @@ class Matcher:
         self._reason = None
 
     def matches(self, subject):
-        return self.comparator(subject, *self.params)
+        try:
+            matches = self.comparator(subject, *self.params)
+        except Exception as e:
+            matches = False
+            self._reason = "comparator raised <" + str(type(e).__name__) + ": " + str(e) + ">"
+        return matches
 
     def reason(self):
-        return None
+        return self._reason
 
     def format(self):
         return "{matcher_name}{params}".format(matcher_name=self.name, params=self.params)

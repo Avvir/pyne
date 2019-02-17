@@ -1,5 +1,5 @@
 from pyne.lib.expectation import Expectation
-from pyne.lib.matcher import Matcher
+from pyne.lib.matcher import Matcher, equal_to_comparator
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 
 
@@ -58,4 +58,16 @@ def test__assert_expected__when_the_matcher_comparator_fails__treats_it_as_not_m
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject"),
-        "Expected <some-subject> to meet some condition but matcher raised <AttributeError: 'str' object has no attribute 'do_something'>")
+        "Expected <some-subject> to meet some condition but comparator raised <AttributeError: 'str' object has no attribute 'do_something'>")
+
+
+def test__assert_expected__when_the_matcher_match_fails__treats_it_as_not_matching():
+    class BadMatcher(Matcher):
+        def matches(self, subject):
+            raise Exception("some error when matching")
+
+    expectation = Expectation("to_meet_some_condition", BadMatcher('bad_matcher', equal_to_comparator))
+
+    expect_expectation_to_fail_with_message(
+        lambda: expectation.assert_expected("some-subject"),
+        "Expected <some-subject> to meet some condition but matcher raised <Exception: some error when matching>")
