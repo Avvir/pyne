@@ -6,7 +6,7 @@ class TemporaryClass:
                 pass
 
             @staticmethod
-            def some_other_static_method(*args, **kwargs):
+            def some_other_static_method(first_arg, some_keyword_arg=None, **kwargs):
                 pass
 
             def some_method(self, *args, **kwargs):

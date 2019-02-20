@@ -122,7 +122,7 @@ def test__was_called__when_there_were_no_calls__fails_with_a_message():
 
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called(),
-            "Expected that <spy> was called, but it was never called"
+            "Expected that <spy> was called but it was never called"
     )
 
 
@@ -133,7 +133,7 @@ def test__for_an_instance_method__was_called__when_there_were_no_calls__fails_wi
 
     expect_expectation_to_fail_with_message(
             lambda: expect(some_instance.some_method).was_called(),
-            "Expected that <SomeClass#some_method> was called, but it was never called"
+            "Expected that <SomeClass#some_method> was called but it was never called"
     )
 
 
@@ -143,5 +143,5 @@ def test__for_a_static_method__was_called__when_there_were_no_calls__fails_with_
 
         expect_expectation_to_fail_with_message(
                 lambda: expect(SomeTemporaryClass.some_static_method).was_called(),
-                "Expected that <SomeTemporaryClass::some_static_method> was called, but it was never called"
+                "Expected that <SomeTemporaryClass::some_static_method> was called but it was never called"
         )
