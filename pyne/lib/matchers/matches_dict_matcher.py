@@ -1,4 +1,5 @@
 from pyne.lib.matcher import Matcher, equal_to_comparator
+from pyne.lib.message_format_helper import format_object
 
 
 class MatchesDictMatcher(Matcher):
@@ -15,9 +16,12 @@ class MatchesDictMatcher(Matcher):
                 if expected_key in subject:
                     subject_item_value = subject[expected_key]
                     if not equal_to_comparator(subject_item_value, expected_value):
+                        self._reason = "value for <" + format_object(expected_key) + \
+                                       "> was <" + format_object(subject_item_value) + \
+                                       "> and did not match <" + format_object(expected_value) + ">"
                         return False
                 else:
-                    self._reason = "subject did not have the key <" + str(expected_key) + ">"
+                    self._reason = "subject did not have the key <" + format_object(expected_key) + ">"
                     return False
             return True
         else:

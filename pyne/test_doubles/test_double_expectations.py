@@ -1,6 +1,8 @@
 from termcolor import cprint
 
 from pyne.lib.expectation import Expectation
+from pyne.lib.matchers.was_called_with_matcher import WasCalledWithMatcher
+from pyne.lib.message_format_helper import format_arguments
 
 
 def format_tuple_as_args(args_tuple):
@@ -34,11 +36,11 @@ def format_subject(method, subject):
 
 class CalledExpectation(Expectation):
     def __init__(self):
-        super().__init__("to_be_called", None)
+        super().__init__("was_called", None)
 
     def assert_expected(self, subject, *params):
         if subject.last_call is None:
-            method = subject.method
+            method = subject.original_method
             formatted_subject = format_subject(method, subject)
             message = "Expected that <{subject}> was called, but it was never called".format(subject=formatted_subject)
             cprint("\n" + message + "\n", "yellow")
@@ -46,32 +48,11 @@ class CalledExpectation(Expectation):
 
 
 class CalledWithExpectation(Expectation):
-    def __init__(self, matcher):
-        super().__init__("to_be_called_with", matcher)
+    def __init__(self, *args, **kwargs):
+        super().__init__("was_called_with", WasCalledWithMatcher((args, kwargs)))
 
-    def assert_expected(self, subject, *params):
-        if not self.matcher.matches(subject):
-            expected_args = params[0]
-            expected_kwargs = params[1]
-            method = subject.method
+    def message_format(self, subject, params):
 
-            formatted_subject = format_subject(method, subject)
-            expected_params = format_params(expected_args, expected_kwargs)
+        param_list_formatting = " <" + format_arguments(params[0], params[1]) + ">"
+        return "Expected that <{subject}> " + " ".join(self.name.split("_")) + param_list_formatting
 
-            if subject.last_call is not None:
-                actual_args = subject.last_call[0]
-                actual_kwargs = subject.last_call[1]
-
-                actual_params = format_params(actual_args, actual_kwargs)
-
-                message = "Expected that <{subject}> was called with <({expected_params})> but it was called with <({actual_params})>".format(
-                        expected_params=expected_params,
-                        actual_params=actual_params,
-                        subject=formatted_subject)
-            else:
-                message = "Expected that <{subject}> was called with <({expected_params})> but it was never called".format(
-                        expected_params=expected_params,
-                        subject=formatted_subject)
-
-            cprint("\n" + message + "\n", 'yellow')
-            raise AssertionError(message)

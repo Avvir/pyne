@@ -62,6 +62,15 @@ def test__was_called_with_matcher__when_a_positional_arg_was_passed_in_keyword_s
     expect(some_instance.some_positional_args_method).to_be(was_called_with(some_first_arg="some-value"))
 
 
+def test__was_called_with_matcher__when_a_positional_arg_was_passed_in_keyword_style__can_pass_with_positional_style_expectation():
+    some_instance = SomeClass()
+
+    spy_on(some_instance.some_other_method)
+
+    some_instance.some_other_method(some_first_arg="some-value")
+    expect(some_instance.some_other_method).to_be(was_called_with("some-value"))
+
+
 def test__was_called_with_matcher__supports_matchers_for_positional_arguments():
     some_instance = SomeClass()
 

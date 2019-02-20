@@ -129,7 +129,7 @@ def test__to_raise_error_with_message__with_unmatched_matcher__failures_shows_ma
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message(match("other message")),
-        ".*to raise an exception with message <match\('other message',\).*")
+        ".*to raise an exception with message <match\('other message'\).*")
 
 
 def test__to_raise_error_with_message__when_actual_message_contains_curly_braces__shows_message():
@@ -150,7 +150,7 @@ def test__to_be_a__can_pass():
 def test__to_be_a__when_the_type_is_different__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect('hello').to_be_a(SomeClass),
-        "Expected <hello> to be a .*SomeClass.*")
+        "Expected <'hello'> to be a .*SomeClass.*")
 
 
 def test__to_contain__can_pass():
@@ -161,7 +161,7 @@ def test__to_contain__can_pass():
 def test__to_contain__when_item_not_contained__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect(["some-item"]).to_contain("some-other-item"),
-        "Expected <\['some-item'\]> to contain <some-other-item>")
+        "Expected <\['some-item'\]> to contain <'some-other-item'>")
 
 
 def test__to_contain__can_pass_with_matcher():

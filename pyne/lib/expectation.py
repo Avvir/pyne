@@ -1,7 +1,7 @@
 from termcolor import cprint
 
 from pyne.lib.matcher import InverseMatcher
-from pyne.matchers import is_matcher
+from pyne.lib.message_format_helper import format_object
 
 
 class Expectation:
@@ -20,7 +20,6 @@ class Expectation:
             return self._message_format
 
     def assert_expected(self, subject, *params):
-        matches = None
         reason = None
         try:
             matches = self.matcher.matches(subject)
@@ -48,15 +47,10 @@ class Expectation:
             return "Expected <{subject}> " + " ".join(self.name.split("_")) + param_list_formatting
 
     def unmatcherify(self, params, subject):
-        formatted_subject = subject
         formatted_params = []
-        if is_matcher(subject):
-            formatted_subject = subject.format()
+        formatted_subject = format_object(subject)
         for param in params:
-            if is_matcher(param):
-                formatted_params.append(param.format())
-            else:
-                formatted_params.append(param)
+            formatted_params.append(format_object(param))
         return formatted_params, formatted_subject
 
     def escape_for_formatting(self, string):

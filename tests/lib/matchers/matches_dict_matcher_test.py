@@ -1,6 +1,5 @@
-from pyne.lib.matchers.matches_dict_matcher import MatchesDictMatcher
-
 from pyne.expectations import expect
+from pyne.lib.matchers.matches_dict_matcher import MatchesDictMatcher
 from pyne.matchers import about
 
 
@@ -20,6 +19,12 @@ def test__matches_dict_matcher__when_dicts_have_different_lengths__does_not_matc
 
 def test__matches_dict_matcher__when_dicts_contain_different_values__does_not_match():
     expect({"some-key": "some-value"}).not_to_be(MatchesDictMatcher({"some-key": 1234}))
+
+
+def test__matches_dict_matcher__when_dicts_contain_different_values__explains_why_not():
+    matcher = MatchesDictMatcher({"some-key": about(3)})
+    matcher.matches({"some-key": 1234})
+    expect(matcher.reason()).to_contain("value for <'some-key'> was <1234> and did not match <about(3)>")
 
 
 def test__matches_dict_matcher__when_dicts_have_different_keys__does_not_match():

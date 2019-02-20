@@ -31,3 +31,4 @@ python -m pyne.cli
 - better readability on tests with lots of commandline output
 - installable cli
 - cli options around focusing
+- behave well around re-spying

@@ -14,7 +14,7 @@ def test__assert_expected__when_the_matcher_has_a_failure_reason__prints_the_fai
     expectation = Expectation("to_meet_some_condition", MatcherWithFailureReason())
 
     expect_expectation_to_fail_with_message(lambda: expectation.assert_expected("some-subject"),
-                                            "Expected <some-subject> to meet some condition"
+                                            "Expected <'some-subject'> to meet some condition"
                                             " but it was not like that, yo")
 
 
@@ -27,7 +27,7 @@ def test__assert_expected__when_the_matcher_takes_no_args__prints_the_failure_re
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject"),
-        "Expected <some-subject> to meet some condition")
+        "Expected <'some-subject'> to meet some condition")
 
 
 def test__assert_expected__when_the_matcher_takes_one_arg__prints_the_failure_reason():
@@ -39,7 +39,7 @@ def test__assert_expected__when_the_matcher_takes_one_arg__prints_the_failure_re
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject", "being-some-cool-thing"),
-        "Expected <some-subject> to meet some condition of <being-some-cool-thing>")
+        "Expected <'some-subject'> to meet some condition of <'being-some-cool-thing'>")
 
 
 def test__assert_expected__when_the_matcher_takes_multiple_args__prints_the_failure_reason():
@@ -47,7 +47,7 @@ def test__assert_expected__when_the_matcher_takes_multiple_args__prints_the_fail
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject", "first-arg", 222222, "third-arg"),
-        "Expected <some-subject> to meet some conditions of <<first-arg>, <222222>, <third-arg>>")
+        "Expected <'some-subject'> to meet some conditions of <<'first-arg'>, <222222>, <'third-arg'>>")
 
 
 def test__assert_expected__when_the_matcher_comparator_fails__treats_it_as_not_matching():
@@ -58,7 +58,7 @@ def test__assert_expected__when_the_matcher_comparator_fails__treats_it_as_not_m
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject"),
-        "Expected <some-subject> to meet some condition but comparator raised <AttributeError: 'str' object has no attribute 'do_something'>")
+        "Expected <'some-subject'> to meet some condition but comparator raised <AttributeError: 'str' object has no attribute 'do_something'>")
 
 
 def test__assert_expected__when_the_matcher_match_fails__treats_it_as_not_matching():
@@ -70,4 +70,4 @@ def test__assert_expected__when_the_matcher_match_fails__treats_it_as_not_matchi
 
     expect_expectation_to_fail_with_message(
         lambda: expectation.assert_expected("some-subject"),
-        "Expected <some-subject> to meet some condition but matcher raised <Exception: some error when matching>")
+        "Expected <'some-subject'> to meet some condition but matcher raised <Exception: some error when matching>")

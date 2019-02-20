@@ -35,7 +35,7 @@ def test__was_called_with__when_there_were_no_calls__fails_with_a_message():
 
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called_with("some-positional-argument", ["some-array-content"]),
-            "Expected that <spy> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was never called"
+            """Expected that <spy> was called with <('some-positional-argument', ['some-array-content'])> but it was never called"""
     )
 
 
@@ -46,7 +46,7 @@ def test__for_an_instance_method__was_called_with__when_there_were_no_calls__fai
 
     expect_expectation_to_fail_with_message(
             lambda: expect(some_instance.some_method).was_called_with("some-positional-argument", ["some-array-content"]),
-            "Expected that <SomeClass#some_method> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was never called"
+            """Expected that <SomeClass#some_method> was called with <('some-positional-argument', ['some-array-content'])> but it was never called"""
     )
 
 
@@ -56,7 +56,7 @@ def test__for_a_static_method__was_called_with__when_there_were_no_calls__fails_
 
         expect_expectation_to_fail_with_message(
                 lambda: expect(SomeTemporaryClass.some_static_method).was_called_with("some-positional-argument", ["some-array-content"]),
-                "Expected that <SomeTemporaryClass::some_static_method> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was never called"
+                """Expected that <SomeTemporaryClass::some_static_method> was called with <('some-positional-argument', ['some-array-content'])> but it was never called"""
         )
 
 
@@ -65,7 +65,7 @@ def test__was_called_with__when_the_method_was_called_with_the_wrong_parameters_
     spy("some-positional-argument", "some-array-content")
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called_with("some-positional-argument", ["some-array-content"]),
-            "Expected that <spy> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was called with <\('some-positional-argument', 'some-array-content'\)>"
+            """Expected that <spy> was called with <('some-positional-argument', ['some-array-content'])> but it was called with <('some-positional-argument', 'some-array-content')>"""
     )
 
 
@@ -77,7 +77,7 @@ def test__for_an_instance_method__was_called_with__when_the_method_was_called_wi
     some_instance.some_method("some-positional-argument", "some-array-content")
     expect_expectation_to_fail_with_message(
             lambda: expect(some_instance.some_method).was_called_with("some-positional-argument", ["some-array-content"]),
-            "Expected that <SomeClass#some_method> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was called with <\('some-positional-argument', 'some-array-content'\)>"
+            """Expected that <SomeClass#some_method> was called with <('some-positional-argument', ['some-array-content'])> but it was called with <('some-positional-argument', 'some-array-content')>"""
     )
 
 
@@ -88,7 +88,7 @@ def test__for_a_static_method__was_called_with__when_the_method_was_called_with_
         SomeTemporaryClass.some_static_method("some-positional-argument", "some-array-content")
         expect_expectation_to_fail_with_message(
                 lambda: expect(SomeTemporaryClass.some_static_method).was_called_with("some-positional-argument", ["some-array-content"]),
-                "Expected that <SomeTemporaryClass::some_static_method> was called with <\('some-positional-argument', \['some-array-content'\]\)> but it was called with <\('some-positional-argument', 'some-array-content'\)>"
+                """Expected that <SomeTemporaryClass::some_static_method> was called with <('some-positional-argument', ['some-array-content'])> but it was called with <('some-positional-argument', 'some-array-content')>"""
         )
 
 

@@ -10,7 +10,7 @@ class SomeClass:
     def some_method(self, *args, **kwargs):
         pass
 
-    def some_other_method(self, *args, **kwargs):
+    def some_other_method(self, some_first_arg, some_keyword_arg="some-default-value"):
         pass
 
     def some_positional_args_method(self, some_first_arg):

@@ -1,13 +1,11 @@
 import re
 
-from pyne.lib.matcher import Matcher, is_matcher, equal_to_comparator
+from pyne.lib.matcher import Matcher, is_matcher, equal_to_comparator, EqualToMatcher
 from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
 
 
-def equal_to(value, comparator=None):
-    if comparator is None:
-        comparator = equal_to_comparator
-    return Matcher("equal_to", comparator, value)
+def equal_to(value):
+    return EqualToMatcher(value)
 
 
 def same_instance_as(value):
