@@ -100,6 +100,17 @@ def test__was_called__can_pass():
     expect(spy).was_called()
 
 
+def test__was_called__when_the_subject_is_not_a_spy__fails_with_message():
+    def some_non_spy():
+        pass
+
+    some_non_spy()
+
+    expect_expectation_to_fail_with_message(
+                lambda: expect(some_non_spy).was_called(),
+                """Expected that <tests.test_doubles.test_doubles_expectations_test.some_non_spy> was called but its calls were not tracked. Hint: use when_calling() to track its calls"""
+        )
+
 def test__for_an_instance_method__was_called__can_pass():
     some_instance = SomeClass()
 

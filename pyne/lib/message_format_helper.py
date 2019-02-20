@@ -1,12 +1,21 @@
-def format_object(object):
-    if hasattr(object, '_pyne_format'):
-        formatted_object = object._pyne_format()
-    else:
-        if isinstance(object, str):
-            formatted_object = "'" + object + "'"
-        else:
-            formatted_object = str(object)
+import inspect
 
+
+def format_object(object):
+    try:
+        if hasattr(object, '_pyne_format'):
+            formatted_object = object._pyne_format()
+        else:
+            if isinstance(object, str):
+                formatted_object = "'" + object + "'"
+            elif inspect.isfunction(object):
+                module_name = inspect.getmodule(object).__name__
+
+                formatted_object = module_name + "." + object.__name__
+            else:
+                formatted_object = str(object)
+    except Exception:
+        formatted_object = str(object)
     return formatted_object
 
 
@@ -26,7 +35,6 @@ def format_arguments(args_list, kwargs_dict=None):
         result += formatted_kwargs_list
     result += ")"
     return result
-
 
 
 def escape_for_formatting(self, string):
