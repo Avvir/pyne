@@ -1,19 +1,8 @@
 from pyne.lib.matcher import Matcher
 from pyne.lib.matchers.matches_dict_matcher import MatchesDictMatcher
 from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
+from pyne.lib.matchers.was_called_matcher import WasCalledMatcher
 from pyne.lib.message_format_helper import format_arguments
-
-
-def _to_call_args_list(argument_names, call_args, call_kwargs):
-    result = list(call_args)
-    possible_kwarg_names = argument_names[len(call_args):]
-    for argument_name in possible_kwarg_names:
-        if argument_name in call_kwargs:
-            result.append(call_kwargs[argument_name])
-        else:
-            result.append(None)
-
-    return result
 
 
 def _get_named_positional_arg_count(signature):
@@ -47,10 +36,12 @@ class WasCalledWithMatcher(Matcher):
         super().__init__("was_called_with", self.comparator, *params)
 
     def comparator(self, subject, params):
-        expected_call_args, expected_call_kwargs = params
-        if subject.last_call is None:
-            self._reason = "it was never called"
+        was_called_matcher = WasCalledMatcher()
+        if not was_called_matcher.matches(subject):
+            self._reason = was_called_matcher.reason()
             return False
+
+        expected_call_args, expected_call_kwargs = params
 
         call_args, call_kwargs = subject.last_call
 
