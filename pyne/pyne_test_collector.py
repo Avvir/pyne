@@ -1,4 +1,4 @@
-from pyne.pyne_test_blocks import AfterEachBlock, BeforeEachBlock, DescribeBlock, ItBlock
+from pyne.lib.pyne_test_blocks import AfterEachBlock, BeforeEachBlock, DescribeBlock, ItBlock
 
 
 def no_tests():

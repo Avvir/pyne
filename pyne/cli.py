@@ -10,7 +10,7 @@ from click import (
     pass_context,
     Path)
 
-from pyne.pyne_result_reporters import reporter
+from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config

@@ -1,6 +1,6 @@
 from pyne.expectations import expect
-from pyne.pyne_result_reporters import PyneStatSummaryReporter
-from pyne.pyne_test_blocks import ItBlock, DescribeBlock
+from pyne.lib.result_reporters.pyne_result_reporters import PyneStatSummaryReporter
+from pyne.lib.pyne_test_blocks import ItBlock, DescribeBlock
 from tests.test_helpers.fake_print import StubPrint, printed_text
 
 

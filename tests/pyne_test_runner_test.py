@@ -2,8 +2,8 @@ from time import sleep
 
 from pyne.expectations import expect
 from pyne.matchers import anything, at_least
-from pyne.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
-from pyne.pyne_test_blocks import ItBlock, DescribeBlock
+from pyne.lib.result_reporters.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
+from pyne.lib.pyne_test_blocks import ItBlock, DescribeBlock
 from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each, after_each
 from pyne.pyne_test_runner import run_tests
 

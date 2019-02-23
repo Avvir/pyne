@@ -1,4 +1,4 @@
-from pyne.pyne_test_blocks import DescribeBlock
+from pyne.lib.pyne_test_blocks import DescribeBlock
 from pyne.pyne_test_collector import test_collection, it, describe, before_each, fit, fdescribe, after_each
 from pyne.expectations import expect
 
