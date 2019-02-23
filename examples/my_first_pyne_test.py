@@ -60,7 +60,7 @@ def my_first_test():
 
 
 @pyne
-def my_first_test():
+def my_second_test():
     @describe("when a test is focused")
     def _():
         @it("skips non-focused tests")
@@ -223,7 +223,7 @@ def _calculate():
 
 
 @pyne
-def my_first_test():
+def my_third_test():
     @describe("when a test is focused")
     def _():
         @it("skips non-focused tests")

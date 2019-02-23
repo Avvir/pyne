@@ -1,4 +1,5 @@
 from pyne.expectations import expect
+from pyne.lib.result_reporters.printing_reporter import PrintingReporter
 from pyne.lib.result_reporters.pyne_result_reporters import PyneTreeReporter
 from pyne.lib.pyne_test_blocks import DescribeBlock, ItBlock
 from tests.test_helpers.fake_print import printed_text, StubPrint
@@ -7,7 +8,7 @@ from tests.test_helpers.fake_print import printed_text, StubPrint
 def test__report_enter_context__prints_context_description():
     with StubPrint():
         describe_block = DescribeBlock(None, "Some context description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_enter_context(describe_block)
@@ -18,7 +19,7 @@ def test__report_enter_context__prints_context_description():
 def test__report_enter_context__indents_based_on_tree_depth():
     with StubPrint():
         describe_block = DescribeBlock(None, "Some context description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_enter_context(describe_block)
@@ -33,7 +34,7 @@ def test__report_enter_context__indents_based_on_tree_depth():
 def test__report_success__prints_test_description():
     with StubPrint():
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_success(it_block, 0)
@@ -45,7 +46,7 @@ def test__report_success__indents_based_on_tree_depth():
     with StubPrint():
         describe_block = DescribeBlock(None, "Some context description", None)
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_enter_context(describe_block)
@@ -65,7 +66,7 @@ def test__report_success__indents_based_on_tree_depth():
 def test__report_failure__prints_test_description():
     with StubPrint():
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_failure(it_block, it_block, Exception("some exception"), 0)
@@ -77,7 +78,7 @@ def test__report_failure__indents_based_on_tree_depth():
     with StubPrint():
         describe_block = DescribeBlock(None, "Some context description", None)
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
         printed_text.clear()
 
         reporter.report_enter_context(describe_block)
@@ -97,7 +98,7 @@ def test__report_failure__indents_based_on_tree_depth():
 def test__report_pending__prints_test_description():
     with StubPrint():
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
 
         reporter.report_pending(it_block)
 
@@ -108,7 +109,7 @@ def test__report_pending__indents_based_on_tree_depth():
     with StubPrint():
         describe_block = DescribeBlock(None, "Some context description", None)
         it_block = ItBlock(None, "Some it block description", None)
-        reporter = PyneTreeReporter()
+        reporter = PrintingReporter(PyneTreeReporter())
 
         reporter.report_enter_context(describe_block)
         reporter.report_pending(it_block)

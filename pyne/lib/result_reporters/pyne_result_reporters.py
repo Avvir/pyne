@@ -1,7 +1,10 @@
 from time import sleep
-from traceback import print_exception
+from traceback import TracebackException
 
 from termcolor import colored
+
+from pyne.lib.result_reporters.printing_reporter import PrintingReporter
+from pyne.lib.result_reporters.record_for_summary_reporter import RecordForSummaryReporter
 
 
 class PyneStats:
@@ -18,6 +21,9 @@ class StatTrackingReporter:
     def __init__(self):
         self.stats = PyneStats()
         self.depth = 0
+
+    def _printable(self, *params, **kwargs):
+        return ((params, kwargs),)
 
     def reset(self):
         self.stats = PyneStats()
@@ -73,8 +79,6 @@ class PyneStatSummaryReporter(StatTrackingReporter):
 
         if self.stats.test_count == 0:
             stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 Ran 0 tests 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲'
-            print(stats)
-
         else:
             failures = "{0} failed, ".format(self.stats.failure_count) if self.stats.failure_count > 0 else ""
             pendings = ", {0} pending".format(self.stats.pending_count) if self.stats.pending_count > 0 else ""
@@ -83,49 +87,55 @@ class PyneStatSummaryReporter(StatTrackingReporter):
                     '{failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds' \
                     ' 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲' \
                 .format(
-                    pendings=pendings,
-                    failures=failures,
-                    pass_count=self.stats.pass_count,
-                    seconds=self.stats.total_timing_millis / 1000)
-            print(stats)
+                pendings=pendings,
+                failures=failures,
+                pass_count=self.stats.pass_count,
+                seconds=self.stats.total_timing_millis / 1000)
+
+        return self._printable(stats)
 
 
 class PyneDotReporter(StatTrackingReporter):
+
     def reset(self):
         StatTrackingReporter.reset(self)
 
     def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
-        print("x", end="")
+        return self._printable("x", end="")
 
     def report_pending(self, it_block):
         StatTrackingReporter.report_pending(self, it_block)
-        print("-", end="")
+        return self._printable("-", end="")
 
     def report_success(self, it_block, timing_millis):
         StatTrackingReporter.report_success(self, it_block, timing_millis)
-        print(".", end="")
+        return self._printable(".", end="")
 
 
 class PyneTreeReporter(StatTrackingReporter):
     def report_enter_context(self, describe_block):
         StatTrackingReporter.report_enter_context(self, describe_block)
-        print(colored("  " * self.depth + describe_block.description, None, None, ['bold']))
+        return self._printable(colored("  " * self.depth + describe_block.description, None, None, ['bold']))
 
     def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
+        result = ""
         if failed_behavior != it_block:
-            print(colored("  " + "  " * self.depth + failed_behavior.description, 'red'))
+            result += colored("  " + "  " * self.depth + failed_behavior.description, 'red') + "\n"
 
-        print(colored(" x" + "  " * self.depth + it_block.description, 'red'))
+        result += colored(" x" + "  " * self.depth + it_block.description, 'red')
+        return self._printable(result)
 
     def report_success(self, it_block, timing_millis):
         StatTrackingReporter.report_success(self, it_block, timing_millis)
-        print(colored(" ✓", 'green') + "  " * self.depth + colored(it_block.description, 'white', None, ['dark']))
+        return self._printable(
+            colored(" ✓", 'green') + "  " * self.depth + colored(it_block.description, 'white', None, ['dark']))
 
     def report_pending(self, it_block):
         StatTrackingReporter.report_pending(self, it_block)
-        print(colored(" -", 'yellow') + "  " * self.depth + colored(it_block.description, 'yellow', None, ['dark']))
+        return self._printable(
+            colored(" -", 'yellow') + "  " * self.depth + colored(it_block.description, 'yellow', None, ['dark']))
 
 
 class PyneFailureSummaryReporter(StatTrackingReporter):
@@ -141,21 +151,24 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
         full_description = it_block.description
         self.failure_messages.append(
-                colored("🌲 Failure: \"{full_description}\" in <{behavior_description}> ", 'red', None, ['bold']).format(
-                        full_description=full_description,
-                        behavior_description=failed_behavior.description))
+            colored("🌲 Failure: \"{full_description}\" in <{behavior_description}> ", 'red', None, ['bold']).format(
+                full_description=full_description,
+                behavior_description=failed_behavior.description))
         self.failure_messages.append(filtered_exception)
 
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
-        print("\n")
+        result = "\n"
         for message in self.failure_messages:
             if isinstance(message, Exception):
-                print_exception(type(message), message, message.__traceback__)
+                for line in TracebackException(
+                        type(message), message, message.__traceback__, limit=None).format(chain=True):
+                    result += line
             else:
                 print(message)
-        print("\n")
+        result += "\n"
+        return self._printable(result)
 
 
 class CompositeReporter:
@@ -191,5 +204,18 @@ class CompositeReporter:
             reporter.report_pending(it_block)
 
 
-reporter = CompositeReporter(PyneTreeReporter(), PyneStatSummaryReporter(), PyneFailureSummaryReporter(),
-                             ExceptionReporter())
+def reporter_factory():
+    during_execution_reporters = (
+        PrintingReporter(PyneTreeReporter()),
+        PrintingReporter(PyneStatSummaryReporter()),
+        PrintingReporter(PyneFailureSummaryReporter())
+    )
+    summary_reporters = (
+        PrintingReporter(RecordForSummaryReporter(PyneTreeReporter())),
+        PrintingReporter(RecordForSummaryReporter(PyneStatSummaryReporter()))
+    )
+
+    return CompositeReporter(*during_execution_reporters, *summary_reporters, ExceptionReporter())
+
+
+reporter = reporter_factory()

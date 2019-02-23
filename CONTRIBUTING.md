@@ -32,3 +32,4 @@ python -m pyne.cli
 - installable cli
 - cli options around focusing
 - behave well around re-spying
+- let pyne take method reference
