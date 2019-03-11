@@ -59,6 +59,10 @@ def at_least(number):
     return Matcher("at_least", lambda subject, *params: subject >= number, number)
 
 
+def at_most(number):
+    return Matcher("at_most", lambda subject, *params: subject <= number, number)
+
+
 def has_length(number):
     return Matcher("has_length", lambda subject, *params: equal_to_comparator(len(subject), number), number)
 
