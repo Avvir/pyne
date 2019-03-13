@@ -29,6 +29,12 @@ def test__restore__resets_what_the_spy_was_last_called_with():
     spy.restore()
     expect(spy.last_call).to_be_none()
 
+def test__exit__calls_when_with_statement_is_exited():
+    with Spy() as spy:
+        spy("anything", ["can"], go="here")
+        expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
+    expect(spy.last_call).to_be_none()
+
 
 def test__restore__causes_the_spy_to_return_none():
     spy = Spy()

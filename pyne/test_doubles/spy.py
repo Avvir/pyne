@@ -45,3 +45,9 @@ class Spy:
         if self.stubbed_object is not None:
             setattr(self.stubbed_object, self.original_method.__name__, self.original_method)
         return self
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.restore()
