@@ -16,7 +16,7 @@ def format_object(object):
                 formatted_object = str(object)
     except Exception:
         formatted_object = str(object)
-    return formatted_object
+    return escape_for_formatting(formatted_object)
 
 
 def format_arguments(args_list, kwargs_dict=None):
@@ -37,5 +37,5 @@ def format_arguments(args_list, kwargs_dict=None):
     return result
 
 
-def escape_for_formatting(self, string):
+def escape_for_formatting(string):
     return string.replace("{", "{{").replace("}", "}}")
