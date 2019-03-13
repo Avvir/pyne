@@ -1,4 +1,8 @@
 class SomeClass:
+    @classmethod
+    def some_class_method(cls, *args, **kwargs):
+        pass
+
     @staticmethod
     def some_static_method(*args, **kwargs):
         pass

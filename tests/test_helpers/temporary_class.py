@@ -1,6 +1,10 @@
 class TemporaryClass:
     def __enter__(self):
         class SomeTemporaryClass:
+            @classmethod
+            def some_class_method(cls, *args, **kwargs):
+                pass
+
             @staticmethod
             def some_static_method(*args, **kwargs):
                 pass

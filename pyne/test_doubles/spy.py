@@ -2,18 +2,38 @@ import inspect
 
 
 class Spy:
-    def __init__(self, stubbed_object=None, method=None):
-        self.original_method = method
-
+    def __init__(self, object_to_stub=None, method=None):
         if method is not None:
             self.signature = inspect.signature(method)
         else:
             self.signature = inspect.signature(self.__call__)
 
-        self.stubbed_object = stubbed_object
         self.last_call = None
         self.return_value = None
         self.will_call_real = False
+        self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
+
+    def _create_stubbed_object(self, object_to_stub, method):
+        class SpyObject:
+            def __init__(self):
+                pass
+
+            @staticmethod
+            def none_method(self, *args, **kwargs):
+                return None
+
+        if object_to_stub is None:
+            object_to_stub = SpyObject()
+
+        if method is None:
+            method = SpyObject.none_method
+
+        setattr(object_to_stub, method.__name__, self)
+        return object_to_stub, method
+
+    def _unstub_object(self):
+        setattr(self.stubbed_object, self.original_method.__name__, self.original_method)
+
 
     def __call__(self, *args, **kwargs):
         self.last_call = (args, kwargs)
@@ -23,9 +43,7 @@ class Spy:
 
     def _pyne_format(self):
         stubbed_object = self.stubbed_object
-        if stubbed_object is None:
-            formatted = "spy"
-        elif isinstance(stubbed_object, type):
+        if isinstance(stubbed_object, type):
             formatted = stubbed_object.__name__ + "::" + self.original_method.__name__
         else:
             formatted = stubbed_object.__class__.__name__ + "#" + self.original_method.__name__
@@ -42,8 +60,7 @@ class Spy:
     def restore(self):
         self.last_call = None
         self.return_value = None
-        if self.stubbed_object is not None:
-            setattr(self.stubbed_object, self.original_method.__name__, self.original_method)
+        self._unstub_object()
         return self
 
     def __enter__(self):

@@ -1,7 +1,7 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import Spy
 
-from pyne.test_doubles.when_calling import when
+from pyne.test_doubles.when_calling import when, spy_on
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
 
@@ -29,12 +29,6 @@ def test__restore__resets_what_the_spy_was_last_called_with():
     spy.restore()
     expect(spy.last_call).to_be_none()
 
-def test__exit__calls_when_with_statement_is_exited():
-    with Spy() as spy:
-        spy("anything", ["can"], go="here")
-        expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
-    expect(spy.last_call).to_be_none()
-
 
 def test__restore__causes_the_spy_to_return_none():
     spy = Spy()
@@ -45,13 +39,19 @@ def test__restore__causes_the_spy_to_return_none():
     spy.restore()
     expect(spy("anything", ["can"], go="here")).to_be_none()
 
+def test__exit__calls_when_with_statement_is_exited():
+    with Spy() as spy:
+        spy("anything", ["can"], go="here")
+        expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
+    expect(spy.last_call).to_be_none()
+
 
 def test__stub__when_passed_in_an_instance_method__tracks_what_the_method_was_called_with():
     instance = SomeClass()
-    when(instance.some_method)
+    spy = when(instance.some_method)
 
     instance.some_method("anything", ["can"], go="here")
-    expect(instance.some_method.last_call).to_be((("anything", ["can"]), {"go": "here"}))
+    expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
 
 
 def test__then_return__returns_the_given_value_when_a_stubbed_method_is_called():
@@ -94,3 +94,53 @@ def test__restore__can_set_a_static_method_back_to_what_it_originally_was():
         SomeTemporaryClass.some_static_method.restore()
 
         expect(SomeTemporaryClass.some_static_method).to_be(original_static_method)
+
+def test__stub__when_stubbing_a_class_method__tracks_what_the_method_was_called_with():
+    with TemporaryClass() as SomeTemporaryClass:
+        when(SomeTemporaryClass.some_class_method, SomeTemporaryClass)
+
+        SomeTemporaryClass.some_class_method("anything", ["can"], go="here")
+        expect(SomeTemporaryClass.some_class_method.last_call).to_be((("anything", ["can"]), {"go": "here"}))
+
+
+def test__then_return__can_set_the_return_value_for_a_class_method():
+    with TemporaryClass() as SomeTemporaryClass:
+        when(SomeTemporaryClass.some_class_method).then_return("some value")
+
+        expect(SomeTemporaryClass.some_class_method("anything", ["can"], go="here")).to_be("some value")
+
+
+def test__restore__can_set_a_class_method_back_to_what_it_originally_was():
+    with TemporaryClass() as SomeTemporaryClass:
+        original_class_method = SomeTemporaryClass.some_class_method
+
+        when(SomeTemporaryClass.some_class_method).then_return("some value")
+
+        SomeTemporaryClass.some_class_method.restore()
+
+        expect(SomeTemporaryClass.some_class_method).to_be(original_class_method)
+
+def test__stub__when_spying_on_a_function__tracks_what_the_method_was_called_with():
+    def some_function(*args, **kwargs):
+        return "some_value"
+
+    with spy_on(some_function) as spy:
+        spy("anything", ["can"], go="here")
+        expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
+
+def test__stub__when_spying_on_a_function__tracks_what_the_method_returns():
+    def some_function(*args, **kwargs):
+        return "some_value"
+
+    with spy_on(some_function) as spy:
+        spy("anything", ["can"], go="here")
+        expect(spy.return_value).to_be("some_value")
+
+
+def test__then_return__can_set_the_return_value_for_a_function():
+    def some_function(*args, **kwargs):
+        return "some_value"
+    with when(some_function) as spy:
+        spy.then_return("some_other_value")
+        expect(spy.return_value).to_be("some_other_value")
+

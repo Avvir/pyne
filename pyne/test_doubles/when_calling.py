@@ -7,12 +7,9 @@ def when_calling(method, on=None):
     else:
         object_to_stub = on
     spy = Spy(object_to_stub, method)
-
-    setattr(object_to_stub, method.__name__, spy)
-
     return spy
 
 
 when = when_calling
-spy_on = when_calling
+spy_on = lambda *args, **kwargs: when_calling(*args, **kwargs).call_real()
 stub = when_calling
