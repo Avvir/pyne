@@ -14,19 +14,19 @@ class Spy:
         self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
 
     def _create_stubbed_object(self, object_to_stub, method):
-        class SpyObject:
+        class Spy:
             def __init__(self):
                 pass
 
             @staticmethod
-            def none_method(self, *args, **kwargs):
+            def __call__(self, *args, **kwargs):
                 return None
 
         if object_to_stub is None:
-            object_to_stub = SpyObject()
+            object_to_stub = Spy()
 
         if method is None:
-            method = SpyObject.none_method
+            method = Spy.__call__
 
         setattr(object_to_stub, method.__name__, self)
         return object_to_stub, method

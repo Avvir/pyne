@@ -35,7 +35,7 @@ def test__was_called_with__when_there_were_no_calls__fails_with_a_message():
 
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called_with("some-positional-argument", ["some-array-content"]),
-            """Expected that <spy> was called with <('some-positional-argument', ['some-array-content'])> but it was never called"""
+            """Expected that <Spy#__call__> was called with <('some-positional-argument', ['some-array-content'])> but it was never called"""
     )
 
 
@@ -65,7 +65,7 @@ def test__was_called_with__when_the_method_was_called_with_the_wrong_parameters_
     spy("some-positional-argument", "some-array-content")
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called_with("some-positional-argument", ["some-array-content"]),
-            """Expected that <spy> was called with <('some-positional-argument', ['some-array-content'])> but it was called with <('some-positional-argument', 'some-array-content')>"""
+            """Expected that <Spy#__call__> was called with <('some-positional-argument', ['some-array-content'])> but it was called with <('some-positional-argument', 'some-array-content')>"""
     )
 
 
@@ -133,7 +133,7 @@ def test__was_called__when_there_were_no_calls__fails_with_a_message():
 
     expect_expectation_to_fail_with_message(
             lambda: expect(spy).was_called(),
-            "Expected that <spy> was called but it was never called"
+            "Expected that <Spy#__call__> was called but it was never called"
     )
 
 

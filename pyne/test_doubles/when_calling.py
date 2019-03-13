@@ -9,7 +9,8 @@ def when_calling(method, on=None):
     spy = Spy(object_to_stub, method)
     return spy
 
+def spy_on(method, on=None):
+    return when_calling(method, on=on).call_real()
 
 when = when_calling
-spy_on = lambda *args, **kwargs: when_calling(*args, **kwargs).call_real()
 stub = when_calling
