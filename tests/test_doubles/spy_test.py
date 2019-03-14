@@ -1,7 +1,7 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import Spy
 
-from pyne.test_doubles.when_calling import when, spy_on
+from pyne.test_doubles.when_calling import when, spy_on, group_when_callings
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
 
@@ -128,13 +128,21 @@ def test__stub__when_spying_on_a_function__tracks_what_the_method_was_called_wit
         spy("anything", ["can"], go="here")
         expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
 
-def test__stub__when_spying_on_a_function__tracks_what_the_method_returns():
+def test__stub__when_spying_on_a_function_with_call_real__tracks_what_the_real_method_returns():
+    def some_function(*args, **kwargs):
+        return "some_value"
+
+    with spy_on(some_function).call_real() as spy:
+        spy("anything", ["can"], go="here")
+        expect(spy.return_value).to_be("some_value")
+
+def test__stub__when_spying_on_a_function__tracks_what_the_stubbed_method_returns():
     def some_function(*args, **kwargs):
         return "some_value"
 
     with spy_on(some_function) as spy:
         spy("anything", ["can"], go="here")
-        expect(spy.return_value).to_be("some_value")
+        expect(spy.return_value).to_be(None)
 
 
 def test__then_return__can_set_the_return_value_for_a_function():
@@ -144,3 +152,40 @@ def test__then_return__can_set_the_return_value_for_a_function():
         spy.then_return("some_other_value")
         expect(spy.return_value).to_be("some_other_value")
 
+
+def test__when_calling_group__calls_all_exits_on_group_restore():
+    with TemporaryClass() as SomeTemporaryClass:
+        some_instance = SomeTemporaryClass()
+
+        original_method_a = some_instance.some_method
+        original_method_b = some_instance.some_other_method
+
+
+        group = group_when_callings(spy_on(some_instance.some_method),
+                                    spy_on(some_instance.some_other_method))
+
+        expect(some_instance.some_method).not_to_be(original_method_a)
+        expect(some_instance.some_other_method).not_to_be(original_method_b)
+
+        group.restore()
+
+        expect(some_instance.some_method).to_be(original_method_a)
+        expect(some_instance.some_other_method).to_be(original_method_b)
+
+def test__when_calling_group__calls_all_exits_on_group_exit():
+    with TemporaryClass() as SomeTemporaryClass:
+        some_instance = SomeTemporaryClass()
+
+        original_method_a = some_instance.some_method
+        original_method_b = some_instance.some_other_method
+
+
+        group = group_when_callings(spy_on(some_instance.some_method),
+                                    spy_on(some_instance.some_other_method))
+
+        with group:
+            expect(some_instance.some_method).not_to_be(original_method_a)
+            expect(some_instance.some_other_method).not_to_be(original_method_b)
+
+        expect(some_instance.some_method).to_be(original_method_a)
+        expect(some_instance.some_other_method).to_be(original_method_b)
