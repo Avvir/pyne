@@ -14,24 +14,11 @@ from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config
-from pyne.pyne_tester import PyneBlockModuleFile
+from pyne.pyne_tester import PyneBlockModuleFile, ModuleImportContext
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
-class ModuleImportContext:
-    def __init__(self):
-        self.enter_module_names = None
-
-    def __enter__(self):
-        self.enter_module_names = set(sys.modules.keys())
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        exit_module_names = sys.modules.keys()
-        added_module_names = exit_module_names - self.enter_module_names
-        for module_name in added_module_names:
-            print("Removing", module_name)
-            sys.modules.pop(module_name)
 
 
 class PyneCliHelper:

@@ -1,19 +1,40 @@
+import sys
+
 from pyne.pyne_config import config
 from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.lib.pyne_test_blocks import DescribeBlock
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 
-class PyneBlock(DescribeBlock):
+class ModuleImportContext:
+    def __init__(self):
+        self.enter_module_names = None
+
+    def __enter__(self):
+        self.enter_module_names = set(sys.modules.keys())
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        exit_module_names = sys.modules.keys()
+        added_module_names = exit_module_names - self.enter_module_names
+        for module_name in added_module_names:
+            print("Removing", module_name)
+            sys.modules.pop(module_name)
+
+
+class PyneBlock(DescribeBlock, ModuleImportContext):
     def __init__(self, context_description, method):
         DescribeBlock.__init__(self, None, context_description, method)
+        ModuleImportContext.__init__(self)
         self.module_file = PyneBlock._current_module_file
 
     def __enter__(self):
+        self.load_module_file(self.module_file)
+        ModuleImportContext.__enter__(self)
         return DescribeBlock.__enter__(self)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         DescribeBlock.__exit__(self, exc_type, exc_val, exc_tb)
+        ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
 
 
 class PyneBlockModuleFile:
