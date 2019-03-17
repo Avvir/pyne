@@ -20,21 +20,31 @@ class ModuleImportContext:
             print("Removing", module_name)
             sys.modules.pop(module_name)
 
+def load_module_file(module_file):
+    if module_file is None:
+        return
+    module_path, module_name = module_file
+    import sys
+    sys.path.index(0, module_path)
+    module = __import__(module_name)
+    sys.path.pop(0)
+    return module
 
 class PyneBlock(DescribeBlock, ModuleImportContext):
+    _current_module_file = None
     def __init__(self, context_description, method):
         DescribeBlock.__init__(self, None, context_description, method)
-        ModuleImportContext.__init__(self)
+        # ModuleImportContext.__init__(self)
         self.module_file = PyneBlock._current_module_file
 
     def __enter__(self):
-        self.load_module_file(self.module_file)
-        ModuleImportContext.__enter__(self)
+        # load_module_file(self.module_file)
+        # ModuleImportContext.__enter__(self)
         return DescribeBlock.__enter__(self)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         DescribeBlock.__exit__(self, exc_type, exc_val, exc_tb)
-        ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
+        # ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
 
 
 class PyneBlockModuleFile:
