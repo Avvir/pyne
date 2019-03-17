@@ -14,9 +14,24 @@ from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config
+from pyne.pyne_tester import PyneBlockModuleFile
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
+class ModuleImportContext:
+    def __init__(self):
+        self.enter_module_names = None
+
+    def __enter__(self):
+        self.enter_module_names = set(sys.modules.keys())
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        exit_module_names = sys.modules.keys()
+        added_module_names = exit_module_names - self.enter_module_names
+        for module_name in added_module_names:
+            print("Removing", module_name)
+            sys.modules.pop(module_name)
 
 
 class PyneCliHelper:
@@ -25,22 +40,24 @@ class PyneCliHelper:
 
     @staticmethod
     def load_tests_in_dir(dirname, excluded_package_names):
-        excluded_pyne_test_filename = os.path.join(dirname, "excluded_pyne_tests.txt")
-        if os.path.exists(excluded_pyne_test_filename):
-            with open(excluded_pyne_test_filename, "r") as fh:
-                new_names = [n.strip() for n in fh.readlines()]
-                for name in new_names:
-                    excluded_package_names[name] = excluded_pyne_test_filename
+        with ModuleImportContext():
+            excluded_pyne_test_filename = os.path.join(dirname, "excluded_pyne_tests.txt")
+            if os.path.exists(excluded_pyne_test_filename):
+                with open(excluded_pyne_test_filename, "r") as fh:
+                    new_names = [n.strip() for n in fh.readlines()]
+                    for name in new_names:
+                        excluded_package_names[name] = excluded_pyne_test_filename
 
-        for importer, package_name, _ in pkgutil.iter_modules([dirname]):
-            if "_test" == package_name[-5:] and package_name not in sys.modules:
-                if package_name in excluded_package_names:
-                    exclude_file = excluded_package_names[package_name]
-                    print("Ignoring %s from exclude file %s" % (package_name, exclude_file))
-                    continue
-                module = importer.find_module(package_name
-                                              ).load_module(package_name)
-                print(module)
+            for importer, package_name, _ in pkgutil.iter_modules([dirname]):
+                if "_test" == package_name[-5:] and package_name not in sys.modules:
+                    module_file = (importer.path, package_name)
+                    if package_name in excluded_package_names:
+                        exclude_file = excluded_package_names[package_name]
+                        print("Ignoring %s from exclude file %s" % (package_name, exclude_file))
+                        continue
+                    with PyneBlockModuleFile(module_file):
+                        module = importer.find_module(package_name
+                                                      ).load_module(package_name)
 
     @staticmethod
     def load_tests_in_subdirectories(path, excluded_package_names):
