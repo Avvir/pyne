@@ -32,19 +32,23 @@ def load_module_file(module_file):
 
 class PyneBlock(DescribeBlock, ModuleImportContext):
     _current_module_file = None
+    disable_pyne_decorator = False
+
     def __init__(self, context_description, method):
         DescribeBlock.__init__(self, None, context_description, method)
-        # ModuleImportContext.__init__(self)
+        ModuleImportContext.__init__(self)
         self.module_file = PyneBlock._current_module_file
 
     def __enter__(self):
+        PyneBlock.disable_pyne_decorator = True
         # load_module_file(self.module_file)
-        # ModuleImportContext.__enter__(self)
+        ModuleImportContext.__enter__(self)
         return DescribeBlock.__enter__(self)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         DescribeBlock.__exit__(self, exc_type, exc_val, exc_tb)
-        # ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
+        ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
+        PyneBlock.disable_pyne_decorator = False
 
 
 class PyneBlockModuleFile:
@@ -59,6 +63,8 @@ class PyneBlockModuleFile:
 
 
 def pyne(tests_method):
+    if PyneBlock.disable_pyne_decorator:
+        return
     if config.report_between_suites:
         reporter.reset()
     describe_block = PyneBlock(tests_method.__name__, tests_method)
