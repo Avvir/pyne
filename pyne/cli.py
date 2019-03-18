@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import inspect
 import os
 import pkgutil
 import sys
@@ -14,7 +15,7 @@ from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config
-from pyne.pyne_tester import PyneBlockModuleFile, ModuleImportContext
+from pyne.pyne_tester import PyneBlockImporter, ModuleImportContext
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -37,14 +38,13 @@ class PyneCliHelper:
 
             for importer, package_name, _ in pkgutil.iter_modules([dirname]):
                 if "_test" == package_name[-5:] and package_name not in sys.modules:
-                    module_file = (importer.path, package_name)
+                    module_directory = importer.path
                     if package_name in excluded_package_names:
                         exclude_file = excluded_package_names[package_name]
                         print("Ignoring %s from exclude file %s" % (package_name, exclude_file))
                         continue
-                    with PyneBlockModuleFile(module_file):
-                        module = importer.find_module(package_name
-                                                      ).load_module(package_name)
+                    with PyneBlockImporter(importer, module_directory, package_name):
+                        pass
 
     @staticmethod
     def load_tests_in_subdirectories(path, excluded_package_names):

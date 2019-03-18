@@ -1,3 +1,4 @@
+import inspect
 import sys
 
 from pyne.pyne_config import config
@@ -20,10 +21,10 @@ class ModuleImportContext:
             print("Removing", module_name)
             sys.modules.pop(module_name)
 
-def load_module_file(module_file):
-    if module_file is None:
+def do_module_imports(module_importer):
+    if module_importer is None:
         return
-    module_path, module_name = module_file
+    module_path, module_name = module_importer.module_file
     import sys
     sys.path.index(0, module_path)
     module = __import__(module_name)
@@ -31,17 +32,17 @@ def load_module_file(module_file):
     return module
 
 class PyneBlock(DescribeBlock, ModuleImportContext):
-    _current_module_file = None
+    _current_pyne_block_importer = None
     disable_pyne_decorator = False
 
     def __init__(self, context_description, method):
         DescribeBlock.__init__(self, None, context_description, method)
         ModuleImportContext.__init__(self)
-        self.module_file = PyneBlock._current_module_file
+        self.module_importer = PyneBlock._current_pyne_block_importer
 
     def __enter__(self):
         PyneBlock.disable_pyne_decorator = True
-        # load_module_file(self.module_file)
+        do_module_imports(self.module_importer)
         ModuleImportContext.__enter__(self)
         return DescribeBlock.__enter__(self)
 
@@ -51,15 +52,19 @@ class PyneBlock(DescribeBlock, ModuleImportContext):
         PyneBlock.disable_pyne_decorator = False
 
 
-class PyneBlockModuleFile:
-    def __init__(self, module_file):
-        self.module_file = module_file
+class PyneBlockImporter:
+    def __init__(self, importer, module_directory, package_name):
+        self.module_file = (module_directory, package_name)
+        module = importer.find_module(package_name).load_module(package_name)
+        members = dict(inspect.getmembers(module))
+        members = { name: value for name, value in members.items() if not name.startswith("__") }
+        self.members = { name: value for name, value in members.items() if not name.startswith("__") }
 
     def __enter__(self):
-        PyneBlock._current_module_file = self.module_file
+        PyneBlock._current_pyne_block_importer = self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        PyneBlock._current_module_file = None
+        PyneBlock._current_pyne_block_importer = None
 
 
 def pyne(tests_method):
