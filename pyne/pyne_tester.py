@@ -23,26 +23,20 @@ class ModuleImportContext:
             print("Removing", module_name)
             sys.modules.pop(module_name)
 
-def do_module_imports(module_importer):
-    if module_importer is None:
-        return
-    module_path, module_name = module_importer.module_file
-    import sys
-    sys.path.index(0, module_path)
-    module = __import__(module_name)
-    sys.path.pop(0)
-    return module
 
 class PyneBlock(DescribeBlock, ModuleImportContext):
     collect_immediately = True
 
-    def __init__(self, context_description, method):
+    def __init__(self, context_description, method, suite_name=None):
         DescribeBlock.__init__(self, None, context_description, method)
         ModuleImportContext.__init__(self)
         module_members = dict(method.__globals__)
+        self.module_name = None
+        self.module_directory = None
         self.module_members = { name: value for name, value in module_members.items() if not name.startswith("__") }
         self.module_name = method.__module__
         self.is_run_in_main = (method.__module__ == "__main__")
+        self.suite_name = suite_name
 
     def __enter__(self):
         ModuleImportContext.__enter__(self)
@@ -73,6 +67,10 @@ class DisablePyneBlockCollectImmediately:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         PyneBlock.collect_immediately = True
+
+def suite(pyne_block, suite_name):
+    pyne_block.suite_name = suite_name
+    return pyne_block
 
 def pyne(tests_method):
     pyne_block = PyneBlock(tests_method.__name__, tests_method)
