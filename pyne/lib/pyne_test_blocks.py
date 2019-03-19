@@ -25,6 +25,11 @@ class DescribeBlock(BehaviorBlock):
         self.has_focused_descendants = has_focused_descendants
         self.focused = focused
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
 
 class ItBlock(BehaviorBlock):
 
