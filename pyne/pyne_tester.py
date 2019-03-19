@@ -1,5 +1,7 @@
 import inspect
 import sys
+from importlib import reload
+from types import ModuleType
 
 from pyne.pyne_config import config
 from pyne.lib.result_reporters.pyne_result_reporters import reporter
@@ -43,13 +45,20 @@ class PyneBlock(DescribeBlock, ModuleImportContext):
         self.is_run_in_main = (method.__module__ == "__main__")
 
     def __enter__(self):
-        # do_module_imports(self.module_importer)
         ModuleImportContext.__enter__(self)
+        self.restore_module_members()
         return DescribeBlock.__enter__(self)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         DescribeBlock.__exit__(self, exc_type, exc_val, exc_tb)
         ModuleImportContext.__exit__(self, exc_type, exc_val, exc_tb)
+
+    def restore_module_members(self):
+        globals = self.method.__globals__
+        for name, member in self.module_members.items():
+            if isinstance(member, ModuleType):
+                if member.__name__ not in sys.modules:
+                    sys.modules[member.__name__] = member.__loader__.load_module()
 
     def collect(self):
         if config.report_between_suites:
