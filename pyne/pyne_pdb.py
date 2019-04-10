@@ -7,6 +7,11 @@ pdb_enabled = "--pdb" in sys.argv
 if pdb_enabled and "--pdb" in sys.argv:
     sys.argv.remove("--pdb")
 
+def is_running_inside_debugger():
+    import inspect
+    frame_string = str(inspect.getouterframes(inspect.currentframe()))
+    is_debug = "pydev" in frame_string
+    return is_debug
 
 def debug_block(name):
     print("Error handling '%s' block." % name)

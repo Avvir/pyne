@@ -1,5 +1,6 @@
 from time import perf_counter
 
+from pyne.pyne_pdb import is_running_inside_debugger
 from . import pyne_pdb
 
 
@@ -103,13 +104,18 @@ def run_test(context, before_blocks, it_block, after_blocks, reporter):
         reporter.report_success(it_block, seconds)
 
 
+
 def run_blocks(blocks, context):
+    is_debug_mode = is_running_inside_debugger()
     for block in blocks:
-        try:
+        if is_debug_mode:
             block.method(context)
-        except Exception as e:
-            # Save traceback to enable post-mortem using pdb
-            import sys
-            sys.last_traceback = e.__traceback__
-            return BlockFailureResult(block, e)
+        else:
+            try:
+                block.method(context)
+            except Exception as e:
+                # Save traceback to enable post-mortem using pdb
+                import sys
+                sys.last_traceback = e.__traceback__
+                return BlockFailureResult(block, e)
     return None
