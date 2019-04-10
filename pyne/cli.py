@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import inspect
 import os
 import pkgutil
 import sys
@@ -15,11 +14,9 @@ from pyne.lib.result_reporters.pyne_result_reporters import reporter
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config
-from pyne.pyne_tester import ModuleImportContext, PyneBlock, DisablePyneBlockCollectImmediately
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
-
 
 
 class PyneCliHelper:
@@ -27,52 +24,32 @@ class PyneCliHelper:
         self.report_between_suites = False
 
     @staticmethod
-    def load_tests_in_dir(module_directory):
-        pyne_blocks = []
-        excluded_module_names = dict()
-        with DisablePyneBlockCollectImmediately():
-            with ModuleImportContext():
-                excluded_pyne_test_filename = os.path.join(module_directory, "excluded_pyne_tests.txt")
-                if os.path.exists(excluded_pyne_test_filename):
-                    with open(excluded_pyne_test_filename, "r") as fh:
-                        new_names = [n.strip() for n in fh.readlines()]
-                        for name in new_names:
-                            excluded_module_names[name] = excluded_pyne_test_filename
+    def load_tests_in_dir(dirname, excluded_package_names):
+        excluded_pyne_test_filename = os.path.join(dirname, "excluded_pyne_tests.txt")
+        if os.path.exists(excluded_pyne_test_filename):
+            with open(excluded_pyne_test_filename, "r") as fh:
+                new_names = [n.strip() for n in fh.readlines()]
+                for name in new_names:
+                    excluded_package_names[name] = excluded_pyne_test_filename
 
-                for importer, module_name, _ in pkgutil.iter_modules([module_directory]):
-                    if "_test" == module_name[-5:] and module_name not in sys.modules:
-                        module = importer.find_module(module_name).load_module(module_name)
-                        for name, member in inspect.getmembers(module):
-                            if isinstance(member, PyneBlock):
-                                member.module_name = module_name
-                                member.module_directory = module_directory
-                                pyne_blocks.append(member)
-        return pyne_blocks, excluded_module_names
+        for importer, package_name, _ in pkgutil.iter_modules([dirname]):
+            if "_test" == package_name[-5:] and package_name not in sys.modules:
+                if package_name in excluded_package_names:
+                    exclude_file = excluded_package_names[package_name]
+                    print("Ignoring %s from exclude file %s" % (package_name, exclude_file))
+                    continue
+                module = importer.find_module(package_name
+                                              ).load_module(package_name)
+                print(module)
 
     @staticmethod
-    def load_tests_in_subdirectories(path):
-        pyne_blocks = []
-        excluded_module_names = dict()
+    def load_tests_in_subdirectories(path, excluded_package_names):
         for content in os.listdir(path):
             if content[:1] != '.':
                 content_path = os.path.join(path, content)
                 if os.path.isdir(content_path):
-                    blocks, excluded = cli_helper.load_tests_in_dir(content_path)
-                    pyne_blocks.extend(blocks)
-                    excluded_module_names.update(excluded)
-                    blocks, excluded = cli_helper.load_tests_in_subdirectories(content_path)
-                    pyne_blocks.extend(blocks)
-                    excluded_module_names.update(excluded)
-        return pyne_blocks, excluded_module_names
-
-    @staticmethod
-    def load_tests(path):
-        ex = dict()
-        pyne_blocks, excluded_module_names = cli_helper.load_tests_in_dir(path)
-        blocks, excluded = cli_helper.load_tests_in_subdirectories(path)
-        pyne_blocks.extend(blocks)
-        excluded_module_names.update(excluded)
-        return pyne_blocks, excluded_module_names
+                    cli_helper.load_tests_in_dir(content_path, excluded_package_names)
+                    cli_helper.load_tests_in_subdirectories(content_path, excluded_package_names)
 
     def setup_reporting(self):
         self.report_between_suites = config.report_between_suites
@@ -89,14 +66,9 @@ cli_helper = PyneCliHelper()
 @pass_context
 def main(context, path):
     cli_helper.setup_reporting()
-    pyne_blocks, excluded_module_names = cli_helper.load_tests(path)
-
-    for pyne_block in pyne_blocks:
-        if pyne_block.module_name in excluded_module_names:
-            exclude_file = excluded_module_names[pyne_block.module_name]
-            print("Ignoring %s from exclude file %s" % (pyne_block.module_name, exclude_file))
-            continue
-        pyne_block.collect()
+    excluded_package_names = dict()
+    cli_helper.load_tests_in_dir(path, excluded_package_names)
+    cli_helper.load_tests_in_subdirectories(path, excluded_package_names)
 
     describe_block = test_collection.top_level_describe
     run_tests(describe_block, reporter)

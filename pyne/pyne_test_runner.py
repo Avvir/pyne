@@ -28,28 +28,27 @@ def run_tests(describe_block, result_reporter):
 
 
 def run_non_pended_tests(describe_block, result_reporter, parent_is_pending=False):
-    with describe_block:
-        result_reporter.report_enter_context(describe_block)
+    result_reporter.report_enter_context(describe_block)
 
-        is_pending_describe = describe_block.pending or parent_is_pending
-        if is_pending_describe:
-            for it_block in describe_block.it_blocks:
+    is_pending_describe = describe_block.pending or parent_is_pending
+    if is_pending_describe:
+        for it_block in describe_block.it_blocks:
+            result_reporter.report_pending(it_block)
+    else:
+        for it_block in describe_block.it_blocks:
+            if it_block.pending:
                 result_reporter.report_pending(it_block)
-        else:
-            for it_block in describe_block.it_blocks:
-                if it_block.pending:
-                    result_reporter.report_pending(it_block)
-                else:
-                    run_test(describe_block.context,
-                             befores_to_run(describe_block),
-                             it_block,
-                             afters_to_run(describe_block),
-                             result_reporter)
+            else:
+                run_test(describe_block.context,
+                         befores_to_run(describe_block),
+                         it_block,
+                         afters_to_run(describe_block),
+                         result_reporter)
 
-        for nested_describe_block in describe_block.describe_blocks:
-            run_non_pended_tests(nested_describe_block, result_reporter, is_pending_describe)
+    for nested_describe_block in describe_block.describe_blocks:
+        run_non_pended_tests(nested_describe_block, result_reporter, is_pending_describe)
 
-        result_reporter.report_exit_context(describe_block)
+    result_reporter.report_exit_context(describe_block)
 
 
 def run_only_focused_tests(describe_block, result_reporter):
