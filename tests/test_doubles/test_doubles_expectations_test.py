@@ -1,6 +1,6 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import Spy
-from pyne.test_doubles.when_calling import spy_on
+from pyne.test_doubles.stub import spy_on
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
@@ -108,7 +108,7 @@ def test__was_called__when_the_subject_is_not_a_spy__fails_with_message():
 
     expect_expectation_to_fail_with_message(
                 lambda: expect(some_non_spy).was_called(),
-                """Expected that <tests.test_doubles.test_doubles_expectations_test.some_non_spy> was called but its calls were not tracked. Hint: use when_calling() to track its calls"""
+                """Expected that <tests.test_doubles.test_doubles_expectations_test.some_non_spy> was called but its calls were not tracked. Hint: use stub() to track its calls"""
         )
 
 def test__for_an_instance_method__was_called__can_pass():

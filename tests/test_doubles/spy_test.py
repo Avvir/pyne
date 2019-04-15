@@ -1,7 +1,7 @@
 from pyne.expectations import expect
 from pyne.test_doubles.spy import Spy
 
-from pyne.test_doubles.when_calling import when, spy_on, group_when_callings
+from pyne.test_doubles.stub import when, spy_on, group_stubs
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
 
@@ -161,8 +161,8 @@ def test__when_calling_group__calls_all_exits_on_group_restore():
         original_method_b = some_instance.some_other_method
 
 
-        group = group_when_callings(spy_on(some_instance.some_method),
-                                    spy_on(some_instance.some_other_method))
+        group = group_stubs(spy_on(some_instance.some_method),
+                            spy_on(some_instance.some_other_method))
 
         expect(some_instance.some_method).not_to_be(original_method_a)
         expect(some_instance.some_other_method).not_to_be(original_method_b)
@@ -180,8 +180,8 @@ def test__when_calling_group__calls_all_exits_on_group_exit():
         original_method_b = some_instance.some_other_method
 
 
-        group = group_when_callings(spy_on(some_instance.some_method),
-                                    spy_on(some_instance.some_other_method))
+        group = group_stubs(spy_on(some_instance.some_method),
+                            spy_on(some_instance.some_other_method))
 
         with group:
             expect(some_instance.some_method).not_to_be(original_method_a)
