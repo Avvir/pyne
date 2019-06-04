@@ -3,8 +3,8 @@ from traceback import TracebackException
 
 from termcolor import colored
 
-from pyne.lib.result_reporters.printing_reporter import PrintingReporter
-from pyne.lib.result_reporters.record_for_summary_reporter import RecordForSummaryReporter
+from pynetest.lib.result_reporters.printing_reporter import PrintingReporter
+from pynetest.lib.result_reporters.record_for_summary_reporter import RecordForSummaryReporter
 
 
 class PyneStats:

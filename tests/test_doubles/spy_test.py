@@ -1,7 +1,7 @@
-from pyne.expectations import expect
-from pyne.test_doubles.spy import Spy
+from pynetest.expectations import expect
+from pynetest.test_doubles.spy import Spy
 
-from pyne.test_doubles.stub import when, spy_on, group_stubs
+from pynetest.test_doubles.stub import when, spy_on, group_stubs
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
 

@@ -1,4 +1,4 @@
-from pyne.lib.matcher import Matcher, equal_to_comparator
+from pynetest.lib.matcher import Matcher, equal_to_comparator
 
 
 class MatchesListMatcher(Matcher):

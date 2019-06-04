@@ -1,9 +1,9 @@
 import re
 
-from pyne.expectations import expect
-from pyne.lib.result_reporters.pyne_result_reporters import TestFailureException
-from pyne.pyne_test_collector import after_each, before_each, describe, fit, it, xdescribe, xit
-from pyne.pyne_tester import pyne
+from pynetest.expectations import expect
+from pynetest.lib.result_reporters.pyne_result_reporters import TestFailureException
+from pynetest.pyne_test_collector import after_each, before_each, describe, fit, it, xdescribe, xit
+from pynetest.pyne_tester import pyne
 
 
 @pyne

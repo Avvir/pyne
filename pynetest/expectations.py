@@ -1,9 +1,9 @@
-from pyne.lib.expectation import Expectation
-from pyne.lib.expectations.raise_message_expectation import RaiseMessageExpectation
-from pyne.lib.expectations.raise_type_expectation import RaiseTypeExpectation
-from pyne.lib.expectations.to_be_between_expectation import ToBeBetweenExpectation
-from pyne.matchers import contains, equal_to, has_length, instance_of, is_none, about, matches_list
-from pyne.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
+from pynetest.lib.expectation import Expectation
+from pynetest.lib.expectations.raise_message_expectation import RaiseMessageExpectation
+from pynetest.lib.expectations.raise_type_expectation import RaiseTypeExpectation
+from pynetest.lib.expectations.to_be_between_expectation import ToBeBetweenExpectation
+from pynetest.matchers import contains, equal_to, has_length, instance_of, is_none, about, matches_list
+from pynetest.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
 
 
 class PossibleExpectations:

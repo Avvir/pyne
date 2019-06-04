@@ -1,11 +1,11 @@
 from time import sleep
 
-from pyne.expectations import expect
-from pyne.matchers import anything, at_least
-from pyne.lib.result_reporters.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
-from pyne.lib.pyne_test_blocks import ItBlock, DescribeBlock
-from pyne.pyne_test_collector import reset, it, describe, test_collection, before_each, after_each
-from pyne.pyne_test_runner import run_tests
+from pynetest.expectations import expect
+from pynetest.matchers import anything, at_least
+from pynetest.lib.result_reporters.pyne_result_reporters import ExceptionReporter, StatTrackingReporter
+from pynetest.lib.pyne_test_blocks import ItBlock, DescribeBlock
+from pynetest.pyne_test_collector import reset, it, describe, test_collection, before_each, after_each
+from pynetest.pyne_test_runner import run_tests
 
 
 def test__when_there_is_an_it__runs_the_it():

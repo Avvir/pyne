@@ -1,7 +1,7 @@
-from pyne.expectations import expect
-from pyne.matchers import contains
-from pyne.pyne_test_collector import it, describe, before_each, after_each, xit, xdescribe, fit, fdescribe
-from pyne.pyne_tester import pyne
+from pynetest.expectations import expect
+from pynetest.matchers import contains
+from pynetest.pyne_test_collector import it, describe, before_each, after_each, xit, xdescribe, fit, fdescribe
+from pynetest.pyne_tester import pyne
 from tests.test_helpers.fake_print import printed_text, StubPrint
 
 

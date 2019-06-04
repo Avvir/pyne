@@ -1,7 +1,7 @@
-"""Pyne tests for pyne.expectations"""
-from pyne.expectations import expect
-from pyne.pyne_test_collector import it, describe
-from pyne.pyne_tester import pyne
+"""Pyne tests for pynetest.expectations"""
+from pynetest.expectations import expect
+from pynetest.pyne_test_collector import it, describe
+from pynetest.pyne_tester import pyne
 
 # flake8: noqa
 # pylint: disable=missing-docstring, unused-argument

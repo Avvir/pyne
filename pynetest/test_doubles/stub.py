@@ -1,6 +1,6 @@
 from contextlib import ExitStack
 
-from pyne.test_doubles.spy import Spy
+from pynetest.test_doubles.spy import Spy
 
 
 def stub(method, on=None):

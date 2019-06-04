@@ -1,8 +1,8 @@
-from pyne.pyne_config import config
-from pyne.lib.result_reporters.pyne_result_reporters import reporter
-from pyne.lib.pyne_test_blocks import DescribeBlock
-from pyne.pyne_test_collector import test_collection
-from pyne.pyne_test_runner import run_tests
+from pynetest.pyne_config import config
+from pynetest.lib.result_reporters.pyne_result_reporters import reporter
+from pynetest.lib.pyne_test_blocks import DescribeBlock
+from pynetest.pyne_test_collector import test_collection
+from pynetest.pyne_test_runner import run_tests
 
 
 def pyne(tests_method):

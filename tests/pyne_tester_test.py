@@ -1,6 +1,6 @@
-from pyne.expectations import expect
-from pyne.pyne_test_collector import it, describe, before_each
-from pyne.pyne_tester import pyne
+from pynetest.expectations import expect
+from pynetest.pyne_test_collector import it, describe, before_each
+from pynetest.pyne_tester import pyne
 
 
 def test__pyne__collects_tests():

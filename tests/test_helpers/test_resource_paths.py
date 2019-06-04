@@ -11,4 +11,4 @@ cli_focused_test_fixture_path = path.join(project_root, "examples", "cli_focused
 cli_excluded_tests_fixture_path = path.join(project_root, "examples", "cli_excluded_tests_fixture")
 cli_hidden_file_path = path.join(project_root, "examples", "cli_hidden_file_test_fixture")
 cli_failing_tests_fixture_path = path.join(project_root, "examples", "cli_failing_tests_fixture")
-pyne_path = path.join(project_root, "pyne")
+pyne_path = path.join(project_root, "pynetest")

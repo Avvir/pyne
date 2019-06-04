@@ -1,6 +1,6 @@
-from pyne.expectations import expect
-from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
-from pyne.matchers import about
+from pynetest.expectations import expect
+from pynetest.lib.matchers.matches_list_matcher import MatchesListMatcher
+from pynetest.matchers import about
 
 
 def test__matches_list_matcher__can_match():

@@ -1,5 +1,5 @@
-from pyne.expectations import expect
-from pyne.matchers import anything, equal_to, match
+from pynetest.expectations import expect
+from pynetest.matchers import anything, equal_to, match
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 from tests.test_helpers.some_class import SomeClass
 

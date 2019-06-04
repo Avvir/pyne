@@ -1,7 +1,7 @@
 import re
 
-from pyne.lib.matcher import Matcher, is_matcher, equal_to_comparator, EqualToMatcher
-from pyne.lib.matchers.matches_list_matcher import MatchesListMatcher
+from pynetest.lib.matcher import Matcher, is_matcher, equal_to_comparator, EqualToMatcher
+from pynetest.lib.matchers.matches_list_matcher import MatchesListMatcher
 
 
 def equal_to(value):

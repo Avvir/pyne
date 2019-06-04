@@ -1,6 +1,6 @@
-from pyne.expectations import expect
-from pyne.lib.result_reporters.pyne_result_reporters import ExceptionReporter
-from pyne.lib.pyne_test_blocks import ItBlock
+from pynetest.expectations import expect
+from pynetest.lib.result_reporters.pyne_result_reporters import ExceptionReporter
+from pynetest.lib.pyne_test_blocks import ItBlock
 
 
 def test__report_end_result__when_a_test_has_failed__it_raises_test_failed():

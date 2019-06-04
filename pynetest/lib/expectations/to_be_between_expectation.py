@@ -1,5 +1,5 @@
-from pyne.lib.expectation import Expectation
-from pyne.matchers import between
+from pynetest.lib.expectation import Expectation
+from pynetest.matchers import between
 
 
 class ToBeBetweenExpectation(Expectation):

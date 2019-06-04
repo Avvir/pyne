@@ -10,10 +10,10 @@ from click import (
     pass_context,
     Path)
 
-from pyne.lib.result_reporters.pyne_result_reporters import reporter, TestFailureException
-from pyne.pyne_test_collector import test_collection
-from pyne.pyne_test_runner import run_tests
-from pyne.pyne_config import config
+from pynetest.lib.result_reporters.pyne_result_reporters import reporter, TestFailureException
+from pynetest.pyne_test_collector import test_collection
+from pynetest.pyne_test_runner import run_tests
+from pynetest.pyne_config import config
 
 click_completion.init()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])

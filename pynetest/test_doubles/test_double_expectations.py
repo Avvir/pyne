@@ -1,7 +1,7 @@
-from pyne.lib.expectation import Expectation
-from pyne.lib.matchers.was_called_matcher import WasCalledMatcher
-from pyne.lib.matchers.was_called_with_matcher import WasCalledWithMatcher
-from pyne.lib.message_format_helper import format_arguments
+from pynetest.lib.expectation import Expectation
+from pynetest.lib.matchers.was_called_matcher import WasCalledMatcher
+from pynetest.lib.matchers.was_called_with_matcher import WasCalledWithMatcher
+from pynetest.lib.message_format_helper import format_arguments
 
 
 class CalledExpectation(Expectation):

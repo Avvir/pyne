@@ -1,6 +1,6 @@
 from time import perf_counter
 
-from pyne.pyne_pdb import is_running_inside_debugger
+from pynetest.pyne_pdb import is_running_inside_debugger
 from . import pyne_pdb
 
 

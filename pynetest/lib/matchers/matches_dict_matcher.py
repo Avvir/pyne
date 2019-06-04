@@ -1,5 +1,5 @@
-from pyne.lib.matcher import Matcher, equal_to_comparator
-from pyne.lib.message_format_helper import format_object
+from pynetest.lib.matcher import Matcher, equal_to_comparator
+from pynetest.lib.message_format_helper import format_object
 
 
 class MatchesDictMatcher(Matcher):

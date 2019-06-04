@@ -1,5 +1,5 @@
-from pyne.expectations import expect
-from pyne.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match, between, about, \
+from pynetest.expectations import expect
+from pynetest.matchers import anything, at_least, contains, contains_text, has_length, instance_of, match, between, about, \
     at_most
 
 

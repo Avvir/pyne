@@ -1,7 +1,7 @@
-from pyne.expectations import expect
-from pyne.matchers import anything
-from pyne.test_doubles.test_double_matchers import was_called_with
-from pyne.test_doubles.stub import spy_on
+from pynetest.expectations import expect
+from pynetest.matchers import anything
+from pynetest.test_doubles.test_double_matchers import was_called_with
+from pynetest.test_doubles.stub import spy_on
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 from tests.test_helpers.some_class import SomeClass
 

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pynetest",
-    version="0.1.11",
+    version="0.2.0",
     author="Avvir",
     author_email="tira@avvir.io",
     description="A BDD Testing framework for python",
@@ -20,7 +20,7 @@ setuptools.setup(
     ),
     entry_points={
         "console_scripts": [
-            "pyne=pyne:cli",
+            "pynetest=pynetest:cli",
         ]
     },
     install_requires=[

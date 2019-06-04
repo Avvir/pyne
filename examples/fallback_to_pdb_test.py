@@ -1,5 +1,5 @@
-from pyne.pyne_test_collector import describe, it
-from pyne.pyne_tester import pyne
+from pynetest.pyne_test_collector import describe, it
+from pynetest.pyne_tester import pyne
 
 
 def run_failing_function():

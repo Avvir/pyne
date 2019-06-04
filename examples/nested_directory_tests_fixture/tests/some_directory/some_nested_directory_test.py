@@ -1,5 +1,5 @@
-from pyne.pyne_test_collector import it, describe, before_each
-from pyne.pyne_tester import pyne
+from pynetest.pyne_test_collector import it, describe, before_each
+from pynetest.pyne_tester import pyne
 
 
 @pyne

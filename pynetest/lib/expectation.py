@@ -1,7 +1,7 @@
 from termcolor import cprint
 
-from pyne.lib.matcher import InverseMatcher
-from pyne.lib.message_format_helper import format_object
+from pynetest.lib.matcher import InverseMatcher
+from pynetest.lib.message_format_helper import format_object
 
 
 class Expectation:

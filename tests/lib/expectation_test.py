@@ -1,5 +1,5 @@
-from pyne.lib.expectation import Expectation
-from pyne.lib.matcher import Matcher, equal_to_comparator
+from pynetest.lib.expectation import Expectation
+from pynetest.lib.matcher import Matcher, equal_to_comparator
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
 
 

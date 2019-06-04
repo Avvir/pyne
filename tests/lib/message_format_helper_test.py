@@ -1,5 +1,5 @@
-from pyne.expectations import expect
-from pyne.lib.message_format_helper import format_object, format_arguments
+from pynetest.expectations import expect
+from pynetest.lib.message_format_helper import format_object, format_arguments
 from tests.test_helpers.some_class import SomeClass
 
 

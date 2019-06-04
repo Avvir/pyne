@@ -3,9 +3,9 @@ import os
 from os import path
 
 from click.testing import CliRunner
-from pyne import cli, pyne_pdb
-from pyne.expectations import expect
-from pyne.pyne_config import config
+from pynetest import cli
+from pynetest.expectations import expect
+from pynetest.pyne_config import config
 from tests.test_helpers.test_resource_paths import cli_test_fixture_path, pyne_path, cli_two_file_test_fixture_path, \
     cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path, cli_hidden_file_path, \
     cli_excluded_tests_fixture_path, cli_failing_tests_fixture_path
