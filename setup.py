@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyne",
+    name="pynetest",
     version="0.1.11",
     author="Avvir",
     author_email="tira@avvir.io",
