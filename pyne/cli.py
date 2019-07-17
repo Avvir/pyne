@@ -10,7 +10,7 @@ from click import (
     pass_context,
     Path)
 
-from pyne.lib.result_reporters.pyne_result_reporters import reporter
+from pyne.lib.result_reporters.pyne_result_reporters import reporter, TestFailureException
 from pyne.pyne_test_collector import test_collection
 from pyne.pyne_test_runner import run_tests
 from pyne.pyne_config import config
@@ -71,7 +71,10 @@ def main(context, path):
     cli_helper.load_tests_in_subdirectories(path, excluded_package_names)
 
     describe_block = test_collection.top_level_describe
-    run_tests(describe_block, reporter)
+    try:
+        run_tests(describe_block, reporter)
+    except TestFailureException:
+        sys.exit(1)
 
     config.report_between_suites = cli_helper.report_between_suites
 

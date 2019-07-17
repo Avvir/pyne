@@ -3,11 +3,12 @@ import os
 from os import path
 
 from click.testing import CliRunner
-from pyne import cli
+from pyne import cli, pyne_pdb
 from pyne.expectations import expect
 from pyne.pyne_config import config
 from tests.test_helpers.test_resource_paths import cli_test_fixture_path, pyne_path, cli_two_file_test_fixture_path, \
-    cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path, cli_hidden_file_path, cli_excluded_tests_fixture_path
+    cli_focused_test_fixture_path, cli_nested_directory_tests_fixture_path, cli_hidden_file_path, \
+    cli_excluded_tests_fixture_path, cli_failing_tests_fixture_path
 
 
 def copy_to_working_directory(resource_path):
@@ -86,6 +87,15 @@ def test_when_there_is_a_list_of_excluded_tests__does_not_run_them():
         expect(result.output).to_contain("run_included_e_test")
         # import time
         # time.sleep(50000)
-        
+
+def test_when_there_is_a_failing_test__does_exits_with_code_1():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        copy_to_working_directory(path.join(cli_failing_tests_fixture_path, 'tests'))
+        copy_to_working_directory(pyne_path)
+        result = runner.invoke(cli.main)
+        expect(result.exit_code).to_be(1)
+        expect(result.exception).to_be_a(SystemExit)
+
 def test_cleanup():
     config.report_between_suites = True
