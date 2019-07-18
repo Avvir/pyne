@@ -1,6 +1,6 @@
-from pyne.expectations import expect
-from pyne.pyne_test_collector import it
-from pyne.pyne_tester import pyne
+from pynetest.expectations import expect
+from pynetest.pyne_test_collector import it
+from pynetest.pyne_tester import pyne
 
 
 @pyne
