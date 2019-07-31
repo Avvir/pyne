@@ -2,18 +2,17 @@ import inspect
 
 
 class Spy:
-    def __init__(self, object_to_stub=None, method=None):
+    def __init__(self, object_to_stub=None, method=None, method_name=None):
         if method is not None:
             self.signature = inspect.signature(method)
         else:
             self.signature = inspect.signature(self.__call__)
-
         self.last_call = None
         self.return_value = None
         self.will_call_real = False
-        self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
+        self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method, method_name)
 
-    def _create_stubbed_object(self, object_to_stub, method):
+    def _create_stubbed_object(self, object_to_stub, method, method_name):
         class Spy:
             def __init__(self):
                 pass
@@ -27,12 +26,16 @@ class Spy:
 
         if method is None:
             method = Spy.__call__
+        
+        if method_name is None:
+            method_name = method.__name__
+        self.method_name = method_name
 
-        setattr(object_to_stub, method.__name__, self)
+        setattr(object_to_stub, self.method_name, self)
         return object_to_stub, method
 
     def _unstub_object(self):
-        setattr(self.stubbed_object, self.original_method.__name__, self.original_method)
+        setattr(self.stubbed_object, self.method_name, self.original_method)
 
 
     def __call__(self, *args, **kwargs):
@@ -44,9 +47,9 @@ class Spy:
     def _pyne_format(self):
         stubbed_object = self.stubbed_object
         if isinstance(stubbed_object, type):
-            formatted = stubbed_object.__name__ + "::" + self.original_method.__name__
+            formatted = stubbed_object.__name__ + "::" + self.method_name
         else:
-            formatted = stubbed_object.__class__.__name__ + "#" + self.original_method.__name__
+            formatted = stubbed_object.__class__.__name__ + "#" + self.method_name
         return formatted
 
     def call_real(self):

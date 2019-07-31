@@ -3,12 +3,12 @@ from contextlib import ExitStack
 from pynetest.test_doubles.spy import Spy
 
 
-def stub(method, on=None):
+def stub(method, on=None, method_name=None):
     if on is None and hasattr(method, '__self__'):
         object_to_stub = method.__self__
     else:
         object_to_stub = on
-    spy = Spy(object_to_stub, method)
+    spy = Spy(object_to_stub, method, method_name)
     return spy
 
 
