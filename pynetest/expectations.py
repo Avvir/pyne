@@ -3,7 +3,8 @@ from pynetest.lib.expectations.raise_message_expectation import RaiseMessageExpe
 from pynetest.lib.expectations.raise_type_expectation import RaiseTypeExpectation
 from pynetest.lib.expectations.to_be_between_expectation import ToBeBetweenExpectation
 from pynetest.matchers import contains, equal_to, has_length, instance_of, is_none, about, matches_list
-from pynetest.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation
+from pynetest.test_doubles.test_double_expectations import CalledExpectation, CalledWithExpectation, \
+    NotCalledExpectation
 
 
 class PossibleExpectations:
@@ -56,6 +57,9 @@ class PossibleExpectations:
 
     def was_called(self):
         CalledExpectation().assert_expected(self.subject)
+
+    def was_not_called(self):
+        NotCalledExpectation().assert_expected(self.subject)
 
     def was_called_with(self, *args, **kwargs):
         CalledWithExpectation(*args, **kwargs).assert_expected(self.subject, args, kwargs)

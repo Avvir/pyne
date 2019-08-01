@@ -5,6 +5,9 @@ from pynetest.pyne_tester import pyne
 
 # flake8: noqa
 # pylint: disable=missing-docstring, unused-argument
+from pynetest.test_doubles.stub import spy_on
+from tests.test_helpers.some_class import SomeClass
+
 
 def expect_assertion_error(fun):
     try:
@@ -114,3 +117,43 @@ def expectations_tests():
         @it("it fails if the element is in the set")
         def _(self):
             expect_assertion_error(lambda: expect({5, 10, 3}).not_to_contain(5))
+
+    @describe("#was_called")
+    def _():
+        @it("it passes if the method is called")
+        def _(self):
+            some_instance = SomeClass()
+            with spy_on(some_instance.some_method):
+                some_instance.some_method()
+                expect(some_instance.some_method).was_called()
+
+        @it("it fails if the method is not called")
+        def _(self):
+            some_instance = SomeClass()
+            with spy_on(some_instance.some_method):
+                expect_assertion_error(lambda: expect(some_instance.some_method).was_called())
+
+        @it("it fails if the method is not tracked")
+        def _(self):
+            some_instance = SomeClass()
+            expect_assertion_error(lambda: expect(some_instance.some_method).was_called())
+
+    @describe("#was_not_called")
+    def _():
+        @it("it passes if the method is not called")
+        def _(self):
+            some_instance = SomeClass()
+            with spy_on(some_instance.some_method):
+                expect(some_instance.some_method).was_not_called()
+
+        @it("it fails if the method is called")
+        def _(self):
+            some_instance = SomeClass()
+            with spy_on(some_instance.some_method):
+                some_instance.some_method()
+                expect_assertion_error(lambda: expect(some_instance.some_method).was_not_called())
+
+        @it("it fails if the method is not tracked")
+        def _(self):
+            some_instance = SomeClass()
+            expect_assertion_error(lambda: expect(some_instance.some_method).was_not_called())
