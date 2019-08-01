@@ -3,6 +3,8 @@
 def attach_spy(parent_object, method_name):
     return AttachedSpy(parent_object, method_name)
 
+attach_stub = attach_spy
+
 class AttachedSpy:
     def __init__(self, parent_object=None, method_name=None, signature=None):
         self.parent_object = parent_object
