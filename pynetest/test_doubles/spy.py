@@ -1,7 +1,15 @@
 import inspect
 
+from pynetest.test_doubles.attached_spy import AttachedSpy
+
 
 class Spy:
+    @staticmethod
+    def get_spy(object):
+        if isinstance(object, Spy):
+            return object
+        return AttachedSpy.get_spy(object)
+
     def __init__(self, object_to_stub=None, method=None, method_name=None):
         if method is not None:
             self.signature = inspect.signature(method)
