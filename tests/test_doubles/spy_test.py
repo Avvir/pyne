@@ -5,6 +5,7 @@ from pynetest.test_doubles.stub import when, spy_on, group_stubs
 from tests.test_helpers.some_class import SomeClass
 from tests.test_helpers.temporary_class import TemporaryClass
 
+Spy._validate_spy = False
 
 def test__tracks_what_it_was_called_with():
     spy = Spy()

@@ -8,6 +8,7 @@ def stub(method, on=None):
         object_to_stub = method.__self__
     else:
         object_to_stub = on
+
     spy = Spy(object_to_stub, method)
     return spy
 

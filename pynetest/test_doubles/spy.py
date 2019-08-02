@@ -4,6 +4,8 @@ from pynetest.test_doubles.attached_spy import AttachedSpy
 
 
 class Spy:
+    _validate_spy = True
+
     @staticmethod
     def get_spy(object):
         if isinstance(object, Spy):
@@ -21,24 +23,30 @@ class Spy:
         self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
 
     def _create_stubbed_object(self, object_to_stub, method):
-        if object_to_stub is None:
-            raise ValueError(("Object_to_stub is None.\n"+
-                              "This means Spy's introspection probably failed.\n" +
-                              "Consider specifying the object to stub with the 'on' keyword or\n"+
-                              "consider specifying the parent object and method name using 'attach_stub'"))
+        class Spy:
+            def __init__(self):
+                pass
 
+            @staticmethod
+            def __call__(self, *args, **kwargs):
+                return None
+
+        if object_to_stub is None:
+            object_to_stub = Spy()
 
         if method is None:
             method = Spy.__call__
-        
+
         method_name = method.__name__
+
+        if self._validate_spy and method_name != "__call__" and not hasattr(object_to_stub, method_name):
+            raise ValueError(("No method of name %s exists on parent object %s.\n" +
+                              "This means Spy's introspection probably failed.\n" +
+                              "Consider specifying the parent object and method name using 'attach_stub'")
+                             % (method_name, object_to_stub))
+
         self.method_name = method_name
 
-        if not hasattr(object_to_stub, self.method_name):
-            raise ValueError(("No method of name %s exists on parent object %s.\n" +
-                             "This means Spy's introspection probably failed.\n" +
-                             "Consider specifying the parent object and method name using 'attach_stub'")
-                             % (method_name, object_to_stub))
         setattr(object_to_stub, self.method_name, self)
         return object_to_stub, method
 
