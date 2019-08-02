@@ -87,3 +87,7 @@ class Spy:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.restore()
+
+
+def last_call_of(method):
+    return Spy.get_spy(method).last_call

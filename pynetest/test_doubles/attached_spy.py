@@ -82,6 +82,3 @@ class AttachedSpy:
             formatted = parent_object.__class__.__name__ + "#" + self.method_name
         return formatted
 
-
-def last_call_of(method):
-    return AttachedSpy.get_spy(method).last_call

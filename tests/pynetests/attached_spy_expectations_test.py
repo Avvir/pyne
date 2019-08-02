@@ -145,3 +145,13 @@ def attached_spy_expectations_test():
                 with AttachedSpy(some_class, "some_module_method"):
                     expect(some_class.some_module_method).was_not_called()
 
+
+    @describe("#was_called_with")
+    def _():
+        @it("it passes if the method is called with the args")
+        def _(self):
+            some_instance = SomeClass()
+            with attach_spy(some_instance, "some_method"):
+                expect(some_instance.some_method).was_not_called()
+                some_instance.some_method("anything", ["can"], go="here")
+                expect(some_instance.some_method).was_called_with("anything", ["can"], go="here")

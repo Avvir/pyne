@@ -1,7 +1,8 @@
 from pynetest.expectations import expect
 from pynetest.pyne_test_collector import it, describe
 from pynetest.pyne_tester import pyne
-from pynetest.test_doubles.attached_spy import AttachedSpy, last_call_of
+from pynetest.test_doubles.attached_spy import AttachedSpy
+from pynetest.test_doubles.spy import last_call_of
 from tests.test_helpers import some_class
 from tests.test_helpers.some_class import SomeClass
 
