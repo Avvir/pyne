@@ -1,9 +1,10 @@
 from pynetest.expectations import expect
 from pynetest.pyne_test_collector import it, describe
 from pynetest.pyne_tester import pyne
-from pynetest.test_doubles.attached_spy import AttachedSpy
+from pynetest.test_doubles.attached_spy import AttachedSpy, last_call_of
 from tests.test_helpers import some_class
 from tests.test_helpers.some_class import SomeClass
+
 
 
 @pyne
@@ -78,17 +79,42 @@ def atteched_spy_test():
                 result = some_instance.some_function("anything", ["can"], go="here")
                 expect(result).to_be("some_value")
 
-        @it("doesn't call the original method after it is unstubbed")
+
+    @describe("When a spied method used with then_call is called")
+    def _():
+        @it("calls the new method instead and returns its value")
         def _(self):
             some_instance = SomeClass()
+
             def some_function(*args, **kwargs):
                 return "some_value"
 
+            def some_other_function(*args, **kwargs):
+                return "some_other_value"
+
             some_instance.some_function = some_function
 
-            with AttachedSpy(some_instance, "some_function").call_real():
+            with AttachedSpy(some_instance, "some_function").then_call(some_other_function):
                 result = some_instance.some_function("anything", ["can"], go="here")
-                expect(result).to_be("some_value")
+                expect(result).to_be("some_other_value")
+
+        @it("doesn't call the new method after it is unstubbed")
+        def _(self):
+            some_instance = SomeClass()
+
+            def some_function(*args, **kwargs):
+                return "some_value"
+
+            def some_other_function(*args, **kwargs):
+                return "some_other_value"
+
+            some_instance.some_function = some_function
+
+            with AttachedSpy(some_instance, "some_function").then_call(some_other_function):
+                result = some_instance.some_function("anything", ["can"], go="here")
+                expect(result).to_be("some_other_value")
+            expect(some_instance.some_function()).to_be("some_value")
+
 
     @describe("#get_spy")
     def _():
@@ -150,3 +176,11 @@ def atteched_spy_test():
                     expect(AttachedSpy.get_spy(some_class.some_module_method)).to_be(spy)
 
 
+    @describe("#last_call_of")
+    def _():
+        @it("return last_call of the underlying method spy")
+        def _(self):
+            some_instance = SomeClass()
+            with AttachedSpy(some_instance, "some_method") as spy:
+                some_instance.some_method("anything", ["can"], go="here")
+                expect(last_call_of(some_instance.some_method)).to_be((("anything", ["can"]), {"go": "here"}))
