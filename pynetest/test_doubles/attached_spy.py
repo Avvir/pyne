@@ -7,7 +7,7 @@ attach_stub = attach_spy
 
 
 class AttachedSpy:
-    def __init__(self, parent_object=None, method_name=None, signature=None):
+    def __init__(self, parent_object=None, method_name=None, signature=None, needs_binding=False):
         self.parent_object = parent_object
         self.method_name = method_name
         self.signature = signature
@@ -18,10 +18,11 @@ class AttachedSpy:
         self.last_call = None
         self.return_value = None
         self.will_call_real = False
+        self.needs_binding = needs_binding
 
     @property
     def spy_function(self):
-        return self.spy_call
+        return lambda *args, **kwargs: AttachedSpy.spy_call(self, *args, **kwargs)
 
     @staticmethod
     def get_spy(spy_function):
@@ -30,16 +31,19 @@ class AttachedSpy:
         except Exception:
             return spy_function
 
-
-    def spy_call(self, *args, __get_spy__=False, **kwargs):
+    @staticmethod
+    def spy_call(spy_self, *args, __get_spy__=False, **kwargs):
         if __get_spy__:
-            return self
-        self.last_call = (args, kwargs)
-        if self.other_method_to_call:
-            self.return_value = self.other_method_to_call(*args, **kwargs)
-        elif self.will_call_real:
-            self.return_value = self.method(*args, **kwargs)
-        return self.return_value
+            return spy_self
+        if spy_self.needs_binding:
+            spy_self.last_call = (args[1:], kwargs)
+        else:
+            spy_self.last_call = (args, kwargs)
+        if spy_self.other_method_to_call:
+            spy_self.return_value = spy_self.other_method_to_call(*args, **kwargs)
+        elif spy_self.will_call_real:
+            spy_self.return_value = spy_self.method(*args, **kwargs)
+        return spy_self.return_value
 
     def __call__(self, *args, **kwargs):
         return self.spy_call(*args, **kwargs)
@@ -81,4 +85,5 @@ class AttachedSpy:
         else:
             formatted = parent_object.__class__.__name__ + "#" + self.method_name
         return formatted
+
 

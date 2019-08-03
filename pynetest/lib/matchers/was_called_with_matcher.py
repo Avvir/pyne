@@ -17,7 +17,7 @@ def _get_named_positional_arg_count(signature):
 
 def _get_varargs(signature, args):
     if not signature:
-        return []
+        return args
     named_positional_arg_count = _get_named_positional_arg_count(signature)
     if named_positional_arg_count >= len(args):
         return []
@@ -27,7 +27,7 @@ def _get_varargs(signature, args):
 
 def _get_all_named_args(signature, args, kwargs):
     if not signature:
-        return {}
+        return kwargs
     named_positional_arg_count = _get_named_positional_arg_count(signature)
     all_named_args = dict(kwargs)
 
@@ -43,12 +43,11 @@ class WasCalledWithMatcher(Matcher):
         super().__init__("was_called_with", self.comparator, *params)
 
     def comparator(self, subject, params):
-        subject = Spy.get_spy(subject)
         was_called_matcher = WasCalledMatcher()
         if not was_called_matcher.matches(subject):
             self._reason = was_called_matcher.reason()
             return False
-
+        subject = Spy.get_spy(subject)
         expected_call_args, expected_call_kwargs = params
 
         call_args, call_kwargs = subject.last_call

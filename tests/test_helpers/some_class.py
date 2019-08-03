@@ -33,3 +33,5 @@ class SomeClass:
     def some_positional_args_method(self, some_first_arg):
         pass
 
+    def some_args_method_that_returns_some_value(self, some_first_arg, some_keyword_arg="some-default-value"):
+        return "some_value"

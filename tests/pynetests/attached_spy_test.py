@@ -1,5 +1,5 @@
 from pynetest.expectations import expect
-from pynetest.pyne_test_collector import it, describe
+from pynetest.pyne_test_collector import it, describe, fdescribe, fit
 from pynetest.pyne_tester import pyne
 from pynetest.test_doubles.attached_spy import AttachedSpy
 from pynetest.test_doubles.spy import last_call_of
@@ -80,6 +80,16 @@ def atteched_spy_test():
                 result = some_instance.some_function("anything", ["can"], go="here")
                 expect(result).to_be("some_value")
 
+        @describe("When a unbound class method is spied on")
+        def _():
+            @it("calls the original method and returns its value")
+            def _(self):
+                with AttachedSpy(SomeClass, "some_args_method_that_returns_some_value", needs_binding=True).call_real() as spy:
+                    some_class = SomeClass()
+                    expect(some_class.some_args_method_that_returns_some_value("some_arg", some_keyword_arg="some_kwarg")).to_be("some_value")
+                    expect(some_class.some_args_method_that_returns_some_value).was_called_with("some_arg", some_keyword_arg="some_kwarg")
+
+
 
     @describe("When a spied method used with then_call is called")
     def _():
@@ -123,7 +133,7 @@ def atteched_spy_test():
         def _():
             @it("can track the calls of a instance and return the spy")
             def _(self):
-                with AttachedSpy(SomeClass, "some_method") as spy:
+                with AttachedSpy(SomeClass, "some_method", needs_binding=True) as spy:
                     some_instance = SomeClass()
                     some_instance.some_method("some_arg")
                     expect(spy.last_call).to_be((("some_arg",), {}))
