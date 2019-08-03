@@ -1,7 +1,7 @@
 # Replace the original function with another function
 
-def attach_spy(parent_object, method_name):
-    return AttachedSpy(parent_object, method_name)
+def attach_spy(parent_object, method_name, **kwargs):
+    return AttachedSpy(parent_object, method_name, **kwargs)
 
 attach_stub = attach_spy
 
