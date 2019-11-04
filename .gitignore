@@ -5,3 +5,5 @@
 __pycache__/
 *.pyc
 *.swp
+*.egg-info/
+.eggs/

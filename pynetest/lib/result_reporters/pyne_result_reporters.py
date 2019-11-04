@@ -6,6 +6,8 @@ from termcolor import colored
 from pynetest.lib.result_reporters.printing_reporter import PrintingReporter
 from pynetest.lib.result_reporters.record_for_summary_reporter import RecordForSummaryReporter
 
+PYNE_TREE = '🌲'
+PYNE_FAIL = '❌'
 
 class PyneStats:
     def __init__(self):
@@ -77,20 +79,22 @@ class PyneStatSummaryReporter(StatTrackingReporter):
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
+        emoji = PYNE_FAIL if self.stats.failure_count > 0 else PYNE_TREE
         if self.stats.test_count == 0:
-            stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 Ran 0 tests 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲'
+            stat = '\n' + (emoji * 36) + ' Ran 0 tests ' + (emoji * 34)
         else:
             failures = "{0} failed, ".format(self.stats.failure_count) if self.stats.failure_count > 0 else ""
             pendings = ", {0} pending".format(self.stats.pending_count) if self.stats.pending_count > 0 else ""
 
-            stats = '\n🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲 ' \
-                    '{failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds' \
-                    ' 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲' \
+            stat_msg =  ' {failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds ' \
                 .format(
                 pendings=pendings,
                 failures=failures,
                 pass_count=self.stats.pass_count,
                 seconds=self.stats.total_timing_millis / 1000)
+
+            num_trailing_emoji = 18 + 36 - len(stat_msg)
+            stats = '\n' + (emoji * 22) + stat_msg + (emoji * num_trailing_emoji)
 
         return self._printable(stats)
 
