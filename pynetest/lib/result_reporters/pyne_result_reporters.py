@@ -19,8 +19,8 @@ def decorate_message_line(msg, decor, line_width=72):
     right_decor_units = decor_units - left_decor_units
     return (
         (decor * left_decor_units) + 
-	' ' + msg + ' ' + 
-	(decor * right_decor_units)
+        ' ' + msg + ' ' + 
+        (decor * right_decor_units)
     )
 
 
