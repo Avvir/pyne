@@ -169,7 +169,8 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
         StatTrackingReporter.report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis)
         full_description = it_block.description
         self.failure_messages.append(
-            colored("🌲 Failure: \"{full_description}\" in <{behavior_description}> ", 'red', None, ['bold']).format(
+            colored("{decor} Failure: \"{full_description}\" in <{behavior_description}> ", 'red', None, ['bold']).format(
+                decor=FAIL_DECOR,
                 full_description=full_description,
                 behavior_description=failed_behavior.description))
         self.failure_messages.append(filtered_exception)
