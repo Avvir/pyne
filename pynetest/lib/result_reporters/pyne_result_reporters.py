@@ -6,8 +6,23 @@ from termcolor import colored
 from pynetest.lib.result_reporters.printing_reporter import PrintingReporter
 from pynetest.lib.result_reporters.record_for_summary_reporter import RecordForSummaryReporter
 
-PYNE_TREE = '🌲'
-PYNE_FAIL = '❌'
+SUCCESS_DECOR = '🌲'
+FAIL_DECOR = '🔥🌲'
+
+def decorate_message_line(msg, decor, line_width=72):
+    # one space char on either side of msg
+    space_for_decor = line_width - ( len(msg) + 2 )
+    if space_for_decor < len(decor):
+        return msg
+    decor_units = space_for_decor // len(decor)
+    left_decor_units = decor_units // 2
+    right_decor_units = decor_units - left_decor_units
+    return (
+        (decor * left_decor_units) + 
+	' ' + msg + ' ' + 
+	(decor * right_decor_units)
+    )
+
 
 class PyneStats:
     def __init__(self):
@@ -79,22 +94,21 @@ class PyneStatSummaryReporter(StatTrackingReporter):
     def report_end_result(self):
         StatTrackingReporter.report_end_result(self)
 
-        emoji = PYNE_FAIL if self.stats.failure_count > 0 else PYNE_TREE
+        decor = FAIL_DECOR if self.stats.failure_count > 0 else SUCCESS_DECOR
         if self.stats.test_count == 0:
-            stat = '\n' + (emoji * 36) + ' Ran 0 tests ' + (emoji * 34)
+            stats = '\n' + decorate_message_line('Ran 0 tests', decor)
         else:
             failures = "{0} failed, ".format(self.stats.failure_count) if self.stats.failure_count > 0 else ""
             pendings = ", {0} pending".format(self.stats.pending_count) if self.stats.pending_count > 0 else ""
 
-            stat_msg =  ' {failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds ' \
+            stat_msg =  '{failures}{pass_count} passed{pendings} in {seconds:0.2f} seconds' \
                 .format(
                 pendings=pendings,
                 failures=failures,
                 pass_count=self.stats.pass_count,
                 seconds=self.stats.total_timing_millis / 1000)
 
-            num_trailing_emoji = 18 + 36 - len(stat_msg)
-            stats = '\n' + (emoji * 22) + stat_msg + (emoji * num_trailing_emoji)
+            stats = '\n' + decorate_message_line(stat_msg, decor)
 
         return self._printable(stats)
 
