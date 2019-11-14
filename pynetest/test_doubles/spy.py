@@ -18,6 +18,7 @@ class Spy:
         else:
             self.signature = inspect.signature(self.__call__)
         self.last_call = None
+        self.calls = []
         self.return_value = None
         self.will_call_real = False
         self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
@@ -53,9 +54,9 @@ class Spy:
     def _unstub_object(self):
         setattr(self.stubbed_object, self.method_name, self.original_method)
 
-
     def __call__(self, *args, **kwargs):
         self.last_call = (args, kwargs)
+        self.calls.append(self.last_call)
         if self.will_call_real:
             self.return_value = self.original_method(*args, **kwargs)
         return self.return_value
@@ -79,8 +80,13 @@ class Spy:
     def restore(self):
         self.last_call = None
         self.return_value = None
+        self.calls = []
         self._unstub_object()
         return self
+
+    def reset(self):
+        self.last_call = None
+        self.calls = []
 
     def __enter__(self):
         return self
