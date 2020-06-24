@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pynetest",
-    version="0.2.5",
+    version="0.2.7",
     author="Avvir",
     author_email="tira@avvir.io",
     description="A BDD Testing framework for python",
