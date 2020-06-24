@@ -13,6 +13,11 @@ class Spy:
         return AttachedSpy.get_spy(object)
 
     def __init__(self, object_to_stub=None, method=None):
+        method_name = None
+        if isinstance(method, str):
+            method_name = method
+            method = object_to_stub.__getattribute__(method)
+
         if method is not None:
             self.signature = inspect.signature(method)
         else:
@@ -21,9 +26,9 @@ class Spy:
         self.calls = []
         self.return_value = None
         self.will_call_real = False
-        self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method)
+        self.stubbed_object, self.original_method = self._create_stubbed_object(object_to_stub, method, method_name)
 
-    def _create_stubbed_object(self, object_to_stub, method):
+    def _create_stubbed_object(self, object_to_stub, method, method_name=None):
         class Spy:
             def __init__(self):
                 pass
@@ -38,12 +43,14 @@ class Spy:
         if method is None:
             method = Spy.__call__
 
-        method_name = method.__name__
+        if method_name is None:
+            method_name = method.__name__
 
         if self._validate_spy and method_name != "__call__" and not hasattr(object_to_stub, method_name):
             raise ValueError(("No method of name %s exists on parent object %s.\n" +
                               "This means Spy's introspection probably failed.\n" +
-                              "Consider specifying the parent object and method name using 'attach_stub'")
+                              "Consider specifying the parent object and method name instead of method reference."
+                              "e.g. when('some_method', on=some_instance)")
                              % (method_name, object_to_stub))
 
         self.method_name = method_name

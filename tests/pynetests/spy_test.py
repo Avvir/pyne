@@ -125,6 +125,17 @@ def spy_test():
                     expect(spy.last_call).to_be((("some_arg",), {}))
                     expect(Spy.get_spy(some_instance.some_method)).to_be(spy)
 
+            @describe("when the name of the method is passed in instead of the method reference")
+            def _():
+
+                @it("can track the calls and return the spy")
+                def _(self):
+                    some_instance = SomeClass()
+                    with stub('some_method', on=some_instance) as spy:
+                        some_instance.some_method("some_arg 123")
+                        expect(spy.last_call).to_be((("some_arg 123",), {}))
+                        expect(Spy.get_spy(some_instance.some_method)).to_be(spy)
+
         @describe("When a static method is spied on")
         def _():
             @it("can track the calls and return the spy")

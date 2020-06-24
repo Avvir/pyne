@@ -14,9 +14,9 @@ class Sandbox:
         return self.spy(object_to_stub, method)
 
     def restore(self):
-        for spy in reversed(self._spies):
+        for spy in self._spies:
             spy.restore()
-            self._spies.remove(spy)
+        self._spies = []
 
     def reset(self):
         for spy in self._spies:
