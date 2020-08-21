@@ -1,6 +1,7 @@
 import re
 
 from pynetest.lib.matcher import Matcher, is_matcher, equal_to_comparator, EqualToMatcher
+from pynetest.lib.matchers.has_length_matcher import HasLengthMatcher
 from pynetest.lib.matchers.matches_list_matcher import MatchesListMatcher
 
 
@@ -64,8 +65,7 @@ def at_most(number):
 
 
 def has_length(number):
-    return Matcher("has_length", lambda subject, *params: equal_to_comparator(len(subject), number), number)
-
+    return HasLengthMatcher(number)
 
 def between(lower, upper):
     return Matcher("between", lambda subject, *params: lower < subject < upper, lower, upper)

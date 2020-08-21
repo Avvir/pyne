@@ -37,7 +37,7 @@ def test__to_have_length__can_pass():
 def test__to_have_length__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect([123, 123, 123, "123"]).to_have_length(5),
-        "Expected <\[123, 123, 123, '123'\]> to have length <5>")
+        "Expected <\[123, 123, 123, '123'\]> to have length <5> but has length <4>")
 
 
 def test__not_to_have_length__can_pass():
