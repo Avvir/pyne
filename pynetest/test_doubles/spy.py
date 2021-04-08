@@ -58,6 +58,7 @@ class Spy:
         setattr(object_to_stub, self.method_name, self)
         return object_to_stub, method
 
+
     def _unstub_object(self):
         setattr(self.stubbed_object, self.method_name, self.original_method)
 
@@ -96,11 +97,30 @@ class Spy:
         self.calls = []
 
     def __enter__(self):
+        """
+        For compatibility with MegaStub, with-statement
+        """
+        self.stub()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.restore()
+        """
+        For compatibility with MegaStub, with-statement
+        """
+        self.unstub()
 
+    def unstub(self):
+        """
+        For compatibility with MegaStub
+        """
+        self.reset()
+        self._unstub_object()
+
+    def stub(self):
+        """
+        For compatibility with MegaStub
+        """
+        setattr(self.stubbed_object, self.method_name, self)
 
 def last_call_of(method):
     return Spy.get_spy(method).last_call

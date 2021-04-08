@@ -62,6 +62,9 @@ class AttachedSpy:
         self._reset_spy()
         setattr(self.parent_object, self.method_name, self.method)
 
+    def restore(self):
+        self.unstub()
+
     def _reset_spy(self):
         self.last_call = None
         self.return_value = None
