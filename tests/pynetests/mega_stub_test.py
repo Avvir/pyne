@@ -3,7 +3,7 @@ from pynetest.pyne_test_collector import describe, it, before_each, fit
 from pynetest.pyne_tester import pyne
 from pynetest.test_doubles.attached_spy import AttachedSpy, attach_stub
 from pynetest.test_doubles.spy import Spy
-from pynetest.test_doubles.stub import MegaStub, stub, group_stubs
+from pynetest.test_doubles.stub import MegaStub, stub, group_stubs, mega_stub
 
 
 class A:
@@ -24,7 +24,7 @@ class TestContext:
 
 
 @pyne
-def mega_stub():
+def mega_stub_test():
     @before_each
     def _(self):
         tc = self.test_context = TestContext()
@@ -80,7 +80,7 @@ def mega_stub():
             tc: TestContext = self.test_context
             tc.stub_a = stub(tc.obj_a.some_method).then_return("stubbed_value_a")
             tc.stub_b = attach_stub(tc.obj_b, "some_method").then_return("stubbed_value_b")
-            tc.mega_stub = MegaStub(tc.stub_a, tc.stub_b)
+            tc.mega_stub = mega_stub(tc.stub_a, tc.stub_b)
 
         @it("doesn't crash on the initial stub")
         def _(self):

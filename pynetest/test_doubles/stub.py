@@ -47,6 +47,8 @@ class StubGroup(ExitStack):
         for each_stub in self.stubs:
             each_stub.restore()
 
+def mega_stub(*stubs):
+    return MegaStub(*stubs)
 
 def group_stubs(*stubs):
     import warnings
