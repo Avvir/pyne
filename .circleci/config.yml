@@ -21,23 +21,11 @@ jobs:
       - checkout
 
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "Pipfile.lock" }}-{{ checksum "Pipfile" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
             pip install pipenv
             pipenv install --dev
-
-      - save_cache:
-          paths:
-            - ~/.local
-            - ~/.cache
-          key: v1-dependencies-{{ checksum "Pipfile.lock" }}-{{ checksum "Pipfile" }}
 
       - run:
           name: run tests
