@@ -26,6 +26,15 @@ def atteched_spy_test():
                 some_instance.some_method("anything", ["can"], go="here")
                 expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
 
+        @it("adds the call to the calls list")
+        def _(self):
+            some_instance = SomeClass()
+            with AttachedSpy(some_instance, "some_method") as spy:
+                some_instance.some_method("anything", ["can"], go="here")
+                some_instance.some_method("or", ["here"], xor="here")
+                expect(spy.calls).to_have_length(2)
+                expect(spy.calls[1]).to_be((("or", ["here"]), {"xor": "here"}))
+
         @it("the last call arguments are cleared after it is unstubbed")
         def _(self):
             some_instance = SomeClass()
@@ -89,8 +98,6 @@ def atteched_spy_test():
                     expect(some_class.some_args_method_that_returns_some_value("some_arg", some_keyword_arg="some_kwarg")).to_be("some_value")
                     expect(some_class.some_args_method_that_returns_some_value).was_called_with("some_arg", some_keyword_arg="some_kwarg")
 
-
-
     @describe("When a spied method used with then_call is called")
     def _():
         @it("calls the new method instead and returns its value")
@@ -125,7 +132,6 @@ def atteched_spy_test():
                 result = some_instance.some_function("anything", ["can"], go="here")
                 expect(result).to_be("some_other_value")
             expect(some_instance.some_function()).to_be("some_value")
-
 
     @describe("#get_spy")
     def _():
@@ -185,7 +191,6 @@ def atteched_spy_test():
                     some_class.some_module_method("anything", ["can"], go="here")
                     expect(spy.last_call).to_be((("anything", ["can"]), {"go": "here"}))
                     expect(AttachedSpy.get_spy(some_class.some_module_method)).to_be(spy)
-
 
     @describe("#last_call_of")
     def _():

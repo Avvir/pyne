@@ -19,6 +19,7 @@ class AttachedSpy:
         self.return_value = None
         self.will_call_real = False
         self.needs_binding = needs_binding
+        self.calls = []
 
     @property
     def spy_function(self):
@@ -39,6 +40,7 @@ class AttachedSpy:
             spy_self.last_call = (args[1:], kwargs)
         else:
             spy_self.last_call = (args, kwargs)
+        spy_self.calls.append(spy_self.last_call)
         if spy_self.other_method_to_call:
             spy_self.return_value = spy_self.other_method_to_call(*args, **kwargs)
         elif spy_self.will_call_real:
@@ -67,6 +69,7 @@ class AttachedSpy:
 
     def _reset_spy(self):
         self.last_call = None
+        self.calls = []
         self.return_value = None
 
     def call_real(self):
