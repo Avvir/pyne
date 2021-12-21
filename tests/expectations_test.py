@@ -1,3 +1,5 @@
+import subprocess
+
 from pynetest.expectations import expect
 from pynetest.matchers import anything, equal_to, match
 from tests.test_helpers.expectation_helpers import expect_expectation_to_fail_with_message
@@ -57,6 +59,13 @@ def test__to_raise_error_with_message__can_pass():
     expect(error_method).to_raise_error_with_message("some message")
 
 
+def test__to_raise_error_with_message__when_message_is_not_first_argument__can_pass():
+    def error_method():
+        raise subprocess.CalledProcessError(1, ['some-command', 'some-argument'])
+
+    expect(error_method).to_raise_error_with_message("Command '['some-command', 'some-argument']' returned non-zero exit status 1.")
+
+
 def test__to_raise_error_with_message__can_fail_because_the_message_is_wrong():
     def error_method():
         raise Exception("some message")
@@ -64,6 +73,15 @@ def test__to_raise_error_with_message__can_fail_because_the_message_is_wrong():
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message("some other message"),
         "to raise an exception with message.* but the exception was")
+
+
+def test__to_raise_error_with_message__when_message_is_not_first_argument__can_fail_because_the_message_is_wrong():
+    def error_method():
+        raise subprocess.CalledProcessError(1, ['some-command', 'some-argument'])
+
+    expect_expectation_to_fail_with_message(
+        lambda: expect(error_method).to_raise_error_with_message("some other message"),
+        "to raise an exception with message <'some other message'> but the exception was <Command '\['some-command', 'some-argument'\]' returned non-zero exit status 1.>")
 
 
 def test__to_raise_error_with_message__can_fail_because_no_error_is_raised():

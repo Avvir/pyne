@@ -8,6 +8,6 @@ class RaiseMessageExpectation(RaiseExpectation):
         expected_message = params[0]
         message_matcher = Matcher("with_message",
                                   lambda exception, message:
-                                  equal_to(message).matches(exception.args[0]),
+                                  equal_to(message).matches(str(exception)),
                                   expected_message)
-        super().__init__(message_matcher, exception_format=lambda e: e.args[0])
+        super().__init__(message_matcher, exception_format=lambda e: str(e))
