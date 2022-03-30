@@ -1,12 +1,19 @@
 # Replace the original function with another function
+from typing import NamedTuple, List, Dict
+
 
 def attach_spy(parent_object, method_name, **kwargs):
     return AttachedSpy(parent_object, method_name, **kwargs)
 
 attach_stub = attach_spy
 
+class CallArguments(NamedTuple):
+    args: List
+    kwargs: Dict
 
 class AttachedSpy:
+    last_call: CallArguments
+
     def __init__(self, parent_object=None, method_name=None, signature=None, needs_binding=False):
         self.parent_object = parent_object
         self.method_name = method_name
@@ -37,9 +44,9 @@ class AttachedSpy:
         if __get_spy__:
             return spy_self
         if spy_self.needs_binding:
-            spy_self.last_call = (args[1:], kwargs)
+            spy_self.last_call = CallArguments(args[1:], kwargs)
         else:
-            spy_self.last_call = (args, kwargs)
+            spy_self.last_call = CallArguments(args, kwargs)
         spy_self.calls.append(spy_self.last_call)
         if spy_self.other_method_to_call:
             spy_self.return_value = spy_self.other_method_to_call(*args, **kwargs)
