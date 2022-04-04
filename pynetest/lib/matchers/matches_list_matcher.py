@@ -8,7 +8,7 @@ class MatchesListMatcher(Matcher):
     def list_comparator(self, subject, *params):
         expected = params[0]
         if subject is expected:
-            if subject is ():
+            if subject == ():
                 return True
             else:
                 self._reason = "it was the exact same instance"
