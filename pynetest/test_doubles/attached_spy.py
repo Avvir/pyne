@@ -91,6 +91,12 @@ class AttachedSpy:
         self.other_method_to_call = other_to_call_method
         return self
 
+    def then_raise(self, exception: Exception):
+        def _raise(args, kwargs):
+            raise exception
+        self.other_method_to_call = _raise
+        return self
+
     def _pyne_format(self):
         parent_object = self.parent_object
         if isinstance(parent_object, type):
