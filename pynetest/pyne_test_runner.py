@@ -5,6 +5,8 @@ from . import pyne_pdb
 
 
 def befores_to_run(describe_block):
+    if len(describe_block.before_each_blocks) > 1:
+        raise Exception("Multiple @before_each blocks defined!")
     if describe_block.parent is None:
         return describe_block.before_each_blocks
     else:

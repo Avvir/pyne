@@ -70,6 +70,30 @@ def test__when_there_is_a_before_each__runs_it_before_each_test():
 
     expect(context.calls).to_be(["before", "it1", "before", "it2"])
 
+def test__when_there_are_multiple_before_each__raises_an_error():
+    reset()
+    context = test_collection.current_describe.context
+    context.calls = []
+
+    @before_each
+    def _(self):
+        self.calls.append("before1")
+
+    @before_each
+    def _(self):
+        self.calls.append("before2")
+
+    @it
+    def first(self):
+        self.calls.append("it1")
+
+    @it
+    def second(self):
+        self.calls.append("it2")
+
+    expect(lambda: run_tests(test_collection.top_level_describe, ExceptionReporter())) \
+        .to_raise_error_with_message(anything())
+
 
 def test__when_there_are_before_each_blocks_in_parent_describes__runs_them_before_each_test():
     reset()
