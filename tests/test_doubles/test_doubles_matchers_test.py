@@ -23,7 +23,7 @@ def test__was_called_with_matcher__when_there_were_no_calls__fails_with_a_messag
     expect_expectation_to_fail_with_message(
         lambda: expect(some_instance.some_method).to_be(
             was_called_with("some-positional-argument", ["some-array-content"])),
-        "Expected <.*> to be <was_called_with\(.*>"
+        "Expected <.*> to be <was_called_with\\(.*>"
     )
 
 
@@ -36,7 +36,7 @@ def test__was_called_with_matcher__when_the_method_was_called_with_the_different
     expect_expectation_to_fail_with_message(
         lambda: expect(some_instance.some_method).to_be(
             was_called_with("some-positional-argument", ["some-array-content"])),
-        "Expected <.*> to be <was_called_with\(.*>"
+        "Expected <.*> to be <was_called_with\\(.*>"
     )
 
 
@@ -49,7 +49,7 @@ def test__was_called_with_matcher__when_the_method_was_called_with_different_key
 
     expect_expectation_to_fail_with_message(
         lambda: expect(some_instance.some_method).to_be(was_called_with(some_keyword_arg="some-other-value")),
-        "Expected <.*> to be <was_called_with\(.*>"
+        "Expected <.*> to be <was_called_with\\(.*>"
     )
 
 
