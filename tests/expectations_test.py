@@ -39,7 +39,7 @@ def test__to_have_length__can_pass():
 def test__to_have_length__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect([123, 123, 123, "123"]).to_have_length(5),
-        "Expected <\[123, 123, 123, '123'\]> to have length <5> but has length <4>")
+        "Expected <[123, 123, 123, '123']> to have length <5> but has length <4>")
 
 
 def test__not_to_have_length__can_pass():
@@ -49,7 +49,7 @@ def test__not_to_have_length__can_pass():
 def test__not_to_have_length__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect([123, 123]).not_to_have_length(2),
-        "Expected <\[123, 123\]> not to have length <2>")
+        "Expected <[123, 123]> not to have length <2>")
 
 
 def test__to_raise_error_with_message__can_pass():
@@ -81,7 +81,7 @@ def test__to_raise_error_with_message__when_message_is_not_first_argument__can_f
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message("some other message"),
-        "to raise an exception with message <'some other message'> but the exception was <Command '\['some-command', 'some-argument'\]' returned non-zero exit status 1.>")
+        "to raise an exception with message <'some other message'> but the exception was <Command '\\['some-command', 'some-argument'\\]' returned non-zero exit status 1.>")
 
 
 def test__to_raise_error_with_message__can_fail_because_no_error_is_raised():
@@ -147,7 +147,7 @@ def test__to_raise_error_with_message__with_unmatched_matcher__failures_shows_ma
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message(match("other message")),
-        ".*to raise an exception with message <match\('other message'\).*")
+        ".*to raise an exception with message <match\\('other message'\\).*")
 
 
 def test__to_raise_error_with_message__when_actual_message_contains_curly_braces__shows_message():
@@ -156,7 +156,7 @@ def test__to_raise_error_with_message__when_actual_message_contains_curly_braces
 
     expect_expectation_to_fail_with_message(
         lambda: expect(error_method).to_raise_error_with_message(match("other message")),
-        "{oh man\} {stuff!\} {whoa\}")
+        "{oh man} {stuff!} {whoa}")
 
 
 def test__to_be_a__can_pass():
@@ -179,7 +179,7 @@ def test__to_contain__can_pass():
 def test__to_contain__when_item_not_contained__fails_with_message():
     expect_expectation_to_fail_with_message(
         lambda: expect(["some-item"]).to_contain("some-other-item"),
-        "Expected <\['some-item'\]> to contain <'some-other-item'>")
+        "Expected <['some-item']> to contain <'some-other-item'>")
 
 
 def test__to_contain__can_pass_with_matcher():
