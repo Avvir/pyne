@@ -1,6 +1,6 @@
 import inspect
 
-from pynetest.test_doubles.attached_spy import AttachedSpy
+from pynetest.test_doubles.attached_spy import AttachedSpy, CallArguments
 
 
 class Spy:
@@ -122,5 +122,9 @@ class Spy:
         """
         setattr(self.stubbed_object, self.method_name, self)
 
-def last_call_of(method):
-    return Spy.get_spy(method).last_call
+
+def last_call_of(method) -> CallArguments:
+    last_call = Spy.get_spy(method).last_call
+    if not isinstance(last_call, CallArguments):
+        last_call = CallArguments(*last_call)
+    return last_call
