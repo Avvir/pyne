@@ -1,5 +1,7 @@
 from time import sleep
 from traceback import TracebackException
+import os
+import xml.etree.ElementTree as ET
 
 from termcolor import colored
 
@@ -111,6 +113,63 @@ class PyneStatSummaryReporter(StatTrackingReporter):
             stats = '\n' + decorate_message_line(stat_msg, decor)
 
         return self._printable(stats)
+
+
+class PyneXmlReporter(StatTrackingReporter):
+    skip = False
+
+    def __init__(self):
+        if "PYNETEST_XML_REPORT" not in os.environ:
+            self.skip = True
+            return
+
+        super().__init__()
+
+        test_suite = ET.Element("testsuite")
+        self.document = ET.ElementTree(test_suite)
+
+    def report_end_result(self):
+        if self.skip:
+            return self._printable("")
+
+        StatTrackingReporter.report_end_result(self)
+
+        output_path = os.environ["PYNETEST_XML_REPORT"]
+
+        failures = self.stats.failure_count
+        pendings = self.stats.pending_count
+        pass_count = self.stats.pass_count
+        seconds = self.stats.total_timing_millis / 1000
+
+        test_suite = self.document.getroot()
+        test_suite.set("time", str(seconds))
+        test_suite.set("tests", str(pass_count + pendings + failures))
+        test_suite.set("skipped", str(pendings))
+        # Pyne doesn't distinguish between errors and failures
+        test_suite.set("errors", str(0))
+        test_suite.set("failures", str(failures))
+
+        self.document.write(output_path)
+
+        return self._printable(f"Exported results to {output_path}")
+
+    def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
+        if self.skip:
+            return
+
+        super().report_failure(failed_behavior, it_block, filtered_exception, timing_millis)
+
+        test_suite = self.document.getroot()
+        test_case = ET.SubElement(test_suite, "testcase")
+        if it_block.parent is not None:
+            test_case.set("classname", str(it_block.parent.description))
+        test_case.set("name", str(it_block.description))
+        test_case.set("time", str(timing_millis / 1000))
+
+        failure = ET.SubElement(test_case, "failure")
+        exception_class = filtered_exception.__class__.__name__
+        exception_text = str(filtered_exception)
+        failure.text = f"{exception_class}: {exception_text}"
 
 
 class PyneDotReporter(StatTrackingReporter):
@@ -231,7 +290,8 @@ def reporter_factory():
     )
     summary_reporters = (
         PrintingReporter(RecordForSummaryReporter(PyneTreeReporter())),
-        PrintingReporter(RecordForSummaryReporter(PyneStatSummaryReporter()))
+        PrintingReporter(RecordForSummaryReporter(PyneStatSummaryReporter())),
+        PrintingReporter(RecordForSummaryReporter(PyneXmlReporter())),
     )
 
     return CompositeReporter(*during_execution_reporters, *summary_reporters, ExceptionReporter())
