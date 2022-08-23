@@ -1,5 +1,5 @@
 # Replace the original function with another function
-from typing import NamedTuple, List, Dict
+from typing import NamedTuple, List, Dict, Tuple
 
 
 def attach_spy(parent_object, method_name, **kwargs):
@@ -24,6 +24,7 @@ class AttachedSpy:
         self.other_method_to_call = None
         self.last_call = None
         self.return_value = None
+        self.return_sequence = []
         self.will_call_real = False
         self.needs_binding = needs_binding
         self.calls = []
@@ -49,10 +50,14 @@ class AttachedSpy:
             spy_self.last_call = CallArguments(args, kwargs)
         spy_self.calls.append(spy_self.last_call)
         if spy_self.other_method_to_call:
-            spy_self.return_value = spy_self.other_method_to_call(*args, **kwargs)
+            return_value = spy_self.other_method_to_call(*args, **kwargs)
         elif spy_self.will_call_real:
-            spy_self.return_value = spy_self.method(*args, **kwargs)
-        return spy_self.return_value
+            return_value = spy_self.method(*args, **kwargs)
+        elif spy_self.return_sequence:
+            return_value = spy_self.return_sequence.pop(0)
+        else:
+            return_value = spy_self.return_value
+        return return_value
 
     def __call__(self, *args, **kwargs):
         return self.spy_call(*args, **kwargs)
@@ -78,6 +83,7 @@ class AttachedSpy:
         self.last_call = None
         self.calls = []
         self.return_value = None
+        self.return_sequence = []
 
     def call_real(self):
         self.will_call_real = True
@@ -85,6 +91,20 @@ class AttachedSpy:
 
     def then_return(self, return_value):
         self.return_value = return_value
+        return self
+
+    def then_return_sequence(self, return_values: List):
+        """
+        Makes the spied object/function return the next return value in the sequence.
+        Once it runs out of return values, the return value will default to the then_return() value if specified.
+
+        :param return_values: The sequence of values to return. Must be iterable.
+        :return: self
+        """
+        try:
+            self.return_sequence = list(return_values)
+        except:
+            ValueError(F"Error casting {return_values} to a list.")
         return self
 
     def then_call(self, other_to_call_method):
