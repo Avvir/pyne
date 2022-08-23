@@ -74,6 +74,59 @@ def atteched_spy_test():
             result = some_instance.some_method("anything", ["can"], go="here")
             expect(result).to_be(None)
 
+    @describe("When a spied method used with then_return_sequence is called")
+    def _():
+        @it("returns the next value in the sequence each time it is called")
+        def _(self):
+            some_instance = SomeClass()
+            with AttachedSpy(some_instance, "some_method").then_return_sequence(("some_value", "some_value2")) as spy:
+                result = some_instance.some_method("anything", ["can"], go="here")
+                result2 = some_instance.some_method("anything", ["can"], go="here")
+                result3 = some_instance.some_method("anything", ["can"], go="here")
+                expect(result).to_be("some_value")
+                expect(result2).to_be("some_value2")
+                expect(result3).to_be(None)
+
+        @it("returns None after it is unstubbed")
+        def _(self):
+            some_instance = SomeClass()
+            with AttachedSpy(some_instance, "some_method").then_return("some_value") as spy:
+                result = some_instance.some_method("anything", ["can"], go="here")
+                expect(result).to_be("some_value")
+            result = some_instance.some_method("anything", ["can"], go="here")
+            expect(result).to_be(None)
+
+        @describe("when then_return() is also called")
+        def _():
+            @describe("when there are less than or equal number of calls as return sequence values")
+            def _():
+                @it("returns the return sequence values")
+                def _(self):
+                    some_instance = SomeClass()
+                    with AttachedSpy(some_instance, "some_method").then_return_sequence(["some_value", "some_value2"]).then_return('abc') as spy:
+                        result = some_instance.some_method("anything", ["can"], go="here")
+                        result2 = some_instance.some_method("anything", ["can"], go="here")
+                        expect(result).to_be("some_value")
+                        expect(result2).to_be("some_value2")
+
+            @describe("when there are more calls than return sequence values")
+            def _():
+                @it("returns the return sequence values, then returns the then_return value for all future calls")
+                def _(self):
+                    some_instance = SomeClass()
+                    with AttachedSpy(some_instance, "some_method").then_return_sequence(["some_value", "some_value2"]).then_return('abc') as spy:
+                        result = some_instance.some_method("anything", ["can"], go="here")
+                        result2 = some_instance.some_method("anything", ["can"], go="here")
+                        result3 = some_instance.some_method("anything", ["can"], go="here")
+                        result4 = some_instance.some_method("anything", ["can"], go="here")
+                        expect(result).to_be("some_value")
+                        expect(result2).to_be("some_value2")
+                        expect(result3).to_be("abc")
+                        expect(result4).to_be("abc")
+
+
+
+
     @describe("When a spied method used with call_real is called")
     def _():
         @it("calls the original method and returns its value")
