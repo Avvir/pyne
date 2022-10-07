@@ -260,8 +260,14 @@ class PyneFailuresListReporter(StatTrackingReporter):
     def report_end_result(self):
         result = ""
         for behavior, it_block in self.failures_list:
-            result += colored(f"{it_block.parent.description}: {it_block.description}", 'red') + "\n"
+            result += colored(self.compose_message(it_block), 'red') + "\n"
         return self._printable(result)
+
+    def compose_message(self, it_block):
+        if it_block.parent:
+            return self.compose_message(it_block.parent) + f" >> {it_block.description}"
+        else:
+            return f"{it_block.description}"
 
 
 class CompositeReporter:

@@ -64,7 +64,7 @@ def test__when_there_are_nested_directories_of_test_files__summarizes_the_result
         expect(result.output).to_contain("some_top_directory_test")
         expect(result.output).to_contain("some_nested_directory_test")
         expect(result.output).to_contain("1 failed, 3 passed")
-        expect(result.output).to_contain("When setup fails: can fail")
+        expect(result.output).to_contain("All Tests >> some_nested_directory_test >> When setup fails >> can fail")
 
 
 def test_when_there_is_a_hidden_subdirectory__does_not_look_for_tests():
