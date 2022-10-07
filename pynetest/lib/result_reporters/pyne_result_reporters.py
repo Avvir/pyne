@@ -249,6 +249,21 @@ class PyneFailureSummaryReporter(StatTrackingReporter):
         return self._printable(result)
 
 
+class PyneFailuresListReporter(StatTrackingReporter):
+    def __init__(self):
+        super().__init__()
+        self.failures_list = []
+
+    def report_failure(self, failed_behavior, it_block, filtered_exception, timing_millis):
+        self.failures_list.append((failed_behavior, it_block))
+
+    def report_end_result(self):
+        result = ""
+        for behavior, it_block in self.failures_list:
+            result += colored(f"{it_block.parent.description}: {it_block.description}", 'red') + "\n"
+        return self._printable(result)
+
+
 class CompositeReporter:
     def __init__(self, *reporters):
         self.reporters = reporters
@@ -286,11 +301,13 @@ def reporter_factory():
     during_execution_reporters = (
         PrintingReporter(PyneTreeReporter()),
         PrintingReporter(PyneStatSummaryReporter()),
+        PrintingReporter(PyneFailuresListReporter()),
         PrintingReporter(PyneFailureSummaryReporter())
     )
     summary_reporters = (
         PrintingReporter(RecordForSummaryReporter(PyneTreeReporter())),
         PrintingReporter(RecordForSummaryReporter(PyneStatSummaryReporter())),
+        PrintingReporter(RecordForSummaryReporter(PyneFailuresListReporter())),
         PrintingReporter(RecordForSummaryReporter(PyneXmlReporter())),
     )
 
