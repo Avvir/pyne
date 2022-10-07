@@ -64,6 +64,8 @@ def test__when_there_are_nested_directories_of_test_files__summarizes_the_result
         expect(result.output).to_contain("some_top_directory_test")
         expect(result.output).to_contain("some_nested_directory_test")
         expect(result.output).to_contain("1 failed, 3 passed")
+        expect(result.output).to_contain("When setup fails: can fail")
+
 
 def test_when_there_is_a_hidden_subdirectory__does_not_look_for_tests():
     runner = CliRunner()
@@ -73,6 +75,7 @@ def test_when_there_is_a_hidden_subdirectory__does_not_look_for_tests():
 
         result = runner.invoke(cli.main)
         expect(result.output).to_contain("Ran 0 tests")
+
 
 def test_when_there_is_a_list_of_excluded_tests__does_not_run_them():
     runner = CliRunner()
@@ -88,6 +91,7 @@ def test_when_there_is_a_list_of_excluded_tests__does_not_run_them():
         # import time
         # time.sleep(50000)
 
+
 def test_when_there_is_a_failing_test__does_exits_with_code_1():
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -96,6 +100,7 @@ def test_when_there_is_a_failing_test__does_exits_with_code_1():
         result = runner.invoke(cli.main)
         expect(result.exit_code).to_be(1)
         expect(result.exception).to_be_a(SystemExit)
+
 
 def test_cleanup():
     config.report_between_suites = True
