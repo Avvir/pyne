@@ -7,3 +7,4 @@ __pycache__/
 *.swp
 *.egg-info/
 .eggs/
+pyne_tests.log
