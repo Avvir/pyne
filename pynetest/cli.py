@@ -75,7 +75,8 @@ def main(context, path):
         run_tests(describe_block, reporter)
     except TestFailureException:
         sys.exit(1)
-
+    except ModuleNotFoundError:
+        sys.exit(1)
     config.report_between_suites = cli_helper.report_between_suites
 
 
