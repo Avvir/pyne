@@ -43,7 +43,7 @@ class PyneCliHelper:
 
     @staticmethod
     def load_tests_in_subdirectories(path, excluded_package_names):
-        for content in os.listdir(path):
+        for content in sorted(os.listdir(path)):
             if content[:1] != '.':
                 content_path = os.path.join(path, content)
                 if os.path.isdir(content_path):
