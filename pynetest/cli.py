@@ -31,8 +31,7 @@ class PyneCliHelper:
                 new_names = [n.strip() for n in fh.readlines()]
                 for name in new_names:
                     excluded_package_names[name] = excluded_pyne_test_filename
-
-        for importer, package_name, _ in pkgutil.iter_modules([dirname]):
+        for importer, package_name, _ in sorted(list(pkgutil.iter_modules([dirname])), key=lambda x: x[1]):
             if "_test" == package_name[-5:] and package_name not in sys.modules:
                 if package_name in excluded_package_names:
                     exclude_file = excluded_package_names[package_name]
