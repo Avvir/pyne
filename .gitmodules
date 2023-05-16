@@ -1,0 +1,3 @@
+[submodule "avvir_repos/avvir-common"]
+	path = avvir_repos/avvir-common
+	url = ssh://git@github.com/avvir/python-avvir-common.git
