@@ -17,6 +17,7 @@ def format_object(object):
     except Exception:
         formatted_object = str(object)
     return escape_for_formatting(formatted_object)
+    # return formatted_object
 
 
 def format_arguments(args_list, kwargs_dict=None):

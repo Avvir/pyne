@@ -30,12 +30,13 @@ class Expectation:
         if not matches:
             message_format = self.message_format(subject, params)
             formatted_params, formatted_subject = self.unmatcherify(params, subject)
-            message = message_format.format(*formatted_params, subject=formatted_subject)
+            escaped_message = message_format.format(*formatted_params, subject=formatted_subject)
+            unescaped_message = self.unescape_for_formatting(escaped_message)
             reason = reason or self.matcher.reason()
             if reason is not None:
-                message += " but " + reason
-            cprint("\n" + message + "\n", 'yellow')
-            raise AssertionError(message)
+                unescaped_message += " but " + reason
+            cprint("\n" + unescaped_message + "\n", 'yellow')
+            raise AssertionError(unescaped_message)
 
     def default_message(self, param_count=1):
         if param_count == 0:
@@ -55,6 +56,9 @@ class Expectation:
 
     def escape_for_formatting(self, string):
         return string.replace("{", "{{").replace("}", "}}")
+
+    def unescape_for_formatting(self, string):
+        return string.replace("{{", "{").replace("}}", "}")
 
 
 class InverseExpectation(Expectation):
