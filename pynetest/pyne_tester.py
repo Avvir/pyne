@@ -17,6 +17,9 @@ def replace_excepthook():
     sys.excepthook = new_excepthook
 
 def pyne(tests_method):
+    if is_mp_subprocess(tests_method):
+        print('detected subprocess, not rerunning tests')
+        return lambda: print('detected subprocess, not rerunning tests')
     if config.report_between_suites:
         reporter.reset()
     describe_block = DescribeBlock(None, tests_method.__name__, tests_method)
@@ -24,5 +27,9 @@ def pyne(tests_method):
     if config.report_between_suites:
         run_tests(describe_block, reporter)
     return tests_method
+
+
+def is_mp_subprocess(tests_method):
+    return tests_method.__module__ == '__mp_main__'
 
 replace_excepthook()
