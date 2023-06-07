@@ -1,3 +1,4 @@
+from distributed.client import Client
 from pynetest.expectations import expect
 from pynetest.pyne_test_collector import it, describe, before_each
 from pynetest.pyne_tester import pyne
@@ -42,3 +43,18 @@ def test_pyne_decoration_runs_tests():
             ran_thing("it1")
 
     expect(things_run).to_be(["before1", "it1"])
+
+def test__when_a_multiprocessing_loop_is_created__runs_the_tests_only_in_the_main_entrypoint():
+    things_run = []
+
+    def ran_thing(tag):
+        things_run.append(tag)
+    @pyne
+    def first_test():
+        @it("does something")
+        def _(self):
+            print(f'_')
+            Client()
+            ran_thing("it1")
+    expect(things_run).to_be(['it1'])
+
