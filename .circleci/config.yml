@@ -30,4 +30,6 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run pytest tests
+            pipenv run tests
+
+

@@ -11,9 +11,11 @@ click-completion = "*"
 
 [dev-packages]
 pytest = "*"
+distributed = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
-tests = "sh -c 'pipenv run pytest tests && PYTHONPATH=. pipenv run python -m pynetest tests/pynetests'"
+#tests = "sh -c 'pipenv run pytest tests && PYTHONPATH=. pipenv run python -m pynetest tests/pynetests '"
+tests = "sh -c 'pipenv run pytest tests && PYTHONPATH=. pipenv run python -m pynetest tests/pynetests && PYTHONPATH=. pipenv run python ./tests/pynetests/multiprocessing_test.py'"
