@@ -1,4 +1,4 @@
-from pynetest.lib.pyne_test_blocks import AfterEachBlock, BeforeEachBlock, DescribeBlock, ItBlock
+from pynetest.lib.pyne_test_blocks import AfterEachBlock, BeforeEachBlock, DescribeBlock, ItBlock, BeforeFirstBlock
 
 
 def no_tests():
@@ -129,6 +129,11 @@ def before_each(method):
             BeforeEachBlock(test_collection.current_describe, method))
     return method
 
+
+def before_first(method):
+    test_collection.current_describe.before_first_blocks.append(
+        BeforeFirstBlock(test_collection.current_describe, method))
+    return method
 
 def after_each(method):
     test_collection.current_describe.after_each_blocks.append(

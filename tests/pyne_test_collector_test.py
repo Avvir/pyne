@@ -1,5 +1,5 @@
 from pynetest.lib.pyne_test_blocks import DescribeBlock
-from pynetest.pyne_test_collector import test_collection, it, describe, before_each, fit, fdescribe, after_each
+from pynetest.pyne_test_collector import test_collection, it, describe, before_each, fit, fdescribe, after_each, before_first
 from pynetest.expectations import expect
 
 
@@ -165,6 +165,21 @@ def test__before_each__adds_before_each_block_to_current_describe():
     before_each(some_method)
     expect(current_describe.before_each_blocks).to_have_length(1)
     expect(current_describe.before_each_blocks[0].method).to_be(some_method)
+
+def test__before_first__adds_before_first_block_to_current_describe():
+    current_describe = DescribeBlock(None, None, None)
+    test_collection.current_describe = current_describe
+    count = []
+
+    @before_first
+    def some_method():
+        count.append(True)
+
+    current_describe.before_first_blocks[0].method()
+    current_describe.before_first_blocks[0].method()
+    expect(current_describe.before_first_blocks).to_have_length(1)
+    expect(current_describe.before_first_blocks[0].before_first_method).to_be(some_method)
+    expect(len(count)).to_be(1)
 
 def test__after_each__adds_after_each_block_to_current_describe():
     current_describe = DescribeBlock(None, None, None)
