@@ -46,6 +46,7 @@ def run_non_pended_tests(describe_block, result_reporter, parent_is_pending=Fals
                          result_reporter)
 
     for nested_describe_block in describe_block.describe_blocks:
+        nested_describe_block.context = describe_block.context
         run_non_pended_tests(nested_describe_block, result_reporter, is_pending_describe)
 
     result_reporter.report_exit_context(describe_block)
