@@ -2,6 +2,7 @@ from time import sleep
 from traceback import TracebackException
 import os
 import xml.etree.ElementTree as ET
+import re
 
 from termcolor import colored
 
@@ -116,6 +117,8 @@ class PyneStatSummaryReporter(StatTrackingReporter):
 
 
 class PyneXmlReporter(StatTrackingReporter):
+    RESTRICTED_CHAR = "[\\x01-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F-\\x84\\x86-\\x9F]"
+
     skip = False
 
     def __init__(self):
@@ -127,6 +130,9 @@ class PyneXmlReporter(StatTrackingReporter):
 
         test_suite = ET.Element("testsuite")
         self.document = ET.ElementTree(test_suite)
+
+    def sanitize_str(self, s: str) -> str:
+        return re.compile(self.RESTRICTED_CHAR).sub("�", str(s))
 
     def report_end_result(self):
         if self.skip:
@@ -142,12 +148,12 @@ class PyneXmlReporter(StatTrackingReporter):
         seconds = self.stats.total_timing_millis / 1000
 
         test_suite = self.document.getroot()
-        test_suite.set("time", str(seconds))
-        test_suite.set("tests", str(pass_count + pendings + failures))
-        test_suite.set("skipped", str(pendings))
+        test_suite.set("time", self.sanitize_str(seconds))
+        test_suite.set("tests", self.sanitize_str(pass_count + pendings + failures))
+        test_suite.set("skipped", self.sanitize_str(pendings))
         # Pyne doesn't distinguish between errors and failures
-        test_suite.set("errors", str(0))
-        test_suite.set("failures", str(failures))
+        test_suite.set("errors", self.sanitize_str(0))
+        test_suite.set("failures", self.sanitize_str(failures))
 
         self.document.write(output_path)
 
@@ -162,14 +168,14 @@ class PyneXmlReporter(StatTrackingReporter):
         test_suite = self.document.getroot()
         test_case = ET.SubElement(test_suite, "testcase")
         if it_block.parent is not None:
-            test_case.set("classname", str(it_block.parent.description))
-        test_case.set("name", str(it_block.description))
-        test_case.set("time", str(timing_millis / 1000))
+            test_case.set("classname", self.sanitize_str(it_block.parent.description))
+        test_case.set("name", self.sanitize_str(it_block.description))
+        test_case.set("time", self.sanitize_str(timing_millis / 1000))
 
         failure = ET.SubElement(test_case, "failure")
         exception_class = filtered_exception.__class__.__name__
         exception_text = str(filtered_exception)
-        failure.text = f"{exception_class}: {exception_text}"
+        failure.text = self.sanitize_str(f"{exception_class}: {exception_text}")
 
 
 class PyneDotReporter(StatTrackingReporter):

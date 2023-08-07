@@ -36,7 +36,7 @@ def test__report_end_result__when_a_test_has_failed__it_stores_stats():
         reporter = PrintingReporter(PyneXmlReporter())
 
         it_block = ItBlock(None, None, None)
-        reporter.report_failure(it_block, it_block, Exception("some exception"), 1000)
+        reporter.report_failure(it_block, it_block, Exception("some exception\x1b"), 1000)
         reporter.report_success(it_block, 500)
         reporter.report_success(it_block, 500)
 
@@ -47,6 +47,8 @@ def test__report_end_result__when_a_test_has_failed__it_stores_stats():
         expect(printed_text[0]).to_contain("Exported results to")
         expect(printed_text[0]).to_contain("output.xml")
         expect(os.path.exists(os.environ["PYNETEST_XML_REPORT"])).to_be(True)
+        with open(os.environ["PYNETEST_XML_REPORT"]) as file:
+            expect(file.read()).not_to_contain("\x1b")
 
 
 def test__report_end_result__when_all_tests_passed__it_stores_stats():
