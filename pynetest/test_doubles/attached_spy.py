@@ -13,6 +13,7 @@ class CallArguments(NamedTuple):
 
 class AttachedSpy:
     last_call: CallArguments
+    calls: List[CallArguments]
 
     def __init__(self, parent_object=None, method_name=None, signature=None, needs_binding=False):
         self.parent_object = parent_object
