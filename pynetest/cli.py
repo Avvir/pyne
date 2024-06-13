@@ -61,13 +61,16 @@ cli_helper = PyneCliHelper()
 
 
 @group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
-@argument('path', required=False, type=Path(resolve_path=True), default=".")
+@argument('paths', required=False, type=Path(resolve_path=True), nargs=-1)
 @pass_context
-def main(context, path):
+def main(context, paths):
+    if len(paths) == 0:
+        paths = [os.path.realpath(".")]
     cli_helper.setup_reporting()
     excluded_package_names = dict()
-    cli_helper.load_tests_in_dir(path, excluded_package_names)
-    cli_helper.load_tests_in_subdirectories(path, excluded_package_names)
+    for path in paths:
+        cli_helper.load_tests_in_dir(path, excluded_package_names)
+        cli_helper.load_tests_in_subdirectories(path, excluded_package_names)
 
     describe_block = test_collection.top_level_describe
     try:
